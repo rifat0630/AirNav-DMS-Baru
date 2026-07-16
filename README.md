@@ -1,59 +1,224 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AirNav DMS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+AirNav DMS (Document Management System) adalah aplikasi berbasis Laravel yang digunakan untuk mengelola dokumen secara digital. Sistem ini mendukung manajemen dokumen, autentikasi pengguna berdasarkan role, pencatatan aktivitas, serta integrasi dengan Google Drive untuk penyimpanan dokumen.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Login & Authentication (Laravel Breeze)
+- Dashboard
+- Manajemen Dokumen (CRUD)
+- Upload Dokumen
+- Download Dokumen
+- Preview Dokumen
+- Hapus Dokumen
+- Kategori Dokumen
+- Role Management
+  - Admin
+  - Teknisi
+  - Pegawai
+- Activity Log
+- Integrasi Google Drive API
+- Penyimpanan file lokal dan Google Drive
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Teknologi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- Laravel 12
+- PHP 8.2+
+- MySQL
+- Bootstrap 5
+- Google Drive API
+- Laravel Breeze
+- Composer
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 📁 Struktur Project
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+app/
+├── Http/
+├── Models/
+├── Services/
+│   └── GoogleDriveService.php
 
-### Premium Partners
+resources/
+├── views/
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+routes/
+└── web.php
 
-## Contributing
+storage/
+└── app/
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## ⚙️ Instalasi
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Clone repository
 
-## Security Vulnerabilities
+```bash
+git clone https://github.com/annisacendana/AirNav-DMS.git
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Masuk ke project
 
-## License
+```bash
+cd AirNav-DMS/backend
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Install dependency
+
+```bash
+composer install
+```
+
+Copy file environment
+
+```bash
+cp .env.example .env
+```
+
+Generate key
+
+```bash
+php artisan key:generate
+```
+
+Konfigurasi database pada file `.env`
+
+```env
+DB_DATABASE=airnav_dms
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Migrasi database
+
+```bash
+php artisan migrate
+```
+
+Jalankan server
+
+```bash
+php artisan serve
+```
+
+---
+
+## ☁️ Konfigurasi Google Drive
+
+Tambahkan konfigurasi berikut pada file `.env`
+
+```env
+GOOGLE_CLIENT_ID=
+
+GOOGLE_CLIENT_SECRET=
+
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8000/google/callback
+
+GOOGLE_DRIVE_FOLDER_ID=
+```
+
+Letakkan file OAuth credentials pada
+
+```
+storage/app/google/credentials.json
+```
+
+Lakukan autentikasi melalui
+
+```
+http://127.0.0.1:8000/google/auth
+```
+
+---
+
+## 👤 Role Pengguna
+
+### Admin
+
+- Kelola Dokumen
+- Tambah Dokumen
+- Edit Dokumen
+- Hapus Dokumen
+- Melihat Activity Log
+
+### Teknisi
+
+- Tambah Dokumen
+- Edit Dokumen
+- Upload Dokumen
+- Download Dokumen
+
+### Pegawai
+
+- Tambah Dokumen
+- Edit Dokumen
+- Upload Dokumen
+- Download Dokumen
+
+---
+
+## 📂 Fitur Dokumen
+
+- Upload file
+- Penyimpanan lokal
+- Penyimpanan Google Drive
+- Preview dokumen
+- Download dokumen
+- Hapus dokumen
+- Riwayat aktivitas
+
+---
+
+## 🔒 Keamanan
+
+Pastikan file berikut **tidak diunggah ke GitHub**
+
+```
+.env
+
+storage/app/google/credentials.json
+
+storage/app/google/token.json
+```
+
+Tambahkan pada `.gitignore`
+
+```
+.env
+storage/app/google/credentials.json
+storage/app/google/token.json
+```
+
+---
+
+## 📷 Tampilan Sistem
+
+- Login
+- Dashboard
+- Daftar Dokumen
+- Tambah Dokumen
+- Detail Dokumen
+- Activity Log
+- Google Drive Integration
+
+---
+
+## 👩‍💻 Pengembang
+
+**An Nisa Putri Cendana**
+
+Program Studi Teknologi Informasi
+
+---
+
+## 📄 Lisensi
+
+Project ini dibuat untuk keperluan pembelajaran dan pengembangan sistem Document Management System (DMS).
