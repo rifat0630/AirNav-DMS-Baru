@@ -7,240 +7,147 @@ use Google\Service\Drive;
 use Google\Service\Drive\DriveFile;
 use Illuminate\Http\UploadedFile;
 
-
 class GoogleDriveService
 {
-
+    /**
+     * Membuat Google Client
+     */
     public function client()
-    {
+{
+    $client = new Client();
 
-        $client = new Client();
+    $client->setAuthConfig(
+        storage_path('app/google/credentials.json')
+    );
 
+    $client->setClientId(
+        config('services.google.client_id')
+    );
 
-        $client->setAuthConfig(
-            storage_path('app/google/credentials.json')
+    $client->setClientSecret(
+        config('services.google.client_secret')
+    );
+
+    $client->setRedirectUri(
+        config('services.google.redirect')
+    );
+
+    $client->addScope(Drive::DRIVE);
+
+    $client->setAccessType('offline');
+
+    $client->setPrompt('select_account consent');
+
+    $tokenPath = storage_path('app/google/token.json');
+
+    if (file_exists($tokenPath)) {
+
+        $token = json_decode(
+            file_get_contents($tokenPath),
+            true
         );
 
+        $client->setAccessToken($token);
 
-        $client->addScope(
-            Drive::DRIVE
-        );
+        if ($client->isAccessTokenExpired()) {
 
+            if ($client->getRefreshToken()) {
 
-        $client->setAccessType('offline');
-
-        $client->setPrompt(
-            'select_account consent'
-        );
-
-
-        $tokenPath =
-            storage_path('app/google/token.json');
-
-
-        if(file_exists($tokenPath))
-        {
-
-            $token = json_decode(
-                file_get_contents($tokenPath),
-                true
-            );
-
-
-            $client->setAccessToken($token);
-
-
-            if($client->isAccessTokenExpired())
-            {
-
-                if($client->getRefreshToken())
-                {
-
-                    $newToken =
+                $newToken =
                     $client->fetchAccessTokenWithRefreshToken(
                         $client->getRefreshToken()
                     );
 
+                $token = array_merge($token, $newToken);
 
-                    $token = array_merge(
-                        $token,
-                        $newToken
-                    );
+                file_put_contents(
+                    $tokenPath,
+                    json_encode($token, JSON_PRETTY_PRINT)
+                );
 
-
-                    file_put_contents(
-                        $tokenPath,
-                        json_encode($token)
-                    );
-
-
-                    $client->setAccessToken($token);
-
-                }
-
+                $client->setAccessToken($token);
             }
+        }
+    }
 
+    return $client;
+}
+
+    /**
+     * Upload file ke Google Drive
+     */
+    public function upload(UploadedFile $file, $category)
+    {
+        $drive = new Drive($this->client());
+
+        $folderId = $this->getOrCreateFolder($category);
+
+        $metadata = new DriveFile([
+            'name' => $file->getClientOriginalName(),
+            'parents' => [$folderId],
+        ]);
+
+        return $drive->files->create(
+            $metadata,
+            [
+                'data' => file_get_contents($file->getRealPath()),
+                'mimeType' => $file->getMimeType(),
+                'uploadType' => 'multipart',
+                'fields' => 'id,name',
+            ]
+        );
+    }
+
+    /**
+     * Membuat folder kategori jika belum ada
+     */
+    public function getOrCreateFolder($folderName)
+    {
+        $drive = new Drive($this->client());
+
+        $parentFolder = env('GOOGLE_DRIVE_FOLDER_ID');
+
+        $query =
+            "name='{$folderName}' and " .
+            "mimeType='application/vnd.google-apps.folder' and " .
+            "'{$parentFolder}' in parents and trashed=false";
+
+        $folders = $drive->files->listFiles([
+            'q' => $query,
+            'fields' => 'files(id,name)',
+        ]);
+
+        if (count($folders->getFiles()) > 0) {
+            return $folders->getFiles()[0]->getId();
         }
 
-
-        return $client;
-
-    }
-
-
-
-
-    public function upload(
-        UploadedFile $file,
-        $category
-    )
-    {
-
-        $drive = new Drive(
-            $this->client()
-        );
-
-
-        // folder kategori
-        $folderId =
-        $this->getOrCreateFolder(
-            $category
-        );
-
-
-
-        $fileMetadata = new DriveFile([
-
-            'name' =>
-            $file->getClientOriginalName(),
-
-            'parents'=>[
-                $folderId
-            ]
-
+        $folderMetadata = new DriveFile([
+            'name' => $folderName,
+            'mimeType' => 'application/vnd.google-apps.folder',
+            'parents' => [$parentFolder],
         ]);
 
-
-
-        $uploaded =
-        $drive->files->create(
-
-            $fileMetadata,
-
+        $folder = $drive->files->create(
+            $folderMetadata,
             [
-
-                'data'=>
-                file_get_contents(
-                    $file->getRealPath()
-                ),
-
-                'mimeType'=>
-                $file->getMimeType(),
-
-                'uploadType'=>
-                'multipart',
-
-                'fields'=>
-                'id,name'
-
+                'fields' => 'id',
             ]
-
         );
 
-
-        return $uploaded;
-
+        return $folder->getId();
     }
 
-
-
-
-    public function getOrCreateFolder($name)
+    /**
+     * Hapus file dari Google Drive
+     */
+    public function delete($fileId)
     {
+        $drive = new Drive($this->client());
 
-        $drive = new Drive(
-            $this->client()
-        );
-
-
-        $search =
-        $drive->files->listFiles([
-
-
-            'q'=>
-            "name='$name'
-            and mimeType='application/vnd.google-apps.folder'
-            and trashed=false",
-
-
-            'fields'=>
-            'files(id,name)'
-
-        ]);
-
-
-
-        if(count($search->files) > 0)
-        {
-
-            return $search->files[0]->id;
-
+        try {
+            $drive->files->delete($fileId);
+        } catch (\Exception $e) {
+            // Abaikan jika file sudah tidak ada
         }
-
-
-
-        $folder = new DriveFile([
-
-
-            'name'=>$name,
-
-
-            'mimeType'=>
-            'application/vnd.google-apps.folder',
-
-
-            'parents'=>[
-
-                env('GOOGLE_DRIVE_FOLDER_ID')
-
-            ]
-
-        ]);
-
-
-
-        $created =
-        $drive->files->create(
-
-            $folder,
-
-            [
-                'fields'=>'id'
-            ]
-
-        );
-
-
-        return $created->id;
-
     }
-
-
-
-
-
-    public function delete($id)
-    {
-
-        $drive =
-        new Drive(
-            $this->client()
-        );
-
-
-        $drive->files->delete($id);
-
-    }
-
-
 }
