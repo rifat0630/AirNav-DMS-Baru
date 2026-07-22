@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AirNav DMS - Create Account</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#eeefff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "background": "#f7f9fd",
+                        "outline": "#737686",
+                        "inverse-primary": "#b4c5ff",
+                        "on-tertiary-container": "#e4f2ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface-container": "#eceef2",
+                        "inverse-on-surface": "#eff1f5",
+                        "secondary": "#505f76",
+                        "tertiary-fixed-dim": "#89ceff",
+                        "inverse-surface": "#2d3134",
+                        "surface-dim": "#d8dade",
+                        "outline-variant": "#c3c6d7",
+                        "surface-variant": "#e0e3e6",
+                        "tertiary-fixed": "#c9e6ff",
+                        "on-tertiary-fixed-variant": "#004c6e",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary-fixed": "#dbe1ff",
+                        "error": "#ba1a1a",
+                        "primary-container": "#2563eb",
+                        "surface-container-highest": "#e0e3e6",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "surface-container-high": "#e6e8ec",
+                        "secondary-fixed": "#d3e4fe",
+                        "primary": "#004ac6",
+                        "on-surface": "#181c1f",
+                        "on-background": "#181c1f",
+                        "secondary-container": "#d0e1fb",
+                        "tertiary-container": "#0074a6",
+                        "on-secondary-container": "#54647a",
+                        "surface-bright": "#f7f9fd",
+                        "surface-container-low": "#f2f4f8",
+                        "on-tertiary-fixed": "#001e2f",
+                        "on-surface-variant": "#434655",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#005a82",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface": "#f7f9fd",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "3xl": "64px",
+                        "container-max": "1440px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "2xl": "48px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "unit": "8px",
+                        "lg": "24px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .floating-input:focus-within label,
+        .floating-input input:not(:placeholder-shown) + label {
+            transform: translateY(-50%) scale(0.85);
+            top: 0;
+            background-color: white;
+            padding: 0 4px;
+            color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-hidden flex flex-col md:flex-row">
+<!-- Left Side: Branding & Illustration -->
+<div class="hidden md:flex flex-col w-[45%] relative bg-gradient-to-br from-primary-container to-tertiary text-on-primary justify-center items-center p-2xl overflow-hidden">
+<!-- Abstract Wave Divider -->
+<div class="absolute right-0 top-0 bottom-0 w-[100px] z-10 pointer-events-none mix-blend-overlay opacity-30" data-alt="Abstract subtle dark wave pattern serving as a visual divider between sections, high-end minimalist SaaS aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLv7n6809oTM9T5ULHqGCP5n5VVlx6OH1d2A1UkP7H12NANASwFOLqSi_atQ0gV7L4i8K0X8PeHUr0DEFJBn5pEAY19PUMBcr-rMgmvR63NZLx2TMk6WlJKzO0kLJMD8DSDmboroJY5UrDM1QnhAqG7jTRX3tgaoFM5geslOu4jcPhxg49ZOTZMIv3YZaG-WxcipijPNDz74rrOblBNcEYUzXUtfWdZi_UFpyrGRXlrbWxsOV3wqTj2XMA'); background-size: cover; background-position: right center;"></div>
+<div class="z-20 flex flex-col items-center max-w-md animate-fade-in-up" style="animation-delay: 0.2s;">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-[48px] text-primary-fixed">flight_takeoff</span>
+<h1 class="font-display-lg text-display-lg text-primary-fixed">AirNav DMS</h1>
+</div>
+<p class="font-body-lg text-body-lg text-primary-fixed-dim text-center mb-2xl">
+                Enterprise-grade aviation document management. Precision, speed, and absolute control over your critical data.
+            </p>
+<div class="w-full relative aspect-square max-w-[400px]">
+<img alt="3D illustration of a glowing blue cloud computing node with aviation elements" class="w-full h-full object-contain filter drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcYOOfOcQjpWDoVzWjg6inGrLKkbBl2d3avRXcPYSBixMQWTtQnS3B-9dXr26A1fMU8WPV9we176fjebAGn_Sb-gEyzCu1zCY9O5d80QN0ztxURmN3Nd24hhcYZ7PFOMQ4NgEJ_Ak2ETa045fy7d3JM5WYPTaXjlM2Dm95SoCSTpz5jTk6G8k88pVE-VRVDU_-JDLDP_rDiZTAdD28j5szd9E2EOfsSbMYB8C8xtqy5uovkQnkdv5A11JQI3duTneSQJInfG6y2c0"/>
+</div>
+</div>
+<!-- Ambient Background Glows -->
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-fixed blur-[120px] opacity-20 pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-tertiary-fixed blur-[120px] opacity-20 pointer-events-none"></div>
+</div>
+<!-- Right Side: Registration Form -->
+<div class="w-full md:w-[55%] flex items-center justify-center p-md md:p-2xl bg-surface relative z-20">
+<div class="w-full max-w-[480px] bg-surface-container-lowest rounded-[20px] p-lg md:p-2xl shadow-[0px_8px_24px_rgba(15,23,42,0.08)] border border-outline-variant animate-fade-in-up" style="animation-delay: 0.1s;">
+<div class="mb-xl text-center md:text-left">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Create Account</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Join AirNav Document Management System</p>
+</div>
+<form class="space-y-lg">
+<!-- Full Name -->
+<div class="relative floating-input group">
+<div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">person</span>
+</div>
+<input class="block w-full pl-3xl pr-md py-sm h-[48px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md text-body-md" id="fullName" placeholder=" " type="text"/>
+<label class="absolute left-3xl top-1/2 -translate-y-1/2 text-outline font-label-md text-label-md transition-all duration-200 pointer-events-none" for="fullName">Full Name</label>
+</div>
+<!-- Email -->
+<div class="relative floating-input group">
+<div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">mail</span>
+</div>
+<input class="block w-full pl-3xl pr-md py-sm h-[48px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md text-body-md" id="email" placeholder=" " type="email"/>
+<label class="absolute left-3xl top-1/2 -translate-y-1/2 text-outline font-label-md text-label-md transition-all duration-200 pointer-events-none" for="email">Email Address</label>
+</div>
+<!-- Username -->
+<div class="relative floating-input group">
+<div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">alternate_email</span>
+</div>
+<input class="block w-full pl-3xl pr-md py-sm h-[48px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md text-body-md" id="username" placeholder=" " type="text"/>
+<label class="absolute left-3xl top-1/2 -translate-y-1/2 text-outline font-label-md text-label-md transition-all duration-200 pointer-events-none" for="username">Username</label>
+</div>
+<!-- Password -->
+<div class="relative floating-input group">
+<div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">lock</span>
+</div>
+<input class="block w-full pl-3xl pr-12 py-sm h-[48px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md text-body-md" id="password" placeholder=" " type="password"/>
+<label class="absolute left-3xl top-1/2 -translate-y-1/2 text-outline font-label-md text-label-md transition-all duration-200 pointer-events-none" for="password">Password</label>
+<button class="absolute inset-y-0 right-0 pr-md flex items-center text-outline hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+<!-- Confirm Password -->
+<div class="relative floating-input group">
+<div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">lock_reset</span>
+</div>
+<input class="block w-full pl-3xl pr-12 py-sm h-[48px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md text-body-md" id="confirmPassword" placeholder=" " type="password"/>
+<label class="absolute left-3xl top-1/2 -translate-y-1/2 text-outline font-label-md text-label-md transition-all duration-200 pointer-events-none" for="confirmPassword">Confirm Password</label>
+</div>
+<!-- Terms & Conditions -->
+<div class="flex items-start gap-sm mt-md">
+<div class="flex items-center h-5">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20 bg-surface-container-lowest mt-[2px]" id="terms" type="checkbox"/>
+</div>
+<label class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer" for="terms">
+                        I accept the <a class="text-primary hover:underline font-medium" href="#">Terms of Service</a> and <a class="text-primary hover:underline font-medium" href="#">Privacy Policy</a>
+</label>
+</div>
+<!-- Action Button -->
+<div class="pt-sm">
+<button class="w-full flex items-center justify-center gap-sm bg-gradient-to-r from-primary to-primary-container text-on-primary h-[48px] rounded-full font-label-md text-label-md shadow-md hover:shadow-lg hover:-translate-y-[1px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" type="button">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+                        Create Account
+                    </button>
+</div>
+</form>
+<!-- Footer Link -->
+<div class="mt-xl text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Already have an account? 
+                    <a class="font-label-md text-label-md text-primary hover:text-primary-container hover:underline ml-xs transition-colors" href="#">Sign In</a>
+</p>
+</div>
+</div>
+</div>
+</body></html>

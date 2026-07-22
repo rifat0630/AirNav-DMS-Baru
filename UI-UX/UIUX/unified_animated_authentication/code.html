@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AirNav DMS - Authentication</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c3c6d7",
+                        "on-surface": "#181c1f",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#004c6e",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "inverse-surface": "#2d3134",
+                        "surface-container-highest": "#e0e3e6",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-background": "#181c1f",
+                        "background": "#f7f9fd",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d8dade",
+                        "surface-variant": "#e0e3e6",
+                        "primary-container": "#2563eb",
+                        "tertiary": "#005a82",
+                        "on-secondary-container": "#54647a",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed-dim": "#89ceff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-surface-variant": "#434655",
+                        "on-tertiary-fixed": "#001e2f",
+                        "surface": "#f7f9fd",
+                        "inverse-on-surface": "#eff1f5",
+                        "surface-container-low": "#f2f4f8",
+                        "on-primary-fixed": "#00174b",
+                        "outline": "#737686",
+                        "tertiary-container": "#0074a6",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#c9e6ff",
+                        "surface-tint": "#0053db",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-container": "#e4f2ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#f7f9fd",
+                        "secondary-container": "#d0e1fb",
+                        "surface-container-high": "#e6e8ec",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#eeefff",
+                        "on-error-container": "#93000a",
+                        "primary": "#004ac6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eceef2",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "inverse-primary": "#b4c5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "3xl": "64px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "2xl": "48px",
+                        "container-max": "1440px",
+                        "sm": "8px",
+                        "unit": "8px",
+                        "xl": "32px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .transition-transform-layout {
+            transition: transform 850ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .fade-slide-enter {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .fade-slide-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 500ms ease-out 300ms, transform 500ms ease-out 300ms;
+        }
+        
+        .fade-slide-exit {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .fade-slide-exit-active {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 300ms ease-in, transform 300ms ease-in;
+        }
+
+        .rotate-infinite {
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .airplane-fly {
+            transition: transform 850ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .airplane-state-login {
+            transform: translate(0, 0) scale(1);
+        }
+
+        .airplane-state-register {
+            transform: translate(-100px, -50px) scale(0.9) rotate(-15deg);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden h-screen w-full relative">
+<div class="relative w-full h-full flex flex-col md:flex-row overflow-hidden" id="auth-container">
+<!-- Side A: Illustration Panel -->
+<div class="transition-transform-layout absolute md:relative z-10 w-full h-[40%] md:h-full md:w-[45%] bg-gradient-to-br from-primary to-tertiary overflow-hidden shadow-2xl flex items-center justify-center" id="side-a">
+<!-- Radar Background -->
+<div class="absolute inset-0 opacity-20 pointer-events-none flex items-center justify-center rotate-infinite">
+<svg class="w-[800px] h-[800px] text-white" fill="none" stroke="currentColor" viewbox="0 0 400 400">
+<circle cx="200" cy="200" r="150" stroke-dasharray="4 4" stroke-width="1"></circle>
+<circle cx="200" cy="200" r="100" stroke-width="1"></circle>
+<circle cx="200" cy="200" r="50" stroke-dasharray="2 6" stroke-width="1"></circle>
+<line stroke-width="1" x1="200" x2="200" y1="50" y2="350"></line>
+<line stroke-width="1" x1="50" x2="350" y1="200" y2="200"></line>
+</svg>
+</div>
+<!-- Airplane Asset -->
+<img class="absolute airplane-fly airplane-state-login object-contain w-3/4 max-w-lg z-20 pointer-events-none drop-shadow-2xl" data-alt="A sleek, modern commercial airplane wing cutting through bright, fluffy white clouds against a vibrant, light blue sky with subtle, futuristic radar overlay graphics. The lighting is high-key and optimistic, representing precision and control in an aviation context." id="airplane-asset" src="https://lh3.googleusercontent.com/aida/AP1WRLtQqiAR-usTUZiBL3QelSYRb4-xHJbOnn9CurvH0hlWdNboVFEgWRo4m591FnqQKbs9RAxy7sUpwrxY-nYVtFBPm8UInCXdIOIsW6tOhGCt4SwxQGTZZ5sKqpFnrV8qe9hMYdqdhGp8g9rNikZAwsvoYF5p4PzbuhCXDOZhhu-uhZ4zyGR6Wwh46g-8YRiNd8CcdYOzsROUjn_Z67kNZnudSaiadHVVVRnzpKGw3nWCxAfwJrnRNNlegws"/>
+<div class="absolute bottom-10 left-10 text-white z-30 hidden md:block">
+<h2 class="font-display-lg text-display-lg mb-sm">AirNav DMS</h2>
+<p class="font-body-lg text-body-lg text-white/80">Enterprise Control. Precision Delivered.</p>
+</div>
+</div>
+<!-- Side B: Form Panel -->
+<div class="transition-transform-layout absolute md:relative z-20 w-full h-[60%] top-[40%] md:top-0 md:h-full md:w-[55%] left-0 md:left-[45%] flex items-center justify-center p-margin-mobile md:p-margin-desktop bg-surface rounded-t-3xl md:rounded-none" id="side-b">
+<div class="w-full max-w-md bg-surface-container-lowest p-xl rounded-2xl border border-outline-variant shadow-[0px_4px_24px_rgba(15,23,42,0.08)] relative overflow-hidden">
+<!-- Login Form -->
+<div class="w-full transition-opacity duration-300" id="form-login">
+<div class="mb-lg">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Welcome Back</h1>
+<p class="font-body-md text-body-md text-secondary">Sign in to access your dashboard.</p>
+</div>
+<form class="space-y-md" onsubmit="event.preventDefault();">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">mail</span>
+<input class="w-full h-10 pl-10 pr-3 rounded border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface-container-lowest font-body-md text-body-md text-on-surface transition-all" placeholder="name@airnav.com" type="email"/>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Password</label>
+<a class="font-label-sm text-label-sm text-primary hover:text-primary-fixed-variant transition-colors" href="#">Forgot Password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full h-10 pl-10 pr-3 rounded border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface-container-lowest font-body-md text-body-md text-on-surface transition-all" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<div class="flex items-center">
+<input class="rounded border-outline-variant text-primary focus:ring-primary/20" id="remember" type="checkbox"/>
+<label class="ml-2 font-body-sm text-body-sm text-secondary" for="remember">Remember me</label>
+</div>
+<button class="w-full h-10 bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-md text-label-md rounded transition-colors mt-lg shadow-sm">
+                            Sign In
+                        </button>
+</form>
+<p class="mt-lg text-center font-body-sm text-body-sm text-secondary">
+                        Don't have an account? <button class="text-primary font-label-md hover:underline" id="btn-to-register">Create Account</button>
+</p>
+</div>
+<!-- Register Form (Hidden initially) -->
+<div class="w-full hidden opacity-0 absolute top-xl left-xl right-xl" id="form-register">
+<div class="mb-lg">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Create Account</h1>
+<p class="font-body-md text-body-md text-secondary">Join AirNav DMS today.</p>
+</div>
+<form class="space-y-sm" onsubmit="event.preventDefault();">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">Full Name</label>
+<input class="w-full h-10 px-3 rounded border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface-container-lowest font-body-sm text-body-sm text-on-surface transition-all" placeholder="John Doe" type="text"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">Email</label>
+<input class="w-full h-10 px-3 rounded border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface-container-lowest font-body-sm text-body-sm text-on-surface transition-all" placeholder="john@airnav.com" type="email"/>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">Password</label>
+<input class="w-full h-10 px-3 rounded border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface-container-lowest font-body-sm text-body-sm text-on-surface transition-all" placeholder="••••••••" type="password"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">Confirm</label>
+<input class="w-full h-10 px-3 rounded border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface-container-lowest font-body-sm text-body-sm text-on-surface transition-all" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<div class="flex items-center pt-xs">
+<input class="rounded border-outline-variant text-primary focus:ring-primary/20" id="terms" type="checkbox"/>
+<label class="ml-2 font-body-sm text-body-sm text-secondary" for="terms">I agree to Terms &amp; Conditions</label>
+</div>
+<button class="w-full h-10 bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-md text-label-md rounded transition-colors mt-md shadow-sm">
+                            Create Account
+                        </button>
+</form>
+<p class="mt-md text-center font-body-sm text-body-sm text-secondary">
+                        Already have an account? <button class="text-primary font-label-md hover:underline" id="btn-to-login">Sign In</button>
+</p>
+</div>
+</div>
+</div>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sideA = document.getElementById('side-a');
+            const sideB = document.getElementById('side-b');
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+            const airplaneAsset = document.getElementById('airplane-asset');
+            
+            const btnToRegister = document.getElementById('btn-to-register');
+            const btnToLogin = document.getElementById('btn-to-login');
+
+            let isDesktop = window.innerWidth >= 768;
+            window.addEventListener('resize', () => {
+                isDesktop = window.innerWidth >= 768;
+                // Reset transforms on resize for simplicity in this demo
+                sideA.style.transform = '';
+                sideB.style.transform = '';
+            });
+
+            function toggleView(toRegister) {
+                if (isDesktop) {
+                    if (toRegister) {
+                        sideA.style.transform = 'translateX(122.22%)'; // 55 / 45 approx
+                        sideB.style.transform = 'translateX(-81.81%)'; // 45 / 55 approx
+                        airplaneAsset.classList.remove('airplane-state-login');
+                        airplaneAsset.classList.add('airplane-state-register');
+                    } else {
+                        sideA.style.transform = 'translateX(0)';
+                        sideB.style.transform = 'translateX(0)';
+                        airplaneAsset.classList.add('airplane-state-login');
+                        airplaneAsset.classList.remove('airplane-state-register');
+                    }
+                } else {
+                     // Mobile simple fade or slight vertical shift logic could go here
+                }
+
+                // Form fade logic
+                if (toRegister) {
+                    formLogin.style.opacity = '0';
+                    setTimeout(() => {
+                        formLogin.classList.add('hidden');
+                        formRegister.classList.remove('hidden');
+                        // Small delay to allow display block to apply before opacity transition
+                        setTimeout(() => {
+                            formRegister.style.opacity = '1';
+                        }, 50);
+                    }, 300);
+                } else {
+                    formRegister.style.opacity = '0';
+                    setTimeout(() => {
+                        formRegister.classList.add('hidden');
+                        formLogin.classList.remove('hidden');
+                        setTimeout(() => {
+                            formLogin.style.opacity = '1';
+                        }, 50);
+                    }, 300);
+                }
+            }
+
+            btnToRegister.addEventListener('click', () => toggleView(true));
+            btnToLogin.addEventListener('click', () => toggleView(false));
+        });
+    </script>
+</body></html>

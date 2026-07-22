@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AirNav DMS - Upload</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#f7f9fd",
+                      "on-primary-container": "#eeefff",
+                      "surface-dim": "#d8dade",
+                      "on-error": "#ffffff",
+                      "tertiary": "#005a82",
+                      "secondary": "#505f76",
+                      "secondary-container": "#d0e1fb",
+                      "surface-container-high": "#e6e8ec",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#e0e3e6",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed-dim": "#89ceff",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-surface": "#2d3134",
+                      "on-background": "#181c1f",
+                      "on-tertiary-container": "#e4f2ff",
+                      "surface-bright": "#f7f9fd",
+                      "outline": "#737686",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "error-container": "#ffdad6",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-fixed": "#0b1c30",
+                      "outline-variant": "#c3c6d7",
+                      "inverse-on-surface": "#eff1f5",
+                      "error": "#ba1a1a",
+                      "surface-container": "#eceef2",
+                      "surface-variant": "#e0e3e6",
+                      "background": "#f7f9fd",
+                      "inverse-primary": "#b4c5ff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "tertiary-fixed": "#c9e6ff",
+                      "primary-fixed": "#dbe1ff",
+                      "primary": "#004ac6",
+                      "on-primary-fixed": "#00174b",
+                      "surface-container-low": "#f2f4f8",
+                      "on-surface": "#181c1f",
+                      "secondary-fixed": "#d3e4fe",
+                      "primary-container": "#2563eb",
+                      "tertiary-container": "#0074a6",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "on-tertiary-fixed": "#001e2f",
+                      "on-secondary-container": "#54647a",
+                      "on-tertiary-fixed-variant": "#004c6e",
+                      "on-surface-variant": "#434655",
+                      "surface-tint": "#0053db"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "md": "16px",
+                      "margin-desktop": "32px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "2xl": "48px",
+                      "3xl": "64px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "unit": "8px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased h-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<nav class="hidden md:flex fixed left-0 top-0 h-full w-[280px] bg-surface border-r border-outline-variant flex-col py-xl z-50">
+<div class="px-lg mb-xl flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">flight_takeoff</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">AirNav DMS</h1>
+<p class="font-label-sm text-label-sm text-secondary">Enterprise Control</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto flex flex-col gap-sm mt-md">
+<a class="flex items-center gap-md text-secondary px-lg py-md hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-secondary px-lg py-md hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-md text-body-md">Documents</span>
+</a>
+<a class="flex items-center gap-md bg-secondary-container text-primary border-l-4 border-primary px-lg py-md scale-[0.99] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_upload</span>
+<span class="font-body-md text-body-md font-medium">Upload</span>
+</a>
+<a class="flex items-center gap-md text-secondary px-lg py-md hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="font-body-md text-body-md">Categories</span>
+</a>
+<a class="flex items-center gap-md text-secondary px-lg py-md hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Users</span>
+</a>
+<a class="flex items-center gap-md text-secondary px-lg py-md hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-body-md text-body-md">Activity Log</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-sm border-t border-outline-variant pt-md">
+<a class="flex items-center gap-md text-secondary px-lg py-md hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-md text-secondary px-lg py-md hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md text-body-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-[280px] h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full h-20 px-margin-desktop sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<!-- Mobile Menu Button -->
+<button class="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors focus:ring-2 focus:ring-primary/20 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden md:flex relative w-64 lg:w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-10 pl-10 pr-4 bg-surface-container-lowest border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search documents..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors focus:ring-2 focus:ring-primary/20 rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors focus:ring-2 focus:ring-primary/20 rounded-full">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant cursor-pointer focus:ring-2 focus:ring-primary/20 transition-all shrink-0">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A clean, professional headshot of an aviation document controller in a bright modern office setting. The lighting is soft and even, typical of high-end corporate environments. The color palette is neutral with subtle hints of AirNav Blue in the background to maintain brand consistency. The mood is focused and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKl4CIMpYVfKyLeD9xOQZwtTwsBNHZKxIYRWxcaL_OO4UQPYGYWCmPWmUEDLia6zKAV6lytCSDq_FgZAt48Mp49GiRZ7SSgoY7VjfSpL16pOcBNlfOpBwdD_4XKcVlZihntUixqnuqaDp0amR691IUw23BRAkl97PFBfvGlqjavjUjuWYCr-fXlhK1gvRuwuYk124xWT1FLCszD5tZpboWAPvN6YoBBjQPfkaysZjauBC5_Kf-UHF2EYqRD3tYaFMa73tmYopkF8U"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop">
+<div class="max-w-4xl mx-auto">
+<div class="mb-xl">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Upload Document</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">Securely add new manuals, procedures, or records to the DMS repository.</p>
+</div>
+<!-- Central Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg md:p-xl shadow-sm">
+<!-- Drag and Drop Area -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-low/50 hover:bg-surface-container-low hover:border-primary transition-colors duration-300 p-xl flex flex-col items-center justify-center text-center cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center mb-md group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-3xl text-primary" style="font-variation-settings: 'FILL' 1;">cloud_upload</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Drag &amp; Drop files here</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">or <span class="text-primary font-medium hover:underline">browse files</span> from your computer</p>
+<p class="font-label-sm text-label-sm text-secondary">Supported formats: PDF, DOCX, XLSX (Max size: 50MB)</p>
+</div>
+<!-- File Preview (Hidden by default, shown for example) -->
+<div class="mt-lg hidden">
+<div class="flex items-center justify-between p-md bg-surface-container rounded-lg border border-outline-variant">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary text-2xl">picture_as_pdf</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">A320_Flight_Crew_Operating_Manual_v3.pdf</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">12.4 MB</p>
+</div>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<!-- Upload Progress -->
+<div class="mt-sm px-1">
+<div class="flex justify-between font-label-sm text-label-sm text-secondary mb-xs">
+<span>Uploading...</span>
+<span>45%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+</div>
+<hr class="border-outline-variant my-xl"/>
+<!-- Metadata Form -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Floating Label Input: Title -->
+<div class="relative w-full md:col-span-2 group">
+<input class="peer w-full h-12 pt-4 pb-1 px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder-transparent" id="doc_title" placeholder="Document Title" type="text"/>
+<label class="absolute left-4 top-1 text-xs text-on-surface-variant transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-placeholder-shown:text-on-surface-variant/70 peer-focus:top-1 peer-focus:text-xs peer-focus:text-primary pointer-events-none" for="doc_title">Document Title *</label>
+</div>
+<!-- Category Dropdown -->
+<div class="relative w-full group">
+<select class="peer w-full h-12 pt-4 pb-1 px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer" id="doc_category">
+<option disabled="" selected="" value=""></option>
+<option value="manuals">Flight Manuals</option>
+<option value="procedures">Standard Operating Procedures</option>
+<option value="records">Maintenance Records</option>
+<option value="training">Training Materials</option>
+</select>
+<label class="absolute left-4 top-1 text-xs text-on-surface-variant transition-all peer-focus:text-primary pointer-events-none" for="doc_category">Category *</label>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<!-- Visibility Dropdown -->
+<div class="relative w-full group">
+<select class="peer w-full h-12 pt-4 pb-1 px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer" id="doc_visibility">
+<option selected="" value="internal">Internal Only</option>
+<option value="confidential">Confidential</option>
+<option value="public">Public</option>
+</select>
+<label class="absolute left-4 top-1 text-xs text-on-surface-variant transition-all peer-focus:text-primary pointer-events-none" for="doc_visibility">Visibility Rating</label>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<!-- Floating Label Input: Description -->
+<div class="relative w-full md:col-span-2 group">
+<textarea class="peer w-full pt-6 pb-2 px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder-transparent resize-none" id="doc_desc" placeholder="Description" rows="3"></textarea>
+<label class="absolute left-4 top-2 text-xs text-on-surface-variant transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-placeholder-shown:text-on-surface-variant/70 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary pointer-events-none" for="doc_desc">Brief Description (Optional)</label>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="mt-xl flex justify-end gap-md">
+<button class="px-6 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-200">
+                            Cancel
+                        </button>
+<button class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-primary to-primary-container text-on-primary font-label-md text-label-md shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-200 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">upload</span>
+                            Upload Document
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
