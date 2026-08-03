@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AirNav Indonesia - Authentication</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            airnav: {
+              DEFAULT: '#0057D9',
+              50: '#eef5ff',
+              100: '#d9e7ff',
+              500: '#0057D9',
+              600: '#0047b3',
+              700: '#00368c',
+            }
+          },
+          transitionTimingFunction: {
+            'custom-bezier': 'cubic-bezier(0.65, 0, 0.35, 1)',
+          },
+          transitionDuration: {
+            '850': '850ms',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="animations">
+    /* Base layout transitions */
+    .layout-transition {
+      transition: all 850ms cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    /* Floating input labels */
+    .floating-input:focus-within label,
+    .floating-input input:not(:placeholder-shown) + label {
+      transform: translateY(-120%) scale(0.85);
+      color: #0057D9;
+    }
+
+    /* Airplane path animation */
+    .airplane-login {
+      transform: translate(10%, -5%) scale(1);
+    }
+    .airplane-register {
+      transform: translate(90%, -15%) scale(0.9) rotateY(180deg);
+    }
+
+    /* Card positioning */
+    .card-login {
+      transform: translateX(0);
+      left: 60%;
+    }
+    .card-register {
+      transform: translateX(0);
+      left: 10%;
+    }
+
+    /* Form fade */
+    .form-pane {
+      transition: opacity 400ms ease-in-out, transform 850ms cubic-bezier(0.65, 0, 0.35, 1);
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+    }
+    .form-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(20px);
+    }
+    .form-active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+      position: relative;
+    }
+
+    /* Background and wave */
+    .bg-gradient-sky {
+      background: linear-gradient(135deg, #f0f7ff 0%, #e0efff 100%);
+    }
+    
+    .wave-divider {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      object-fit: cover;
+      transition: transform 850ms cubic-bezier(0.65, 0, 0.35, 1);
+      opacity: 0.15;
+    }
+    .wave-login {
+      transform: translateX(0);
+    }
+    .wave-register {
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+<body class="bg-gradient-sky overflow-hidden h-screen w-full font-sans text-slate-800">
+<!-- BEGIN: Main Container -->
+<main class="relative w-full h-full flex items-center justify-center overflow-hidden" id="app-container">
+<!-- Background Wave -->
+<img alt="Wave" class="wave-divider wave-login" id="wave-bg" src="https://lh3.googleusercontent.com/aida/AP1WRLv7n6809oTM9T5ULHqGCP5n5VVlx6OH1d2A1UkP7H12NANASwFOLqSi_atQ0gV7L4i8K0X8PeHUr0DEFJBn5pEAY19PUMBcr-rMgmvR63NZLx2TMk6WlJKzO0kLJMD8DSDmboroJY5UrDM1QnhAqG7jTRX3tgaoFM5geslOu4jcPhxg49ZOTZMIv3YZaG-WxcipijPNDz74rrOblBNcEYUzXUtfWdZi_UFpyrGRXlrbWxsOV3wqTj2XMA"/>
+<!-- Hero Airplane Image -->
+<div class="absolute w-[800px] z-10 layout-transition airplane-login" id="hero-plane">
+<img alt="Aircraft Wing" class="w-full h-auto object-contain drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida/AP1WRLtQqiAR-usTUZiBL3QelSYRb4-xHJbOnn9CurvH0hlWdNboVFEgWRo4m591FnqQKbs9RAxy7sUpwrxY-nYVtFBPm8UInCXdIOIsW6tOhGCt4SwxQGTZZ5sKqpFnrV8qe9hMYdqdhGp8g9rNikZAwsvoYF5p4PzbuhCXDOZhhu-uhZ4zyGR6Wwh46g-8YRiNd8CcdYOzsROUjn_Z67kNZnudSaiadHVVVRnzpKGw3nWCxAfwJrnRNNlegws"/>
+</div>
+<!-- Auth Card Container -->
+<div class="absolute z-20 w-full max-w-[420px] bg-white/90 backdrop-blur-xl p-10 shadow-[0_20px_50px_rgba(0,87,217,0.15)] border border-white/50 layout-transition card-login rounded-[28px]" id="auth-card">
+<!-- BEGIN: Login Form -->
+<div class="form-pane form-active" id="login-form">
+<div class="mb-8 text-center">
+<div class="w-12 h-12 bg-airnav-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-airnav-500">
+<i data-lucide="plane-takeoff"></i>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 mb-2">Welcome Back</h2>
+<p class="text-sm text-slate-500">Sign in to access the AirNav Document Management System.</p>
+</div>
+<form class="space-y-5" onsubmit="event.preventDefault();">
+<div class="relative floating-input bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-airnav-500 focus-within:ring-1 focus-within:ring-airnav-500 transition-all">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+<i class="w-5 h-5" data-lucide="mail"></i>
+</div>
+<input class="block w-full pl-11 pr-4 py-4 bg-transparent border-none rounded-2xl text-slate-900 focus:ring-0 placeholder-transparent" id="login-email" placeholder="Email Address" type="email"/>
+<label class="absolute left-11 top-4 text-slate-500 transition-all origin-left pointer-events-none" for="login-email">Email Address</label>
+</div>
+<div class="relative floating-input bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-airnav-500 focus-within:ring-1 focus-within:ring-airnav-500 transition-all">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+<i class="w-5 h-5" data-lucide="lock"></i>
+</div>
+<input class="block w-full pl-11 pr-4 py-4 bg-transparent border-none rounded-2xl text-slate-900 focus:ring-0 placeholder-transparent" id="login-password" placeholder="Password" type="password"/>
+<label class="absolute left-11 top-4 text-slate-500 transition-all origin-left pointer-events-none" for="login-password">Password</label>
+</div>
+<div class="flex items-center justify-between text-sm">
+<label class="flex items-center text-slate-600 cursor-pointer">
+<input class="rounded text-airnav-500 focus:ring-airnav-500 mr-2 border-slate-300" type="checkbox"/>
+              Remember me
+            </label>
+<a class="text-airnav-500 font-medium hover:text-airnav-600" href="#">Forgot password?</a>
+</div>
+<button class="w-full bg-airnav-500 hover:bg-airnav-600 text-white font-semibold py-4 rounded-2xl transition-colors shadow-lg shadow-airnav-500/30" type="submit">
+            Sign In
+          </button>
+</form>
+<p class="mt-6 text-center text-sm text-slate-600">
+          Don't have an account? 
+          <button class="text-airnav-500 font-semibold hover:underline" onclick="toggleAuthMode()">Create Account</button>
+</p>
+</div>
+<!-- END: Login Form -->
+<!-- BEGIN: Register Form -->
+<div class="form-pane form-hidden" id="register-form">
+<div class="mb-8 text-center">
+<div class="w-12 h-12 bg-airnav-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-airnav-500">
+<i data-lucide="user-plus"></i>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 mb-2">Create Account</h2>
+<p class="text-sm text-slate-500">Join AirNav Document Management System.</p>
+</div>
+<form class="space-y-4" onsubmit="event.preventDefault();">
+<div class="relative floating-input bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-airnav-500 focus-within:ring-1 focus-within:ring-airnav-500 transition-all">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+<i class="w-5 h-5" data-lucide="user"></i>
+</div>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-transparent border-none rounded-2xl text-slate-900 focus:ring-0 placeholder-transparent" id="reg-name" placeholder="Full Name" type="text"/>
+<label class="absolute left-11 top-3.5 text-slate-500 transition-all origin-left pointer-events-none" for="reg-name">Full Name</label>
+</div>
+<div class="relative floating-input bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-airnav-500 focus-within:ring-1 focus-within:ring-airnav-500 transition-all">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+<i class="w-5 h-5" data-lucide="mail"></i>
+</div>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-transparent border-none rounded-2xl text-slate-900 focus:ring-0 placeholder-transparent" id="reg-email" placeholder="Email Address" type="email"/>
+<label class="absolute left-11 top-3.5 text-slate-500 transition-all origin-left pointer-events-none" for="reg-email">Email Address</label>
+</div>
+<div class="relative floating-input bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-airnav-500 focus-within:ring-1 focus-within:ring-airnav-500 transition-all">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+<i class="w-5 h-5" data-lucide="lock"></i>
+</div>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-transparent border-none rounded-2xl text-slate-900 focus:ring-0 placeholder-transparent" id="reg-password" placeholder="Password" type="password"/>
+<label class="absolute left-11 top-3.5 text-slate-500 transition-all origin-left pointer-events-none" for="reg-password">Password</label>
+</div>
+<button class="w-full bg-airnav-500 hover:bg-airnav-600 text-white font-semibold py-4 mt-2 rounded-2xl transition-colors shadow-lg shadow-airnav-500/30" type="submit">
+            Create Account
+          </button>
+</form>
+<p class="mt-6 text-center text-sm text-slate-600">
+          Already have an account? 
+          <button class="text-airnav-500 font-semibold hover:underline" onclick="toggleAuthMode()">Sign In</button>
+</p>
+</div>
+<!-- END: Register Form -->
+</div>
+</main>
+<!-- END: Main Container -->
+<script data-purpose="interactions">
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    let isLogin = true;
+
+    function toggleAuthMode() {
+      isLogin = !isLogin;
+      
+      const plane = document.getElementById('hero-plane');
+      const card = document.getElementById('auth-card');
+      const wave = document.getElementById('wave-bg');
+      
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+
+      if (isLogin) {
+        // Switch to Login Layout
+        plane.classList.remove('airplane-register');
+        plane.classList.add('airplane-login');
+        
+        card.classList.remove('card-register');
+        card.classList.add('card-login');
+        
+        wave.classList.remove('wave-register');
+        wave.classList.add('wave-login');
+
+        registerForm.classList.remove('form-active');
+        registerForm.classList.add('form-hidden');
+        setTimeout(() => {
+          loginForm.classList.remove('form-hidden');
+          loginForm.classList.add('form-active');
+        }, 300);
+
+      } else {
+        // Switch to Register Layout
+        plane.classList.remove('airplane-login');
+        plane.classList.add('airplane-register');
+        
+        card.classList.remove('card-login');
+        card.classList.add('card-register');
+
+        wave.classList.remove('wave-login');
+        wave.classList.add('wave-register');
+
+        loginForm.classList.remove('form-active');
+        loginForm.classList.add('form-hidden');
+        setTimeout(() => {
+          registerForm.classList.remove('form-hidden');
+          registerForm.classList.add('form-active');
+        }, 300);
+      }
+    }
+  </script>
+</body></html>

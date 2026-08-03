@@ -8,9 +8,22 @@ use Illuminate\Support\Facades\Auth;
 
 class FacilityLogbookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $logbooks = FacilityLogbook::with('user')->latest('log_datetime')->get();
+        $query = FacilityLogbook::with('user');
+
+        // Fitur Pencarian (Search)
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('action_notes', 'like', "%{$search}%")
+                  ->orWhere('technicians', 'like', "%{$search}%")
+                  ->orWhere('log_datetime', 'like', "%{$search}%");
+            });
+        }
+
+        $logbooks = $query->latest('log_datetime')->get();
+
         return view('logbook.index', compact('logbooks'));
     }
 

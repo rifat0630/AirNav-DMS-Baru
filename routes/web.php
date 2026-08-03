@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\FacilityLogbookController;
 
 
 /*
@@ -14,6 +15,9 @@ use App\Http\Controllers\GoogleAuthController;
 |--------------------------------------------------------------------------
 */
 
+Route::resource('documents', DocumentController::class);
+
+Route::resource('facility-logbook', FacilityLogbookController::class);
 
 Route::get('/', function () {
     return view('welcome');
@@ -195,7 +199,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-use App\Http\Controllers\FacilityLogbookController;
+
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('logbook', FacilityLogbookController::class)->only(['index', 'store', 'destroy']);
