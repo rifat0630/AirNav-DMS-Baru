@@ -214,6 +214,8 @@ storage/app/google/token.json
 ## 👩‍💻 Pengembang
 
 **An Nisa Putri Cendana**
+**Syfa Aulia Darul Mutmainnah**
+**Muhammad Rifat Alhadi**
 
 Program Studi Teknologi Informasi
 
