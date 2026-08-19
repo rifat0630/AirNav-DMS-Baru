@@ -2,82 +2,177 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+
 use App\Models\Document;
 use App\Models\ActivityLog;
+use App\Models\Technician;
+
+
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
+
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+
+
     protected $fillable = [
+
         'name',
+
         'username',
-        'email' ,
+
+        'email',
+
         'password',
+
+        'role',
+
+        'technician_id',
+
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+
+
+
     protected $hidden = [
+
         'password',
+
         'remember_token',
+
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+
+
+
+
     protected function casts(): array
     {
+
         return [
+
             'email_verified_at' => 'datetime',
+
             'password' => 'hashed',
+
         ];
+
     }
 
-    /**
-     * Relasi ke tabel documents.
-     */
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi Dokumen
+    |--------------------------------------------------------------------------
+    */
+
     public function documents()
     {
-        return $this->hasMany(Document::class);
+
+        return $this->hasMany(
+            Document::class
+        );
+
     }
 
-    /**
-     * Relasi ke tabel activity_logs.
-     */
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi Activity Log
+    |--------------------------------------------------------------------------
+    */
+
     public function activityLogs()
     {
-        return $this->hasMany(ActivityLog::class);
+
+        return $this->hasMany(
+            ActivityLog::class
+        );
+
     }
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Role
+    |--------------------------------------------------------------------------
+    */
+
     public function isAdmin()
-{
-    return $this->role === 'admin';
-}
+    {
 
-public function isTeknisi()
-{
-    return $this->role === 'teknisi';
-}
+        return $this->role === 'admin';
 
-public function isPegawai()
-{
-    return $this->role === 'pegawai';
-}
+    }
+
+
+
+
+
+    public function isTeknisi()
+    {
+
+        return $this->role === 'teknisi';
+
+    }
+
+
+
+
+
+    public function isPegawai()
+    {
+
+        return $this->role === 'pegawai';
+
+    }
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi User ke Teknisi
+    |--------------------------------------------------------------------------
+    */
+
+    public function technician()
+    {
+
+        return $this->belongsTo(
+            Technician::class,
+            'technician_id'
+        );
+
+    }
+
+
+
 }
