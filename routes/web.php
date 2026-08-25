@@ -15,256 +15,278 @@ use App\Http\Controllers\InventoryController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
-
-/*
-|--------------------------------------------------------------------------
-| Halaman Utama
+| HALAMAN UTAMA
 |--------------------------------------------------------------------------
 */
 
 Route::get('/', function () {
+
     return view('welcome');
+
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| Google Drive Authentication
+| GOOGLE DRIVE AUTH
 |--------------------------------------------------------------------------
 */
 
 Route::get(
     '/google/auth',
     [GoogleAuthController::class, 'redirect']
-)->name('google.auth');
+)
+->name('google.auth');
 
 
 Route::get(
     '/google/callback',
     [GoogleAuthController::class, 'callback']
-)->name('google.callback');
+)
+->name('google.callback');
 
 
 /*
 |--------------------------------------------------------------------------
-| TEST GOOGLE DRIVE FOLDER
+| TEST GOOGLE DRIVE
 |--------------------------------------------------------------------------
 */
 
-Route::get('/google/create-folder', function () {
+Route::get(
+    '/google/create-folder',
+    function () {
 
-    $drive = app(
-        \App\Services\GoogleDriveService::class
-    );
+        $drive = app(
+            \App\Services\GoogleDriveService::class
+        );
 
-    $folderId = $drive->createFolder();
+        $folderId = $drive->createFolder();
 
-    return "Folder AirNav DMS berhasil dibuat. ID: " . $folderId;
+        return 'Folder AirNav DMS berhasil dibuat. ID: '
+            . $folderId;
 
-});
+    }
+);
 
 
 /*
 |--------------------------------------------------------------------------
-| AUTHENTICATED ROUTES
+| AUTH + VERIFIED
 |--------------------------------------------------------------------------
 */
 
 Route::middleware([
     'auth',
     'verified'
-])->group(function () {
+])
+->group(function () {
 
 
     /*
     |--------------------------------------------------------------------------
-    | Dashboard
+    | DASHBOARD
     |--------------------------------------------------------------------------
     */
 
     Route::get(
         '/dashboard',
         [DashboardController::class, 'index']
-    )->name('dashboard');
+    )
+    ->name('dashboard');
 
 
     /*
     |--------------------------------------------------------------------------
-    | Documents
+    | DOCUMENT - INDEX
     |--------------------------------------------------------------------------
     */
 
     Route::get(
         '/documents',
         [DocumentController::class, 'index']
-    )->name('documents.index');
+    )
+    ->name('documents.index');
 
 
     /*
     |--------------------------------------------------------------------------
-    | Admin, Teknisi, Pegawai
+    | DOCUMENT - CREATE
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(
-        'role:admin,teknisi,pegawai'
-    )->group(function () {
-
-
-        Route::get(
-            '/documents/create',
-            [DocumentController::class, 'create']
-        )->name('documents.create');
-
-
-        Route::post(
-            '/documents',
-            [DocumentController::class, 'store']
-        )->name('documents.store');
-
-
-        Route::get(
-            '/documents/{document}/edit',
-            [DocumentController::class, 'edit']
-        )->name('documents.edit');
-
-
-        Route::put(
-            '/documents/{document}',
-            [DocumentController::class, 'update']
-        )->name('documents.update');
-
-    });
+    Route::get(
+        '/documents/create',
+        [DocumentController::class, 'create']
+    )
+    ->name('documents.create');
 
 
     /*
     |--------------------------------------------------------------------------
-    | Preview & Download Documents
+    | DOCUMENT - STORE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/documents',
+        [DocumentController::class, 'store']
+    )
+    ->name('documents.store');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOCUMENT - EDIT
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/documents/{document}/edit',
+        [DocumentController::class, 'edit']
+    )
+    ->name('documents.edit');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOCUMENT - UPDATE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::put(
+        '/documents/{document}',
+        [DocumentController::class, 'update']
+    )
+    ->name('documents.update');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOCUMENT - DELETE
+    |--------------------------------------------------------------------------
+    |
+    | PENTING:
+    | Route ini TIDAK memakai role:admin.
+    | Selama user sudah login + verified,
+    | user bisa menghapus dokumen.
+    |
+    */
+
+    Route::delete(
+        '/documents/{document}',
+        [DocumentController::class, 'destroy']
+    )
+    ->name('documents.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOCUMENT - PREVIEW
     |--------------------------------------------------------------------------
     */
 
     Route::get(
         '/documents/{id}/preview',
         [DocumentController::class, 'preview']
-    )->name('documents.preview');
-
-
-    Route::get(
-        '/documents/{id}/download',
-        [DocumentController::class, 'download']
-    )->name('documents.download');
+    )
+    ->name('documents.preview');
 
 
     /*
     |--------------------------------------------------------------------------
-    | Show Document
+    | DOCUMENT - DOWNLOAD
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/documents/{id}/download',
+        [DocumentController::class, 'download']
+    )
+    ->name('documents.download');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOCUMENT - SHOW
     |--------------------------------------------------------------------------
     */
 
     Route::get(
         '/documents/{document}',
         [DocumentController::class, 'show']
-    )->name('documents.show');
+    )
+    ->name('documents.show');
 
 
     /*
     |--------------------------------------------------------------------------
-    | Admin Only
+    | ACTIVITY LOG
     |--------------------------------------------------------------------------
+    |
+    | Activity Log tetap admin.
+    |
     */
 
-    Route::middleware(
-        'role:admin'
-    )->group(function () {
-
-
-        Route::delete(
-            '/documents/{document}',
-            [DocumentController::class, 'destroy']
-        )->name('documents.destroy');
-
+    Route::middleware('role:admin')
+    ->group(function () {
 
         Route::get(
             '/activity-logs',
             [ActivityLogController::class, 'index']
-        )->name('activity_logs.index');
+        )
+        ->name('activity_logs.index');
 
     });
 
 
     /*
     |--------------------------------------------------------------------------
-    | Profile
+    | PROFILE
     |--------------------------------------------------------------------------
     */
 
     Route::get(
         '/profile',
         [ProfileController::class, 'edit']
-    )->name('profile.edit');
+    )
+    ->name('profile.edit');
 
 
     Route::patch(
         '/profile',
         [ProfileController::class, 'update']
-    )->name('profile.update');
+    )
+    ->name('profile.update');
 
 
     Route::delete(
         '/profile',
         [ProfileController::class, 'destroy']
-    )->name('profile.destroy');
+    )
+    ->name('profile.destroy');
 
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| Authentication Routes
+| AUTHENTICATION
 |--------------------------------------------------------------------------
 */
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 
 /*
 |--------------------------------------------------------------------------
-| TANDA TANGAN LOGBOOK DARI HP
-|--------------------------------------------------------------------------
-|
-| Route ini berada DI LUAR middleware auth.
-|
-| HP teknisi cukup scan QR lalu langsung membuka
-| halaman tanda tangan tanpa harus login.
-|
-|--------------------------------------------------------------------------
-*/
-
-Route::get(
-    '/logbook/sign/{token}',
-    [FacilityLogbookController::class, 'sign']
-)->name('logbook.sign');
-
-
-Route::post(
-    '/logbook/sign/{token}',
-    [FacilityLogbookController::class, 'signConfirm']
-)->name('logbook.sign.confirm');
-
-
-/*
-|--------------------------------------------------------------------------
-| AIRNAV DMS RESOURCES
+| AIRNAV DMS MODULE
 |--------------------------------------------------------------------------
 */
 
 Route::middleware([
     'auth'
-])->group(function () {
+])
+->group(function () {
 
 
     /*
@@ -273,10 +295,31 @@ Route::middleware([
     |--------------------------------------------------------------------------
     */
 
+    Route::get(
+        '/logbook/sign/{token}',
+        [
+            FacilityLogbookController::class,
+            'sign'
+        ]
+    )
+    ->name('logbook.sign');
+
+
+    Route::post(
+        '/logbook/sign/{token}',
+        [
+            FacilityLogbookController::class,
+            'signConfirm'
+        ]
+    )
+    ->name('logbook.sign.confirm');
+
+
     Route::resource(
         'logbook',
         FacilityLogbookController::class
-    )->only([
+    )
+    ->only([
         'index',
         'create',
         'store',
@@ -286,46 +329,27 @@ Route::middleware([
     ]);
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | TAMPILKAN QR LOGBOOK
-    |--------------------------------------------------------------------------
-    */
-
     Route::get(
         '/logbook/scan/{id}',
         [
             FacilityLogbookController::class,
             'scan'
         ]
-    )->name('logbook.scan');
+    )
+    ->name('logbook.scan');
 
 
     /*
     |--------------------------------------------------------------------------
-    | VERIFY QR LAMA
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post(
-        '/logbook/verify/{id}',
-        [
-            FacilityLogbookController::class,
-            'verify'
-        ]
-    )->name('logbook.verify');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | INVENTORY BARANG
+    | INVENTORY
     |--------------------------------------------------------------------------
     */
 
     Route::resource(
         'inventory',
         InventoryController::class
-    )->only([
+    )
+    ->only([
         'index',
         'create',
         'store',
@@ -336,26 +360,15 @@ Route::middleware([
     ]);
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | STOK MASUK
-    |--------------------------------------------------------------------------
-    */
-
     Route::post(
         '/inventory/{id}/stock-in',
         [
             InventoryController::class,
             'stockIn'
         ]
-    )->name('inventory.stock.in');
+    )
+    ->name('inventory.stock.in');
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | STOK KELUAR
-    |--------------------------------------------------------------------------
-    */
 
     Route::post(
         '/inventory/{id}/stock-out',
@@ -363,12 +376,13 @@ Route::middleware([
             InventoryController::class,
             'stockOut'
         ]
-    )->name('inventory.stock.out');
+    )
+    ->name('inventory.stock.out');
 
 
     /*
     |--------------------------------------------------------------------------
-    | MASTER TEKNISI
+    | TEKNISI
     |--------------------------------------------------------------------------
     */
 

@@ -2,59 +2,106 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 
 class FacilityLogbook extends Model
 {
 
 
-protected $fillable = [
-
-    'log_datetime',
-
-    'technicians',
-
-    'technician_id',
-
-    'action_notes',
-
-    'qr_token',
-
-    'signature_status',
-
-    'signed_at',
-
-    'signed_by',
-
-    'user_id'
-
-];
+    use HasFactory;
 
 
 
 
-
-public function technician()
-{
-
-    return $this->belongsTo(
-        Technician::class
-    );
-
-}
+    protected $fillable = [
 
 
+        'technician_id',
 
 
-public function user()
-{
+        'technicians',
 
-    return $this->belongsTo(
-        User::class
-    );
 
-}
+        'action_notes',
+
+
+        'log_datetime',
+
+
+        'user_id',
+
+
+        'signature_type',
+
+
+        'signature_file',
+
+
+        'qr_token',
+
+
+        'signed_at',
+
+
+    ];
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi Teknisi
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function technician()
+    {
+
+
+        return $this->belongsTo(
+            Technician::class,
+            'technician_id'
+        );
+
+
+    }
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi User Pembuat
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function user()
+    {
+
+
+        return $this->belongsTo(
+            User::class,
+            'user_id'
+        );
+
+
+    }
+
+
 
 
 

@@ -6,148 +6,382 @@ use Google\Client;
 use Google\Service\Drive;
 use Google\Service\Drive\DriveFile;
 use Illuminate\Http\UploadedFile;
+use Exception;
 
 class GoogleDriveService
 {
-    /**
-     * Membuat Google Client
-     */
-    public function client()
-{
-    $client = new Client();
+    protected Client $client;
+    protected Drive $drive;
 
-    $client->setAuthConfig(
-        storage_path('app/google/credentials.json')
-    );
+    public function __construct()
+    {
+        $this->client = new Client();
 
-    $client->setClientId(
-        config('services.google.client_id')
-    );
+        /*
+        |--------------------------------------------------------------------------
+        | GOOGLE CLIENT CONFIG
+        |--------------------------------------------------------------------------
+        */
 
-    $client->setClientSecret(
-        config('services.google.client_secret')
-    );
-
-    $client->setRedirectUri(
-        config('services.google.redirect')
-    );
-
-    $client->addScope(Drive::DRIVE);
-
-    $client->setAccessType('offline');
-
-    $client->setPrompt('select_account consent');
-
-    $tokenPath = storage_path('app/google/token.json');
-
-    if (file_exists($tokenPath)) {
-
-        $token = json_decode(
-            file_get_contents($tokenPath),
-            true
+        $this->client->setClientId(
+            config('services.google.client_id')
         );
 
-        $client->setAccessToken($token);
+        $this->client->setClientSecret(
+            config('services.google.client_secret')
+        );
 
-        if ($client->isAccessTokenExpired()) {
+        $this->client->setRedirectUri(
+            config('services.google.redirect')
+        );
 
-            if ($client->getRefreshToken()) {
+        $this->client->setAccessType('offline');
+        $this->client->setPrompt('consent');
 
-                $newToken =
-                    $client->fetchAccessTokenWithRefreshToken(
-                        $client->getRefreshToken()
-                    );
+        /*
+        |--------------------------------------------------------------------------
+        | SCOPES
+        |--------------------------------------------------------------------------
+        */
 
-                $token = array_merge($token, $newToken);
+        $this->client->setScopes([
+            Drive::DRIVE,
+        ]);
 
-                file_put_contents(
-                    $tokenPath,
-                    json_encode($token, JSON_PRETTY_PRINT)
+        /*
+        |--------------------------------------------------------------------------
+        | REFRESH TOKEN
+        |--------------------------------------------------------------------------
+        */
+
+        $refreshToken = config(
+            'services.google.refresh_token'
+        );
+
+        if (!$refreshToken) {
+            throw new Exception(
+                'GOOGLE_REFRESH_TOKEN belum diatur di file .env'
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SET REFRESH TOKEN
+        |--------------------------------------------------------------------------
+        */
+
+        $this->client->refreshToken(
+            $refreshToken
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | ACCESS TOKEN
+        |--------------------------------------------------------------------------
+        */
+
+        $accessToken = $this->client->getAccessToken();
+
+        if (!$accessToken) {
+            throw new Exception(
+                'Access Token Google tidak berhasil dibuat.'
+            );
+        }
+
+        $this->client->setAccessToken(
+            $accessToken
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | DRIVE SERVICE
+        |--------------------------------------------------------------------------
+        */
+
+        $this->drive = new Drive(
+            $this->client
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPLOAD FILE
+    |--------------------------------------------------------------------------
+    */
+
+    public function upload(
+        UploadedFile $file,
+        string $categoryName
+    )
+    {
+        try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | CARI / BUAT FOLDER KATEGORI
+            |--------------------------------------------------------------------------
+            */
+
+            $folderId = $this->getOrCreateFolder(
+                $categoryName
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | FILE METADATA
+            |--------------------------------------------------------------------------
+            */
+
+            $driveFile = new DriveFile();
+
+            $driveFile->setName(
+                $file->getClientOriginalName()
+            );
+
+            $driveFile->setParents([
+                $folderId
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPLOAD
+            |--------------------------------------------------------------------------
+            */
+
+            $uploadedFile = $this->drive->files->create(
+                $driveFile,
+                [
+                    'data' =>
+                        file_get_contents(
+                            $file->getRealPath()
+                        ),
+
+                    'mimeType' =>
+                        $file->getMimeType(),
+
+                    'uploadType' =>
+                        'multipart',
+
+                    'fields' =>
+                        'id,name,mimeType,size,webViewLink',
+                ]
+            );
+
+            return $uploadedFile;
+
+        } catch (Exception $e) {
+
+            throw new Exception(
+                'Gagal upload ke Google Drive: '
+                . $e->getMessage()
+            );
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CARI / BUAT FOLDER
+    |--------------------------------------------------------------------------
+    */
+
+    public function getOrCreateFolder(
+        string $folderName
+    )
+    {
+        try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | ROOT FOLDER DARI .ENV
+            |--------------------------------------------------------------------------
+            */
+
+            $rootFolderId =
+                config(
+                    'services.google.drive_folder_id'
                 );
 
-                $client->setAccessToken($token);
+            /*
+            |--------------------------------------------------------------------------
+            | CARI FOLDER
+            |--------------------------------------------------------------------------
+            */
+
+            $query =
+                "name = '"
+                . addslashes($folderName)
+                . "' "
+                . "and mimeType = "
+                . "'application/vnd.google-apps.folder' "
+                . "and trashed = false";
+
+            if ($rootFolderId) {
+
+                $query .=
+                    " and '"
+                    . $rootFolderId
+                    . "' in parents";
+
             }
+
+            $folders =
+                $this->drive->files->listFiles([
+                    'q' => $query,
+
+                    'spaces' => 'drive',
+
+                    'fields' =>
+                        'files(id,name,parents)',
+
+                    'pageSize' => 10,
+                ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | KALAU SUDAH ADA
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $folders->getFiles()
+                &&
+                count(
+                    $folders->getFiles()
+                ) > 0
+            ) {
+
+                return
+                    $folders
+                    ->getFiles()[0]
+                    ->getId();
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | BUAT FOLDER BARU
+            |--------------------------------------------------------------------------
+            */
+
+            $folder =
+                new DriveFile();
+
+            $folder->setName(
+                $folderName
+            );
+
+            $folder->setMimeType(
+                'application/vnd.google-apps.folder'
+            );
+
+            if ($rootFolderId) {
+
+                $folder->setParents([
+                    $rootFolderId
+                ]);
+
+            }
+
+            $createdFolder =
+                $this->drive->files->create(
+                    $folder,
+                    [
+                        'fields' =>
+                            'id,name',
+                    ]
+                );
+
+            return
+                $createdFolder
+                ->getId();
+
+        } catch (Exception $e) {
+
+            throw new Exception(
+                'Gagal membuat/mencari folder Google Drive: '
+                . $e->getMessage()
+            );
         }
     }
 
-    return $client;
-}
 
-    /**
-     * Upload file ke Google Drive
-     */
-    public function upload(UploadedFile $file, $category)
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE FILE
+    |--------------------------------------------------------------------------
+    */
+
+    public function delete(
+        string $fileId
+    )
     {
-        $drive = new Drive($this->client());
-
-        $folderId = $this->getOrCreateFolder($category);
-
-        $metadata = new DriveFile([
-            'name' => $file->getClientOriginalName(),
-            'parents' => [$folderId],
-        ]);
-
-        return $drive->files->create(
-            $metadata,
-            [
-                'data' => file_get_contents($file->getRealPath()),
-                'mimeType' => $file->getMimeType(),
-                'uploadType' => 'multipart',
-                'fields' => 'id,name',
-            ]
-        );
-    }
-
-    /**
-     * Membuat folder kategori jika belum ada
-     */
-    public function getOrCreateFolder($folderName)
-    {
-        $drive = new Drive($this->client());
-
-        $parentFolder = env('GOOGLE_DRIVE_FOLDER_ID');
-
-        $query =
-            "name='{$folderName}' and " .
-            "mimeType='application/vnd.google-apps.folder' and " .
-            "'{$parentFolder}' in parents and trashed=false";
-
-        $folders = $drive->files->listFiles([
-            'q' => $query,
-            'fields' => 'files(id,name)',
-        ]);
-
-        if (count($folders->getFiles()) > 0) {
-            return $folders->getFiles()[0]->getId();
-        }
-
-        $folderMetadata = new DriveFile([
-            'name' => $folderName,
-            'mimeType' => 'application/vnd.google-apps.folder',
-            'parents' => [$parentFolder],
-        ]);
-
-        $folder = $drive->files->create(
-            $folderMetadata,
-            [
-                'fields' => 'id',
-            ]
-        );
-
-        return $folder->getId();
-    }
-
-    /**
-     * Hapus file dari Google Drive
-     */
-    public function delete($fileId)
-    {
-        $drive = new Drive($this->client());
-
         try {
-            $drive->files->delete($fileId);
-        } catch (\Exception $e) {
-            // Abaikan jika file sudah tidak ada
+
+            return $this->drive
+                ->files
+                ->delete(
+                    $fileId
+                );
+
+        } catch (Exception $e) {
+
+            throw new Exception(
+                'Gagal menghapus file Google Drive: '
+                . $e->getMessage()
+            );
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET FILE
+    |--------------------------------------------------------------------------
+    */
+
+    public function getFile(
+        string $fileId
+    )
+    {
+        return $this->drive
+            ->files
+            ->get(
+                $fileId,
+                [
+                    'fields' =>
+                        'id,name,mimeType,size,webViewLink',
+                ]
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TEST CONNECTION
+    |--------------------------------------------------------------------------
+    */
+
+    public function testConnection()
+    {
+        try {
+
+            $result =
+                $this->drive
+                    ->about
+                    ->get([
+                        'fields' =>
+                            'user(displayName,emailAddress)',
+                    ]);
+
+            return $result;
+
+        } catch (Exception $e) {
+
+            throw new Exception(
+                'Koneksi Google Drive gagal: '
+                . $e->getMessage()
+            );
         }
     }
 }

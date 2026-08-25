@@ -6,12 +6,6 @@ return [
     |--------------------------------------------------------------------------
     | Third Party Services
     |--------------------------------------------------------------------------
-    |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
-    |
     */
 
     'postmark' => [
@@ -35,13 +29,27 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | GOOGLE
+    |--------------------------------------------------------------------------
+    */
+
     'google' => [
 
-    'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_id' => env('GOOGLE_CLIENT_ID'),
 
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
 
-    'redirect' => env('GOOGLE_REDIRECT_URI'),
+        'redirect' => env(
+            'GOOGLE_REDIRECT_URI',
+            'http://127.0.0.1:8000/google/callback'
+        ),
 
-],
+        'refresh_token' => env('GOOGLE_REFRESH_TOKEN'),
+
+        'drive_folder_id' => env('GOOGLE_DRIVE_FOLDER_ID'),
+
+    ],
+
 ];

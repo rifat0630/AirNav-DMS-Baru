@@ -2,58 +2,100 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Category;
 use App\Models\Document;
-use App\Services\GoogleDriveService;
 use App\Models\ActivityLog;
+use App\Services\GoogleDriveService;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+
 
 
 class DocumentController extends Controller
 {
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | LIST DOKUMEN
+    |--------------------------------------------------------------------------
+    */
+
+
     public function index(Request $request)
     {
-        $query = Document::with(['category','user']);
 
 
-        if ($request->filled('search')) {
+        $query = Document::with([
+            'category',
+            'user'
+        ]);
 
-            $query->where(function ($q) use ($request) {
+
+
+
+        if($request->filled('search')){
+
+
+            $query->where(function($q) use ($request){
+
 
                 $q->where(
                     'document_number',
                     'like',
-                    '%' . $request->search . '%'
+                    '%'.$request->search.'%'
                 )
+
+
                 ->orWhere(
                     'title',
                     'like',
-                    '%' . $request->search . '%'
+                    '%'.$request->search.'%'
                 );
 
+
             });
+
 
         }
 
 
-        if ($request->filled('category')) {
+
+
+
+
+        if($request->filled('category')){
+
 
             $query->where(
                 'category_id',
                 $request->category
             );
 
+
         }
 
 
-        $documents = $query->latest()->get();
 
 
-        $categories = Category::orderBy('name')->get();
+
+
+        $documents = $query
+            ->latest()
+            ->get();
+
+
+
+
+        $categories = Category::orderBy('name')
+            ->get();
+
+
+
 
 
         return view(
@@ -63,21 +105,55 @@ class DocumentController extends Controller
                 'categories'
             )
         );
+
+
     }
 
 
 
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FORM TAMBAH
+    |--------------------------------------------------------------------------
+    */
+
+
     public function create()
     {
-        $categories = Category::orderBy('name')->get();
+
+
+        $categories = Category::orderBy('name')
+            ->get();
+
+
 
 
         return view(
             'documents.create',
             compact('categories')
         );
+
+
     }
 
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SIMPAN DOKUMEN
+    |--------------------------------------------------------------------------
+    */
 
 
     public function store(
@@ -86,25 +162,53 @@ class DocumentController extends Controller
     )
     {
 
+
+
         $request->validate([
 
+
             'document_number'
-                => 'required|unique:documents,document_number',
+                =>
+                'required',
+
+
 
             'title'
-                => 'required',
+                =>
+                'required',
+
+
 
             'category_id'
-                => 'required|exists:categories,id',
+                =>
+                'required|exists:categories,id',
+
+
+
+            'tanggal_berlaku'
+                =>
+                'required|string',
+
+
 
             'file'
-                => 'required|file'
+                =>
+                'required|file'
+
 
         ]);
 
 
 
+
+
+
+
+
         $file = $request->file('file');
+
+
+
 
 
 
@@ -114,11 +218,23 @@ class DocumentController extends Controller
 
 
 
-        // Upload Google Drive sesuai kategori
+
+
+
+
+        /*
+        Upload Google Drive
+        */
+
+
         $uploaded = $google->upload(
             $file,
             $category->name
         );
+
+
+
+
 
 
 
@@ -129,79 +245,163 @@ class DocumentController extends Controller
 
 
 
+
+
+
+
+
+
         $document = Document::create([
 
+
+
             'document_number'
-                => $request->document_number,
+                =>
+                $request->document_number,
+
+
 
             'title'
-                => $request->title,
+                =>
+                $request->title,
+
+
 
             'category_id'
-                => $request->category_id,
+                =>
+                $request->category_id,
 
-            'version'
-                => $request->version ?? '1.0',
+
+
+            'tanggal_berlaku'
+                =>
+                $request->tanggal_berlaku,
+
+
 
             'status'
-                => 'aktif',
+                =>
+                'aktif',
+
+
 
             'file_name'
-                => $file->getClientOriginalName(),
+                =>
+                $file->getClientOriginalName(),
+
+
 
             'file_path'
-                => $filePath,
+                =>
+                $filePath,
+
+
 
             'google_drive_id'
-                => $uploaded->id,
+                =>
+                $uploaded->id,
+
+
 
             'google_file_name'
-                => $uploaded->name,
+                =>
+                $uploaded->name,
+
+
 
             'file_type'
-                => $file->getMimeType(),
+                =>
+                $file->getMimeType(),
+
+
 
             'file_size'
-                => $file->getSize(),
+                =>
+                $file->getSize(),
+
+
 
             'user_id'
-                => Auth::id(),
+                =>
+                Auth::id(),
+
 
         ]);
+
+
+
+
+
+
+
 
 
 
         ActivityLog::create([
 
+
             'user_id'
-                => Auth::id(),
+                =>
+                Auth::id(),
+
+
 
             'document_id'
-                => $document->id,
+                =>
+                $document->id,
+
+
 
             'activity'
-                => 'Upload Dokumen',
+                =>
+                'Upload Dokumen',
+
+
 
             'description'
-                => 'Mengupload dokumen "' .
-                   $document->title .
-                   '" ke Google Drive',
+                =>
+                'Upload dokumen '.$document->title
+
+
 
         ]);
 
 
 
+
+
+
+
         return redirect()
+
             ->route('documents.index')
+
             ->with(
                 'success',
                 'Dokumen berhasil diupload ke Google Drive'
             );
 
+
     }
 
-        public function show(string $id)
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DETAIL
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function show(string $id)
     {
+
 
         $document = Document::with([
             'category',
@@ -211,10 +411,12 @@ class DocumentController extends Controller
 
 
 
+
         return view(
             'documents.show',
             compact('document')
         );
+
 
     }
 
@@ -222,13 +424,28 @@ class DocumentController extends Controller
 
 
 
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT
+    |--------------------------------------------------------------------------
+    */
+
+
     public function edit(string $id)
     {
+
 
         $document = Document::findOrFail($id);
 
 
-        $categories = Category::orderBy('name')->get();
+
+        $categories = Category::orderBy('name')
+            ->get();
+
 
 
 
@@ -240,10 +457,22 @@ class DocumentController extends Controller
             )
         );
 
+
     }
 
 
 
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
 
 
     public function update(
@@ -252,71 +481,151 @@ class DocumentController extends Controller
     )
     {
 
+
         $document = Document::findOrFail($id);
+
+
 
 
 
         $request->validate([
 
+
+
             'document_number'
-                => 'required|unique:documents,document_number,' . $id,
+                =>
+                'required',
+
+
 
             'title'
-                => 'required',
+                =>
+                'required',
+
+
 
             'category_id'
-                => 'required|exists:categories,id',
+                =>
+                'required|exists:categories,id',
+
+
+
+            'tanggal_berlaku'
+                =>
+                'required|string',
+
+
 
         ]);
+
+
+
+
+
+
 
 
 
         $document->update([
 
+
+
             'document_number'
-                => $request->document_number,
+                =>
+                $request->document_number,
+
+
 
             'title'
-                => $request->title,
+                =>
+                $request->title,
+
+
 
             'category_id'
-                => $request->category_id,
+                =>
+                $request->category_id,
+
+
+
+            'tanggal_berlaku'
+                =>
+                $request->tanggal_berlaku,
+
+
 
         ]);
+
+
+
+
+
+
 
 
 
         ActivityLog::create([
 
+
+
             'user_id'
-                => Auth::id(),
+                =>
+                Auth::id(),
+
+
 
             'document_id'
-                => $document->id,
+                =>
+                $document->id,
+
+
 
             'activity'
-                => 'Edit Dokumen',
+                =>
+                'Edit Dokumen',
+
+
 
             'description'
-                => 'Mengubah dokumen "' .
-                   $document->title .
-                   '"',
+                =>
+                'Mengubah dokumen '.$document->title
+
+
 
         ]);
 
 
 
+
+
+
+
+
         return redirect()
+
             ->route('documents.index')
+
             ->with(
                 'success',
                 'Dokumen berhasil diperbarui'
             );
 
+
     }
 
 
 
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE
+    |--------------------------------------------------------------------------
+    */
 
 
     public function destroy(
@@ -325,52 +634,85 @@ class DocumentController extends Controller
     )
     {
 
+
         $document = Document::findOrFail($id);
 
 
 
-        // Hapus dari Google Drive
-        if ($document->google_drive_id) {
+
+
+
+
+        if($document->google_drive_id){
+
 
             $google->delete(
                 $document->google_drive_id
             );
 
+
         }
 
 
 
-        // Hapus file lokal
-        if (
+
+
+
+
+
+        if(
             $document->file_path &&
             Storage::disk('public')
-                ->exists($document->file_path)
-        ) {
+            ->exists($document->file_path)
+        ){
+
 
             Storage::disk('public')
                 ->delete($document->file_path);
 
+
         }
+
+
+
+
+
 
 
 
         ActivityLog::create([
 
+
             'user_id'
-                => Auth::id(),
+                =>
+                Auth::id(),
+
+
 
             'document_id'
-                => $document->id,
+                =>
+                $document->id,
+
+
 
             'activity'
-                => 'Hapus Dokumen',
+                =>
+                'Hapus Dokumen',
+
+
 
             'description'
-                => 'Menghapus dokumen "' .
-                   $document->title .
-                   '"',
+                =>
+                'Menghapus dokumen '.$document->title
+
+
 
         ]);
+
+
+
+
+
 
 
 
@@ -378,12 +720,20 @@ class DocumentController extends Controller
 
 
 
+
+
+
+
+
         return redirect()
+
             ->route('documents.index')
+
             ->with(
                 'success',
                 'Dokumen berhasil dihapus'
             );
+
 
     }
 
@@ -391,67 +741,114 @@ class DocumentController extends Controller
 
 
 
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PREVIEW
+    |--------------------------------------------------------------------------
+    */
+
+
     public function preview(string $id)
     {
 
+
         $document = Document::findOrFail($id);
+
 
 
 
         return response()->file(
 
             storage_path(
-                'app/public/' .
-                $document->file_path
+                'app/public/'.$document->file_path
             )
 
         );
+
 
     }
 
 
 
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOWNLOAD
+    |--------------------------------------------------------------------------
+    */
 
 
     public function download(string $id)
     {
 
+
         $document = Document::findOrFail($id);
+
+
 
 
 
         ActivityLog::create([
 
+
+
             'user_id'
-                => Auth::id(),
+                =>
+                Auth::id(),
+
+
 
             'document_id'
-                => $document->id,
+                =>
+                $document->id,
+
+
 
             'activity'
-                => 'Download Dokumen',
+                =>
+                'Download Dokumen',
+
+
 
             'description'
-                => 'Download dokumen "' .
-                   $document->title .
-                   '"',
+                =>
+                'Download dokumen '.$document->title
+
+
 
         ]);
 
 
 
+
+
+
+
         return response()->download(
 
+
             storage_path(
-                'app/public/' .
-                $document->file_path
+                'app/public/'.$document->file_path
             ),
+
 
             $document->file_name
 
+
         );
 
+
     }
+
 
 
 }

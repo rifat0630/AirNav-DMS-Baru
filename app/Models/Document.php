@@ -10,7 +10,7 @@ class Document extends Model
         'document_number',
         'title',
         'category_id',
-        'version',
+        'tanggal_berlaku',
         'status',
         'file_name',
         'file_path',

@@ -5,239 +5,334 @@
 
 @section('content_header')
 
-    <div class="d-flex justify-content-between align-items-center">
+<div class="d-flex justify-content-between align-items-center">
 
-        <h1>
-            <i class="fas fa-file-upload"></i>
-            Tambah Dokumen
-        </h1>
+    <h1>
+        <i class="fas fa-upload"></i>
+        Tambah Dokumen
+    </h1>
 
-    </div>
+
+    <a href="{{ route('documents.index') }}"
+       class="btn btn-secondary">
+
+        <i class="fas fa-arrow-left"></i>
+        Kembali
+
+    </a>
+
+</div>
 
 @stop
+
 
 
 @section('content')
 
 
-{{-- Pesan error validasi --}}
+@if(session('success'))
 
-@if($errors->any())
+<div class="alert alert-success">
 
-    <div class="alert alert-danger">
+    {{ session('success') }}
 
-        <strong>
-            Dokumen belum dapat disimpan.
-        </strong>
-
-        <ul class="mb-0 mt-2">
-
-            @foreach($errors->all() as $error)
-
-                <li>
-                    {{ $error }}
-                </li>
-
-            @endforeach
-
-        </ul>
-
-    </div>
+</div>
 
 @endif
 
 
-<div class="card">
 
-    <div class="card-header">
+@if($errors->any())
 
-        <strong>
-            Data Dokumen
-        </strong>
+<div class="alert alert-danger">
 
-    </div>
+    <strong>
+        Data belum dapat disimpan
+    </strong>
 
 
-    <div class="card-body">
+    <ul>
 
-        <form
-            action="{{ route('documents.store') }}"
-            method="POST"
-            enctype="multipart/form-data"
-        >
+        @foreach($errors->all() as $error)
 
-            @csrf
+            <li>
+                {{ $error }}
+            </li>
 
+        @endforeach
 
-            {{-- Nomor Dokumen --}}
-
-            <div class="form-group mb-3">
-
-                <label>
-                    Nomor Dokumen
-                </label>
-
-                <input
-                    type="text"
-                    name="document_number"
-                    class="form-control"
-                    value="{{ old('document_number') }}"
-                    placeholder="Contoh: AIRNAV/OPS/001/2026"
-                    required
-                >
-
-                <small class="text-muted">
-
-                    Masukkan nomor dokumen yang unik.
-
-                </small>
-
-            </div>
-
-
-            {{-- Judul Dokumen --}}
-
-            <div class="form-group mb-3">
-
-                <label>
-                    Judul Dokumen
-                </label>
-
-                <input
-                    type="text"
-                    name="title"
-                    class="form-control"
-                    value="{{ old('title') }}"
-                    placeholder="Masukkan judul dokumen"
-                    required
-                >
-
-            </div>
-
-
-            {{-- Kategori --}}
-
-            <div class="form-group mb-3">
-
-                <label>
-                    Kategori
-                </label>
-
-                <select
-                    name="category_id"
-                    class="form-control"
-                    required
-                >
-
-                    <option value="">
-                        -- Pilih Kategori --
-                    </option>
-
-
-                    @foreach($categories as $category)
-
-                        <option
-                            value="{{ $category->id }}"
-                            {{ old('category_id') == $category->id ? 'selected' : '' }}
-                        >
-
-                            {{ $category->name }}
-
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-                <small class="text-muted">
-
-                    Kategori menentukan tempat penyimpanan dokumen
-                    di Google Drive.
-
-                </small>
-
-            </div>
-
-
-            {{-- Versi --}}
-
-            <div class="form-group mb-3">
-
-                <label>
-                    Versi Dokumen
-                </label>
-
-                <input
-                    type="text"
-                    name="version"
-                    class="form-control"
-                    value="{{ old('version', '1.0') }}"
-                    placeholder="Contoh: 1.0"
-                >
-
-                <small class="text-muted">
-
-                    Jika tidak diubah, versi awal adalah 1.0.
-
-                </small>
-
-            </div>
-
-
-            {{-- File --}}
-
-            <div class="form-group mb-4">
-
-                <label>
-                    File Dokumen
-                </label>
-
-                <input
-                    type="file"
-                    name="file"
-                    class="form-control"
-                    required
-                >
-
-                <small class="text-muted">
-
-                    Pilih file dokumen yang akan disimpan.
-
-                </small>
-
-            </div>
-
-
-            {{-- Tombol --}}
-
-            <button
-                type="submit"
-                class="btn btn-primary"
-            >
-
-                <i class="fas fa-save"></i>
-
-                Simpan Dokumen
-
-            </button>
-
-
-            <a
-                href="{{ route('documents.index') }}"
-                class="btn btn-secondary"
-            >
-
-                <i class="fas fa-arrow-left"></i>
-
-                Kembali
-
-            </a>
-
-
-        </form>
-
-    </div>
+    </ul>
 
 </div>
+
+@endif
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-body">
+
+
+
+<form action="{{ route('documents.store') }}"
+      method="POST"
+      enctype="multipart/form-data">
+
+
+@csrf
+
+
+
+
+
+
+{{-- NOMOR DOKUMEN --}}
+
+<div class="form-group">
+
+
+<label>
+
+Nomor Dokumen
+
+<span class="text-danger">*</span>
+
+</label>
+
+
+<input type="text"
+
+name="document_number"
+
+class="form-control"
+
+value="{{ old('document_number') }}"
+
+placeholder="Contoh: AIRNAV/SOP/001/2026"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{{-- JUDUL --}}
+
+<div class="form-group">
+
+
+<label>
+
+Judul Dokumen
+
+<span class="text-danger">*</span>
+
+</label>
+
+
+
+<input type="text"
+
+name="title"
+
+class="form-control"
+
+value="{{ old('title') }}"
+
+placeholder="Masukkan judul dokumen"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+
+
+{{-- KATEGORI --}}
+
+<div class="form-group">
+
+
+<label>
+
+Kategori
+
+<span class="text-danger">*</span>
+
+</label>
+
+
+
+<select name="category_id"
+
+class="form-control"
+
+required>
+
+
+<option value="">
+
+-- Pilih Kategori --
+
+</option>
+
+
+
+@foreach($categories as $category)
+
+
+<option value="{{ $category->id }}">
+
+{{ $category->name }}
+
+</option>
+
+
+@endforeach
+
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{{-- MASA BERLAKU --}}
+
+<div class="form-group">
+
+
+<label>
+
+Masa Berlaku Dokumen
+
+<span class="text-danger">*</span>
+
+</label>
+
+
+
+
+<input type="text"
+
+name="tanggal_berlaku"
+
+class="form-control"
+
+value="{{ old('tanggal_berlaku') }}"
+
+placeholder="Contoh: 27 Februari 2023 s/d 27 Februari 2028"
+
+required>
+
+
+
+<small class="text-muted">
+
+Isi periode berlaku dokumen
+
+</small>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{{-- FILE --}}
+
+<div class="form-group">
+
+
+<label>
+
+File Dokumen
+
+<span class="text-danger">*</span>
+
+</label>
+
+
+
+<input type="file"
+
+name="file"
+
+class="form-control"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+<button type="submit"
+
+class="btn btn-primary">
+
+
+<i class="fas fa-save"></i>
+
+Simpan Dokumen
+
+
+</button>
+
+
+
+<a href="{{ route('documents.index') }}"
+
+class="btn btn-secondary">
+
+
+Batal
+
+
+</a>
+
+
+
+</form>
+
+
+
+</div>
+
+
+</div>
+
 
 @stop
