@@ -2,59 +2,97 @@
 
 @section('title', 'Tambah Barang')
 
+
 @section('content_header')
 
-    <h1>Tambah Barang</h1>
+<div class="d-flex justify-content-between align-items-center">
+
+    <h1>
+
+        <i class="fas fa-plus-circle"></i>
+
+        Tambah Barang
+
+    </h1>
+
+
+    <a
+        href="{{ route('inventory.index') }}"
+        class="btn btn-secondary"
+    >
+
+        <i class="fas fa-arrow-left"></i>
+
+        Kembali
+
+    </a>
+
+</div>
 
 @stop
 
 
+
 @section('content')
+
+
+@if($errors->any())
+
+<div class="alert alert-danger">
+
+    <strong>
+        Data belum dapat disimpan.
+    </strong>
+
+    <ul class="mb-0 mt-2">
+
+        @foreach($errors->all() as $error)
+
+            <li>
+                {{ $error }}
+            </li>
+
+        @endforeach
+
+    </ul>
+
+</div>
+
+@endif
+
+
 
 <div class="card">
 
     <div class="card-header">
-        <strong>Tambah Data Barang</strong>
+
+        <strong>
+            <i class="fas fa-box"></i>
+            Data Barang
+        </strong>
+
     </div>
 
-    <div class="card-body">
 
-        {{-- Error validasi --}}
-        @if ($errors->any())
+    <form
+        action="{{ route('inventory.store') }}"
+        method="POST"
+        enctype="multipart/form-data"
+    >
 
-            <div class="alert alert-danger">
-
-                <strong>Terjadi kesalahan:</strong>
-
-                <ul class="mb-0">
-
-                    @foreach ($errors->all() as $error)
-
-                        <li>{{ $error }}</li>
-
-                    @endforeach
-
-                </ul>
-
-            </div>
-
-        @endif
+        @csrf
 
 
-        <form
-            action="{{ route('inventory.store') }}"
-            method="POST"
-            enctype="multipart/form-data"
-        >
-
-            @csrf
+        <div class="card-body">
 
 
-            {{-- NAMA BARANG --}}
-            <div class="form-group mb-3">
+            {{-- NAMA --}}
+
+            <div class="form-group">
 
                 <label>
                     Nama Barang
+                    <span class="text-danger">*</span>
                 </label>
 
                 <input
@@ -62,18 +100,21 @@
                     name="name"
                     class="form-control"
                     value="{{ old('name') }}"
-                    placeholder="Contoh: RJ45 Connector"
+                    placeholder="Contoh: Printer Label Brady BMP21"
                     required
                 >
 
             </div>
 
 
-            {{-- KODE BARANG --}}
-            <div class="form-group mb-3">
+
+            {{-- KODE --}}
+
+            <div class="form-group">
 
                 <label>
                     Kode Barang
+                    <span class="text-danger">*</span>
                 </label>
 
                 <input
@@ -81,86 +122,172 @@
                     name="code"
                     class="form-control"
                     value="{{ old('code') }}"
-                    placeholder="Contoh: RJ45-001"
+                    placeholder="Contoh: RJ001"
+                    required
                 >
 
-                <small class="text-muted">
-                    Kode digunakan untuk mempermudah pencarian barang.
+            </div>
+
+
+
+            {{-- SERIAL NUMBER --}}
+
+            <div class="form-group">
+
+                <label>
+                    Serial Number
+                </label>
+
+                <div id="serial-container">
+
+                    <div class="input-group mb-2 serial-row">
+
+                        <input
+                            type="text"
+                            name="serial_numbers[]"
+                            class="form-control"
+                            placeholder="Contoh: SN-B21-2508-001"
+                        >
+
+                        <div class="input-group-append">
+
+                            <button
+                                type="button"
+                                class="btn btn-danger remove-serial"
+                            >
+
+                                <i class="fas fa-trash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="add-serial"
+                    class="btn btn-outline-primary btn-sm"
+                >
+
+                    <i class="fas fa-plus"></i>
+
+                    Tambah Serial Number
+
+                </button>
+
+
+                <small class="form-text text-muted">
+
+                    Tambahkan serial number sesuai jumlah barang yang memiliki nomor seri.
+
                 </small>
 
             </div>
 
 
+
             {{-- STOK --}}
-            <div class="form-group mb-3">
 
-                <label>
-                    Jumlah Stok
-                </label>
+            <div class="row">
 
-                <input
-                    type="number"
-                    name="stock"
-                    class="form-control"
-                    value="{{ old('stock', 0) }}"
-                    min="0"
-                    step="0.01"
-                    required
-                >
+                <div class="col-md-6">
+
+                    <div class="form-group">
+
+                        <label>
+                            Stok
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            name="stock"
+                            class="form-control"
+                            value="{{ old('stock', 0) }}"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                {{-- SATUAN --}}
+
+                <div class="col-md-6">
+
+                    <div class="form-group">
+
+                        <label>
+                            Satuan
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="unit"
+                            class="form-control"
+                            value="{{ old('unit', 'pcs') }}"
+                            placeholder="pcs"
+                            required
+                        >
+
+                    </div>
+
+                </div>
 
             </div>
 
 
-            {{-- SATUAN --}}
-            <div class="form-group mb-3">
+
+            {{-- KONDISI --}}
+
+            <div class="form-group">
 
                 <label>
-                    Satuan
+
+                    Kondisi Barang
+
+                    <span class="text-danger">*</span>
+
                 </label>
 
+
                 <select
-                    name="unit"
+                    name="condition"
                     class="form-control"
                     required
                 >
 
-                    <option value="">
-                        -- Pilih Satuan --
+                    <option
+                        value="normal"
+                        {{ old('condition', 'normal') == 'normal'
+                            ? 'selected'
+                            : ''
+                        }}
+                    >
+
+                        Normal
+
                     </option>
 
-                    <option value="pcs"
-                        {{ old('unit') == 'pcs' ? 'selected' : '' }}>
-                        Pcs
-                    </option>
 
-                    <option value="meter"
-                        {{ old('unit') == 'meter' ? 'selected' : '' }}>
-                        Meter
-                    </option>
+                    <option
+                        value="rusak"
+                        {{ old('condition') == 'rusak'
+                            ? 'selected'
+                            : ''
+                        }}
+                    >
 
-                    <option value="roll"
-                        {{ old('unit') == 'roll' ? 'selected' : '' }}>
-                        Roll
-                    </option>
+                        Rusak
 
-                    <option value="box"
-                        {{ old('unit') == 'box' ? 'selected' : '' }}>
-                        Box
-                    </option>
-
-                    <option value="unit"
-                        {{ old('unit') == 'unit' ? 'selected' : '' }}>
-                        Unit
-                    </option>
-
-                    <option value="buah"
-                        {{ old('unit') == 'buah' ? 'selected' : '' }}>
-                        Buah
-                    </option>
-
-                    <option value="set"
-                        {{ old('unit') == 'set' ? 'selected' : '' }}>
-                        Set
                     </option>
 
                 </select>
@@ -168,45 +295,61 @@
             </div>
 
 
+
             {{-- FOTO --}}
-            <div class="form-group mb-3">
+
+            <div class="form-group">
 
                 <label>
+
                     Foto Barang
+
                 </label>
 
-                <input
-                    type="file"
-                    name="photo"
-                    class="form-control"
-                    accept="image/jpeg,image/png,image/jpg,image/webp"
-                >
 
-                <small class="text-muted">
-                    Format JPG, JPEG, PNG atau WEBP. Maksimal 2 MB.
+                <div class="custom-file">
+
+                    <input
+                        type="file"
+                        name="photos[]"
+                        id="photos"
+                        class="custom-file-input"
+                        accept="image/*"
+                        multiple
+                    >
+
+                    <label
+                        class="custom-file-label"
+                        for="photos"
+                    >
+
+                        Pilih foto barang
+
+                    </label>
+
+                </div>
+
+
+                <small class="form-text text-muted">
+
+                    Maksimal 3 foto. Format JPG, JPEG, PNG atau WEBP. Maksimal 5 MB per foto.
+
                 </small>
 
-            </div>
 
-
-            {{-- DESKRIPSI --}}
-            <div class="form-group mb-3">
-
-                <label>
-                    Keterangan / Deskripsi
-                </label>
-
-                <textarea
-                    name="description"
-                    class="form-control"
-                    rows="4"
-                    placeholder="Contoh: Connector RJ45 untuk kabel LAN..."
-                >{{ old('description') }}</textarea>
+                <div
+                    id="photo-preview"
+                    class="row mt-3"
+                ></div>
 
             </div>
 
 
-            {{-- TOMBOL --}}
+        </div>
+
+
+        <div class="card-footer">
+
             <button
                 type="submit"
                 class="btn btn-primary"
@@ -224,17 +367,242 @@
                 class="btn btn-secondary"
             >
 
-                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-times"></i>
 
-                Kembali
+                Batal
 
             </a>
 
+        </div>
 
-        </form>
 
-    </div>
+    </form>
 
 </div>
+
+
+@stop
+
+
+
+@section('js')
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SERIAL NUMBER
+        |--------------------------------------------------------------------------
+        */
+
+        const serialContainer =
+            document.getElementById(
+                'serial-container'
+            );
+
+
+        const addSerial =
+            document.getElementById(
+                'add-serial'
+            );
+
+
+        addSerial.addEventListener(
+            'click',
+            function () {
+
+                const row =
+                    document.createElement(
+                        'div'
+                    );
+
+                row.className =
+                    'input-group mb-2 serial-row';
+
+
+                row.innerHTML = `
+
+                    <input
+                        type="text"
+                        name="serial_numbers[]"
+                        class="form-control"
+                        placeholder="Masukkan Serial Number"
+                    >
+
+                    <div class="input-group-append">
+
+                        <button
+                            type="button"
+                            class="btn btn-danger remove-serial"
+                        >
+
+                            <i class="fas fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                serialContainer.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            'click',
+            function (event) {
+
+                if (
+                    event.target.closest(
+                        '.remove-serial'
+                    )
+                ) {
+
+                    const rows =
+                        document.querySelectorAll(
+                            '.serial-row'
+                        );
+
+
+                    if (rows.length > 1) {
+
+                        event.target
+                            .closest(
+                                '.serial-row'
+                            )
+                            .remove();
+
+                    }
+
+                }
+
+            }
+        );
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FOTO
+        |--------------------------------------------------------------------------
+        */
+
+        const photoInput =
+            document.getElementById(
+                'photos'
+            );
+
+
+        const photoLabel =
+            document.querySelector(
+                'label[for="photos"]'
+            );
+
+
+        const preview =
+            document.getElementById(
+                'photo-preview'
+            );
+
+
+        photoInput.addEventListener(
+            'change',
+            function () {
+
+
+                preview.innerHTML = '';
+
+
+                if (
+                    this.files.length > 3
+                ) {
+
+                    alert(
+                        'Maksimal 3 foto.'
+                    );
+
+                    this.value = '';
+
+                    photoLabel.textContent =
+                        'Pilih foto barang';
+
+                    return;
+
+                }
+
+
+                photoLabel.textContent =
+                    this.files.length +
+                    ' foto dipilih';
+
+
+                Array.from(
+                    this.files
+                ).forEach(
+                    function (file) {
+
+
+                        const reader =
+                            new FileReader();
+
+
+                        reader.onload =
+                            function (event) {
+
+                                const col =
+                                    document.createElement(
+                                        'div'
+                                    );
+
+                                col.className =
+                                    'col-md-4 mb-2';
+
+
+                                col.innerHTML = `
+
+                                    <img
+                                        src="${event.target.result}"
+                                        class="img-thumbnail"
+                                        style="
+                                            width: 100%;
+                                            height: 160px;
+                                            object-fit: cover;
+                                        "
+                                    >
+
+                                `;
+
+
+                                preview.appendChild(
+                                    col
+                                );
+
+                            };
+
+
+                        reader.readAsDataURL(
+                            file
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
 
 @stop

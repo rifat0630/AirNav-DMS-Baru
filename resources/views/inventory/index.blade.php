@@ -5,9 +5,22 @@
 
 @section('content_header')
 
+<div class="d-flex justify-content-between align-items-center">
+
     <h1>
+        <i class="fas fa-boxes"></i>
         Inventory Barang
     </h1>
+
+    <a
+        href="{{ route('inventory.create') }}"
+        class="btn btn-primary"
+    >
+        <i class="fas fa-plus"></i>
+        Tambah Barang
+    </a>
+
+</div>
 
 @stop
 
@@ -15,126 +28,78 @@
 @section('content')
 
 
-{{-- ========================================================= --}}
-{{-- PESAN SUKSES --}}
-{{-- ========================================================= --}}
-
 @if(session('success'))
 
-    <div class="alert alert-success">
+<div class="alert alert-success alert-dismissible fade show">
 
-        <i class="fas fa-check-circle"></i>
+    <i class="fas fa-check-circle"></i>
 
-        {{ session('success') }}
+    {{ session('success') }}
 
-    </div>
+    <button
+        type="button"
+        class="close"
+        data-dismiss="alert"
+    >
+
+        <span>&times;</span>
+
+    </button>
+
+</div>
 
 @endif
 
-
-{{-- ========================================================= --}}
-{{-- PESAN ERROR --}}
-{{-- ========================================================= --}}
 
 @if(session('error'))
 
-    <div class="alert alert-danger">
+<div class="alert alert-danger alert-dismissible fade show">
 
-        <i class="fas fa-exclamation-circle"></i>
+    <i class="fas fa-exclamation-circle"></i>
 
-        {{ session('error') }}
+    {{ session('error') }}
 
-    </div>
+    <button
+        type="button"
+        class="close"
+        data-dismiss="alert"
+    >
 
-@endif
+        <span>&times;</span>
 
+    </button>
 
-{{-- ========================================================= --}}
-{{-- VALIDATION ERROR --}}
-{{-- ========================================================= --}}
-
-@if($errors->any())
-
-    <div class="alert alert-danger">
-
-        <strong>
-            Terjadi kesalahan:
-        </strong>
-
-        <ul class="mb-0">
-
-            @foreach($errors->all() as $error)
-
-                <li>
-                    {{ $error }}
-                </li>
-
-            @endforeach
-
-        </ul>
-
-    </div>
+</div>
 
 @endif
 
 
-
-{{-- ========================================================= --}}
-{{-- CARD --}}
-{{-- ========================================================= --}}
 
 <div class="card">
 
-
-    {{-- ===================================================== --}}
-    {{-- HEADER --}}
-    {{-- ===================================================== --}}
-
     <div class="card-header">
 
-        <div class="d-flex justify-content-between align-items-center">
+        <h3 class="card-title">
 
             <strong>
-
                 <i class="fas fa-boxes"></i>
-
                 Data Barang
-
             </strong>
 
-
-            <a
-                href="{{ route('inventory.create') }}"
-                class="btn btn-primary"
-            >
-
-                <i class="fas fa-plus"></i>
-
-                Tambah Barang
-
-            </a>
-
-        </div>
+        </h3>
 
     </div>
 
-
-
-    {{-- ===================================================== --}}
-    {{-- BODY --}}
-    {{-- ===================================================== --}}
 
     <div class="card-body">
 
 
-        {{-- ================================================= --}}
         {{-- SEARCH --}}
-        {{-- ================================================= --}}
 
         <form
             method="GET"
             action="{{ route('inventory.index') }}"
-            class="mb-3"
+            class="mb-4"
         >
 
             <div class="input-group">
@@ -143,35 +108,23 @@
                     type="text"
                     name="search"
                     class="form-control"
-                    placeholder="Cari nama atau kode barang..."
                     value="{{ request('search') }}"
+                    placeholder="Cari nama barang, kode barang, atau serial number..."
                 >
 
+                <div class="input-group-append">
 
-                <button
-                    class="btn btn-secondary"
-                    type="submit"
-                >
-
-                    <i class="fas fa-search"></i>
-
-                    Cari
-
-                </button>
-
-
-                @if(request('search'))
-
-                    <a
-                        href="{{ route('inventory.index') }}"
-                        class="btn btn-outline-secondary"
+                    <button
+                        class="btn btn-secondary"
+                        type="submit"
                     >
 
-                        Reset
+                        <i class="fas fa-search"></i>
+                        Cari
 
-                    </a>
+                    </button>
 
-                @endif
+                </div>
 
             </div>
 
@@ -179,25 +132,21 @@
 
 
 
-        {{-- ================================================= --}}
         {{-- TABLE --}}
-        {{-- ================================================= --}}
 
         <div class="table-responsive">
 
-            <table
-                class="table table-bordered table-striped table-hover"
-            >
+            <table class="table table-bordered table-hover">
 
-                <thead>
+                <thead class="thead-light">
 
                     <tr>
 
-                        <th width="5%">
+                        <th width="50">
                             No
                         </th>
 
-                        <th width="12%">
+                        <th width="180">
                             Foto
                         </th>
 
@@ -205,27 +154,31 @@
                             Nama Barang
                         </th>
 
-                        <th>
+                        <th width="100">
                             Kode
                         </th>
 
-                        <th>
+                        <th width="220">
+                            Serial Number
+                        </th>
+
+                        <th width="80">
                             Stok
                         </th>
 
-                        <th>
+                        <th width="80">
                             Satuan
                         </th>
 
-                        <th>
-                            Status
+                        <th width="130">
+                            Kondisi Barang
                         </th>
 
-                        <th>
+                        <th width="200">
                             Dibuat Oleh
                         </th>
 
-                        <th width="22%">
+                        <th width="190">
                             Aksi
                         </th>
 
@@ -234,216 +187,242 @@
                 </thead>
 
 
-
                 <tbody>
 
 
-                    @forelse($inventories as $inventory)
+                @forelse($inventories as $inventory)
 
+                    <tr>
 
-                        <tr>
+                        {{-- NO --}}
 
+                        <td>
 
-                            {{-- ================================================= --}}
-                            {{-- NOMOR --}}
-                            {{-- ================================================= --}}
+                            {{ $inventories->firstItem() + $loop->index }}
 
-                            <td>
-
-                                {{ $loop->iteration }}
-
-                            </td>
+                        </td>
 
 
 
-                            {{-- ================================================= --}}
-                            {{-- FOTO --}}
-                            {{-- ================================================= --}}
+                        {{-- FOTO --}}
 
-                            <td class="text-center">
+                        <td>
 
-                                @if($inventory->photo)
+                            @if(
+                                !empty($inventory->photos)
+                                &&
+                                count($inventory->photos) > 0
+                            )
 
-                                    <img
-                                        src="{{ asset('storage/' . $inventory->photo) }}"
-                                        alt="{{ $inventory->name }}"
-                                        style="
-                                            width:80px;
-                                            height:80px;
-                                            object-fit:cover;
-                                            border-radius:8px;
-                                        "
-                                    >
+                                <div class="d-flex flex-wrap">
 
-                                @else
+                                    @foreach(
+                                        array_slice(
+                                            $inventory->photos,
+                                            0,
+                                            3
+                                        )
+                                        as $photo
+                                    )
 
-                                    <div
-                                        class="text-muted"
-                                        style="
-                                            width:80px;
-                                            height:80px;
-                                            display:flex;
-                                            align-items:center;
-                                            justify-content:center;
-                                            background:#f1f1f1;
-                                            border-radius:8px;
-                                            margin:auto;
-                                        "
-                                    >
+                                        <a
+                                            href="{{ asset('storage/' . $photo) }}"
+                                            target="_blank"
+                                        >
 
-                                        <i class="fas fa-image fa-2x"></i>
+                                            <img
+                                                src="{{ asset('storage/' . $photo) }}"
+                                                class="img-thumbnail mr-1 mb-1"
+                                                style="
+                                                    width: 52px;
+                                                    height: 52px;
+                                                    object-fit: cover;
+                                                "
+                                            >
 
-                                    </div>
+                                        </a>
 
-                                @endif
+                                    @endforeach
 
-                            </td>
+                                </div>
 
+                            @else
 
+                                <div
+                                    class="text-muted text-center"
+                                >
 
-                            {{-- ================================================= --}}
-                            {{-- NAMA --}}
-                            {{-- ================================================= --}}
-
-                            <td>
-
-                                <strong>
-
-                                    {{ $inventory->name }}
-
-                                </strong>
-
-
-                                @if($inventory->description)
+                                    <i
+                                        class="fas fa-image fa-2x"
+                                    ></i>
 
                                     <br>
 
-                                    <small class="text-muted">
-
-                                        {{ $inventory->description }}
-
+                                    <small>
+                                        Tidak ada foto
                                     </small>
 
-                                @endif
+                                </div>
 
-                            </td>
+                            @endif
 
-
-
-                            {{-- ================================================= --}}
-                            {{-- KODE --}}
-                            {{-- ================================================= --}}
-
-                            <td>
-
-                                {{ $inventory->code ?? '-' }}
-
-                            </td>
+                        </td>
 
 
 
-                            {{-- ================================================= --}}
-                            {{-- STOK --}}
-                            {{-- ================================================= --}}
+                        {{-- NAMA --}}
 
-                            <td>
+                        <td>
 
-                                <strong>
+                            <strong>
+                                {{ $inventory->name }}
+                            </strong>
 
-                                    {{ rtrim(
-                                        rtrim(
-                                            number_format(
-                                                $inventory->stock,
-                                                2,
-                                                ',',
-                                                '.'
-                                            ),
-                                            '0'
-                                        ),
-                                        ','
-                                    ) }}
-
-                                </strong>
-
-                            </td>
+                        </td>
 
 
 
-                            {{-- ================================================= --}}
-                            {{-- SATUAN --}}
-                            {{-- ================================================= --}}
+                        {{-- KODE --}}
 
-                            <td>
+                        <td>
 
-                                {{ $inventory->unit }}
+                            {{ $inventory->code }}
 
-                            </td>
+                        </td>
 
 
 
-                            {{-- ================================================= --}}
-                            {{-- STATUS --}}
-                            {{-- ================================================= --}}
+                        {{-- SERIAL NUMBER --}}
 
-                            <td>
+                        <td>
 
+                            @if(
+                                !empty($inventory->serial_numbers)
+                            )
 
-                                @if($inventory->status === 'tersedia')
+                                <ul
+                                    class="mb-0 pl-3"
+                                >
 
-                                    <span class="badge badge-success">
+                                    @foreach(
+                                        $inventory->serial_numbers
+                                        as $serial
+                                    )
 
-                                        <i class="fas fa-check"></i>
+                                        <li>
+                                            {{ $serial }}
+                                        </li>
 
-                                        Tersedia
+                                    @endforeach
 
-                                    </span>
+                                </ul>
 
+                            @else
 
-                                @elseif($inventory->status === 'stok_menipis')
+                                <span
+                                    class="text-muted"
+                                >
+                                    -
+                                </span>
 
-                                    <span class="badge badge-warning">
+                            @endif
 
-                                        <i class="fas fa-exclamation-triangle"></i>
-
-                                        Stok Menipis
-
-                                    </span>
-
-
-                                @else
-
-                                    <span class="badge badge-danger">
-
-                                        <i class="fas fa-times"></i>
-
-                                        Habis
-
-                                    </span>
-
-                                @endif
-
-
-                            </td>
+                        </td>
 
 
 
-                            {{-- ================================================= --}}
-                            {{-- USER --}}
-                            {{-- ================================================= --}}
+                        {{-- STOK --}}
 
-                            <td>
+                        <td>
 
-                                {{ $inventory->user->name ?? '-' }}
+                            <strong>
+                                {{ $inventory->stock }}
+                            </strong>
 
-                            </td>
+                        </td>
 
 
 
-                            {{-- ================================================= --}}
-                            {{-- AKSI --}}
-                            {{-- ================================================= --}}
+                        {{-- SATUAN --}}
 
-                            <td>
+                        <td>
+
+                            {{ $inventory->unit }}
+
+                        </td>
+
+
+
+                        {{-- KONDISI --}}
+
+                        <td>
+
+                            @if(
+                                strtolower(
+                                    $inventory->condition
+                                )
+                                === 'rusak'
+                            )
+
+                                <span
+                                    class="badge badge-warning"
+                                >
+
+                                    <i
+                                        class="fas fa-exclamation-triangle"
+                                    ></i>
+
+                                    Rusak
+
+                                </span>
+
+                            @else
+
+                                <span
+                                    class="badge badge-success"
+                                >
+
+                                    <i
+                                        class="fas fa-check-circle"
+                                    ></i>
+
+                                    Normal
+
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+
+                        {{-- USER --}}
+
+                        <td>
+
+                            @if($inventory->user)
+
+                                {{ $inventory->user->name }}
+
+                            @else
+
+                                <span
+                                    class="text-muted"
+                                >
+                                    -
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+
+                        {{-- AKSI --}}
+
+                        <td>
+
+                            <div class="d-flex flex-wrap">
 
 
                                 {{-- DETAIL --}}
@@ -453,125 +432,130 @@
                                         'inventory.show',
                                         $inventory->id
                                     ) }}"
-                                    class="btn btn-info btn-sm mb-1"
+                                    class="btn btn-info btn-sm mr-1 mb-1"
                                 >
 
                                     <i class="fas fa-eye"></i>
-
                                     Detail
 
                                 </a>
 
 
 
-                                {{-- ================================================= --}}
-                                {{-- PEMILIK / ADMIN --}}
-                                {{-- ================================================= --}}
+                                {{-- EDIT --}}
 
-                                @if(
-                                    Auth::user()->role === 'admin'
-                                    ||
-                                    $inventory->user_id === Auth::id()
-                                )
+                                <a
+                                    href="{{ route(
+                                        'inventory.edit',
+                                        $inventory->id
+                                    ) }}"
+                                    class="btn btn-primary btn-sm mr-1 mb-1"
+                                >
+
+                                    <i class="fas fa-edit"></i>
+                                    Edit
+
+                                </a>
 
 
-                                    {{-- EDIT --}}
 
-                                    <a
-                                        href="{{ route(
-                                            'inventory.edit',
-                                            $inventory->id
-                                        ) }}"
-                                        class="btn btn-primary btn-sm mb-1"
+                                {{-- HAPUS --}}
+
+                                <form
+                                    action="{{ route(
+                                        'inventory.destroy',
+                                        $inventory->id
+                                    ) }}"
+                                    method="POST"
+                                    class="d-inline mb-1"
+                                    onsubmit="return confirm(
+                                        'Yakin ingin menghapus barang ini?'
+                                    );"
+                                >
+
+                                    @csrf
+
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger btn-sm"
                                     >
 
-                                        <i class="fas fa-edit"></i>
+                                        <i class="fas fa-trash"></i>
+                                        Hapus
 
-                                        Edit
+                                    </button>
 
-                                    </a>
-
-
-
-                                    {{-- HAPUS --}}
-
-                                    <form
-                                        action="{{ route(
-                                            'inventory.destroy',
-                                            $inventory->id
-                                        ) }}"
-                                        method="POST"
-                                        style="display:inline"
-                                    >
-
-                                        @csrf
-
-                                        @method('DELETE')
+                                </form>
 
 
-                                        <button
-                                            type="submit"
-                                            class="btn btn-danger btn-sm mb-1"
-                                            onclick="return confirm(
-                                                'Yakin ingin menghapus barang ini?'
-                                            )"
-                                        >
+                            </div>
 
-                                            <i class="fas fa-trash"></i>
-
-                                            Hapus
-
-                                        </button>
-
-                                    </form>
+                        </td>
 
 
-                                @endif
+                    </tr>
 
+                @empty
 
-                            </td>
+                    <tr>
 
+                        <td
+                            colspan="10"
+                            class="text-center text-muted py-4"
+                        >
 
-                        </tr>
+                            <i
+                                class="fas fa-box-open fa-2x mb-2"
+                            ></i>
 
+                            <br>
 
-                    @empty
+                            Belum ada data barang.
 
+                        </td>
 
-                        <tr>
+                    </tr>
 
-                            <td
-                                colspan="9"
-                                class="text-center text-muted py-4"
-                            >
-
-                                <i
-                                    class="fas fa-box-open fa-3x mb-3"
-                                ></i>
-
-                                <br>
-
-                                <strong>
-                                    Belum ada data barang
-                                </strong>
-
-                                <br>
-
-                                <small>
-                                    Silakan tambahkan barang terlebih dahulu.
-                                </small>
-
-                            </td>
-
-                        </tr>
-
-
-                    @endforelse
+                @endforelse
 
 
                 </tbody>
 
             </table>
+
+        </div>
+
+
+        {{-- PAGINATION --}}
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+
+            <div>
+
+                Menampilkan
+
+                {{ $inventories->firstItem() ?? 0 }}
+
+                sampai
+
+                {{ $inventories->lastItem() ?? 0 }}
+
+                dari
+
+                {{ $inventories->total() }}
+
+                data
+
+            </div>
+
+
+            <div>
+
+                {{ $inventories->links() }}
+
+            </div>
 
         </div>
 

@@ -2,90 +2,85 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Inventory extends Model
 {
+    use HasFactory;
+
+    protected $table = 'inventories';
+
     protected $fillable = [
-
         'name',
-
         'code',
-
-        'description',
-
         'stock',
-
         'unit',
-
-        'photo',
-
-        'status',
-
+        'serial_numbers',
+        'photos',
+        'condition',
         'user_id',
-
     ];
-
 
     protected $casts = [
-
-        'stock' => 'decimal:2',
-
+        'serial_numbers' => 'array',
+        'photos' => 'array',
+        'stock' => 'integer',
     ];
 
-
     /*
     |--------------------------------------------------------------------------
-    | Relasi ke User
+    | RELATION USER
     |--------------------------------------------------------------------------
     */
 
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(
-            User::class
+            User::class,
+            'user_id'
         );
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | Relasi ke Riwayat Stok
+    | SERIAL NUMBER
     |--------------------------------------------------------------------------
     */
 
-    public function movements(): HasMany
+    public function getSerialNumbersListAttribute()
     {
-        return $this->hasMany(
-            InventoryMovement::class
-        );
+        return $this->serial_numbers ?? [];
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | Status Stok
+    | FOTO
     |--------------------------------------------------------------------------
     */
 
-    public function updateStockStatus(): void
+    public function getPhotosListAttribute()
     {
-        if ($this->stock <= 0) {
+        return $this->photos ?? [];
+    }
 
-            $this->status = 'habis';
 
-        } elseif ($this->stock <= 5) {
+    /*
+    |--------------------------------------------------------------------------
+    | KONDISI
+    |--------------------------------------------------------------------------
+    */
 
-            $this->status = 'stok_menipis';
+    public function getConditionLabelAttribute()
+    {
+        return match (strtolower($this->condition ?? 'normal')) {
 
-        } else {
+            'rusak' => 'Rusak',
 
-            $this->status = 'tersedia';
+            default => 'Normal',
 
-        }
-
-        $this->save();
+        };
     }
 }

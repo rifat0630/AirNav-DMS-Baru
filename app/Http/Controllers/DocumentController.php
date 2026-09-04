@@ -2,33 +2,21 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Category;
 use App\Models\Document;
 use App\Models\ActivityLog;
 use App\Services\GoogleDriveService;
-
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
 
 
 class DocumentController extends Controller
 {
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | LIST DOKUMEN
-    |--------------------------------------------------------------------------
-    */
-
-
     public function index(Request $request)
     {
-
 
         $query = Document::with([
             'category',
@@ -36,13 +24,9 @@ class DocumentController extends Controller
         ]);
 
 
-
-
         if($request->filled('search')){
 
-
             $query->where(function($q) use ($request){
-
 
                 $q->where(
                     'document_number',
@@ -50,37 +34,26 @@ class DocumentController extends Controller
                     '%'.$request->search.'%'
                 )
 
-
                 ->orWhere(
                     'title',
                     'like',
                     '%'.$request->search.'%'
                 );
 
-
             });
-
 
         }
 
 
 
-
-
-
         if($request->filled('category')){
-
 
             $query->where(
                 'category_id',
                 $request->category
             );
 
-
         }
-
-
-
 
 
 
@@ -90,11 +63,8 @@ class DocumentController extends Controller
 
 
 
-
         $categories = Category::orderBy('name')
             ->get();
-
-
 
 
 
@@ -106,7 +76,6 @@ class DocumentController extends Controller
             )
         );
 
-
     }
 
 
@@ -114,23 +83,11 @@ class DocumentController extends Controller
 
 
 
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | FORM TAMBAH
-    |--------------------------------------------------------------------------
-    */
-
-
     public function create()
     {
 
-
         $categories = Category::orderBy('name')
             ->get();
-
-
 
 
         return view(
@@ -138,22 +95,12 @@ class DocumentController extends Controller
             compact('categories')
         );
 
-
     }
 
 
 
 
 
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SIMPAN DOKUMEN
-    |--------------------------------------------------------------------------
-    */
 
 
     public function store(
@@ -163,52 +110,28 @@ class DocumentController extends Controller
     {
 
 
-
         $request->validate([
 
-
             'document_number'
-                =>
-                'required',
-
-
+                =>'required',
 
             'title'
-                =>
-                'required',
-
-
+                =>'required',
 
             'category_id'
-                =>
-                'required|exists:categories,id',
-
-
+                =>'required|exists:categories,id',
 
             'tanggal_berlaku'
-                =>
-                'required|string',
-
-
+                =>'required|string',
 
             'file'
-                =>
-                'required|file'
-
+                =>'required|file'
 
         ]);
 
 
 
-
-
-
-
-
         $file = $request->file('file');
-
-
-
 
 
 
@@ -218,23 +141,12 @@ class DocumentController extends Controller
 
 
 
-
-
-
-
-        /*
-        Upload Google Drive
-        */
-
+        // upload Google Drive
 
         $uploaded = $google->upload(
             $file,
             $category->name
         );
-
-
-
-
 
 
 
@@ -245,93 +157,55 @@ class DocumentController extends Controller
 
 
 
-
-
-
-
-
-
         $document = Document::create([
 
-
-
             'document_number'
-                =>
-                $request->document_number,
-
-
+                =>$request->document_number,
 
             'title'
-                =>
-                $request->title,
-
-
+                =>$request->title,
 
             'category_id'
-                =>
-                $request->category_id,
-
+                =>$request->category_id,
 
 
             'tanggal_berlaku'
-                =>
-                $request->tanggal_berlaku,
-
+                =>$request->tanggal_berlaku,
 
 
             'status'
-                =>
-                'aktif',
-
+                =>'aktif',
 
 
             'file_name'
-                =>
-                $file->getClientOriginalName(),
-
+                =>$file->getClientOriginalName(),
 
 
             'file_path'
-                =>
-                $filePath,
-
+                =>$filePath,
 
 
             'google_drive_id'
-                =>
-                $uploaded->id,
-
+                =>$uploaded->id,
 
 
             'google_file_name'
-                =>
-                $uploaded->name,
-
+                =>$uploaded->name,
 
 
             'file_type'
-                =>
-                $file->getMimeType(),
-
+                =>$file->getMimeType(),
 
 
             'file_size'
-                =>
-                $file->getSize(),
-
+                =>$file->getSize(),
 
 
             'user_id'
-                =>
-                Auth::id(),
+                =>Auth::id(),
 
 
         ]);
-
-
-
-
-
 
 
 
@@ -339,35 +213,19 @@ class DocumentController extends Controller
 
         ActivityLog::create([
 
-
             'user_id'
-                =>
-                Auth::id(),
-
-
+                =>Auth::id(),
 
             'document_id'
-                =>
-                $document->id,
-
-
+                =>$document->id,
 
             'activity'
-                =>
-                'Upload Dokumen',
-
-
+                =>'Upload Dokumen',
 
             'description'
-                =>
-                'Upload dokumen '.$document->title
-
-
+                =>'Upload dokumen '.$document->title
 
         ]);
-
-
-
 
 
 
@@ -391,17 +249,8 @@ class DocumentController extends Controller
 
 
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | DETAIL
-    |--------------------------------------------------------------------------
-    */
-
-
     public function show(string $id)
     {
-
 
         $document = Document::with([
             'category',
@@ -411,12 +260,10 @@ class DocumentController extends Controller
 
 
 
-
         return view(
             'documents.show',
             compact('document')
         );
-
 
     }
 
@@ -426,26 +273,14 @@ class DocumentController extends Controller
 
 
 
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | EDIT
-    |--------------------------------------------------------------------------
-    */
-
-
     public function edit(string $id)
     {
-
 
         $document = Document::findOrFail($id);
 
 
-
         $categories = Category::orderBy('name')
             ->get();
-
 
 
 
@@ -457,7 +292,6 @@ class DocumentController extends Controller
             )
         );
 
-
     }
 
 
@@ -465,14 +299,6 @@ class DocumentController extends Controller
 
 
 
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE
-    |--------------------------------------------------------------------------
-    */
 
 
     public function update(
@@ -486,41 +312,30 @@ class DocumentController extends Controller
 
 
 
-
-
         $request->validate([
 
 
-
             'document_number'
-                =>
-                'required',
-
+                =>'required',
 
 
             'title'
-                =>
-                'required',
-
+                =>'required',
 
 
             'category_id'
-                =>
-                'required|exists:categories,id',
+                =>'required|exists:categories,id',
 
 
+            // PENTING
+            // bukan date, karena format:
+            // 27 Februari 2023 s/d 27 Februari 2028
 
             'tanggal_berlaku'
-                =>
-                'required|string',
-
+                =>'required|string',
 
 
         ]);
-
-
-
-
 
 
 
@@ -529,36 +344,23 @@ class DocumentController extends Controller
         $document->update([
 
 
-
             'document_number'
-                =>
-                $request->document_number,
-
+                =>$request->document_number,
 
 
             'title'
-                =>
-                $request->title,
-
+                =>$request->title,
 
 
             'category_id'
-                =>
-                $request->category_id,
-
+                =>$request->category_id,
 
 
             'tanggal_berlaku'
-                =>
-                $request->tanggal_berlaku,
-
+                =>$request->tanggal_berlaku,
 
 
         ]);
-
-
-
-
 
 
 
@@ -567,35 +369,23 @@ class DocumentController extends Controller
         ActivityLog::create([
 
 
-
             'user_id'
-                =>
-                Auth::id(),
-
+                =>Auth::id(),
 
 
             'document_id'
-                =>
-                $document->id,
-
+                =>$document->id,
 
 
             'activity'
-                =>
-                'Edit Dokumen',
-
+                =>'Edit Dokumen',
 
 
             'description'
-                =>
-                'Mengubah dokumen '.$document->title
-
+                =>'Mengubah dokumen '.$document->title
 
 
         ]);
-
-
-
 
 
 
@@ -620,14 +410,6 @@ class DocumentController extends Controller
 
 
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE
-    |--------------------------------------------------------------------------
-    */
-
-
     public function destroy(
         string $id,
         GoogleDriveService $google
@@ -639,23 +421,13 @@ class DocumentController extends Controller
 
 
 
-
-
-
-
         if($document->google_drive_id){
-
 
             $google->delete(
                 $document->google_drive_id
             );
 
-
         }
-
-
-
-
 
 
 
@@ -664,17 +436,13 @@ class DocumentController extends Controller
             $document->file_path &&
             Storage::disk('public')
             ->exists($document->file_path)
-        ){
 
+        ){
 
             Storage::disk('public')
                 ->delete($document->file_path);
 
-
         }
-
-
-
 
 
 
@@ -684,27 +452,19 @@ class DocumentController extends Controller
 
 
             'user_id'
-                =>
-                Auth::id(),
-
+                =>Auth::id(),
 
 
             'document_id'
-                =>
-                $document->id,
-
+                =>$document->id,
 
 
             'activity'
-                =>
-                'Hapus Dokumen',
-
+                =>'Hapus Dokumen',
 
 
             'description'
-                =>
-                'Menghapus dokumen '.$document->title
-
+                =>'Menghapus dokumen '.$document->title
 
 
         ]);
@@ -713,14 +473,7 @@ class DocumentController extends Controller
 
 
 
-
-
-
         $document->delete();
-
-
-
-
 
 
 
@@ -743,22 +496,10 @@ class DocumentController extends Controller
 
 
 
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PREVIEW
-    |--------------------------------------------------------------------------
-    */
-
-
     public function preview(string $id)
     {
 
-
         $document = Document::findOrFail($id);
-
-
 
 
         return response()->file(
@@ -769,22 +510,12 @@ class DocumentController extends Controller
 
         );
 
-
     }
 
 
 
 
 
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOWNLOAD
-    |--------------------------------------------------------------------------
-    */
 
 
     public function download(string $id)
@@ -795,34 +526,22 @@ class DocumentController extends Controller
 
 
 
-
-
         ActivityLog::create([
 
-
-
             'user_id'
-                =>
-                Auth::id(),
-
+                =>Auth::id(),
 
 
             'document_id'
-                =>
-                $document->id,
-
+                =>$document->id,
 
 
             'activity'
-                =>
-                'Download Dokumen',
-
+                =>'Download Dokumen',
 
 
             'description'
-                =>
-                'Download dokumen '.$document->title
-
+                =>'Download dokumen '.$document->title
 
 
         ]);
@@ -830,25 +549,18 @@ class DocumentController extends Controller
 
 
 
-
-
-
         return response()->download(
-
 
             storage_path(
                 'app/public/'.$document->file_path
             ),
 
-
             $document->file_name
-
 
         );
 
 
     }
-
 
 
 }
