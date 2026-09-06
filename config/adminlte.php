@@ -317,181 +317,173 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'menu' => [
+  'menu' => [
 
-        /*
-        |--------------------------------------------------------------------------
-        | MAIN MENU
-        |--------------------------------------------------------------------------
-        */
-
-        [
-            'type' => 'fullscreen-widget',
-
-            'topnav_right' => true,
-        ],
+    /*
+    |--------------------------------------------------------------------------
+    | TOP NAV RIGHT
+    |--------------------------------------------------------------------------
+    */
 
 
-        [
-            'header' => 'MAIN MENU',
-        ],
+    [
+        'type' => 'view',
 
+        'view' => 'vendor.adminlte.partials.navbar.notifications',
 
-        [
-            'text' => 'Dashboard',
-
-            'route' => 'dashboard',
-
-            'icon' =>
-                'fas fa-tachometer-alt',
-        ],
-
-
-        [
-            'text' => 'e-Logbook Facility',
-
-            'route' => 'logbook.index',
-
-            'icon' =>
-                'fas fa-book',
-        ],
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | DOKUMEN
-        |--------------------------------------------------------------------------
-        */
-
-        [
-            'header' => 'DOKUMEN',
-        ],
-
-
-        [
-            'text' => 'Daftar Dokumen',
-
-            'route' => 'documents.index',
-
-            'icon' =>
-                'fas fa-folder-open',
-        ],
-
-
-        [
-            'text' => 'Upload Dokumen',
-
-            'route' => 'documents.create',
-
-            'icon' =>
-                'fas fa-upload',
-        ],
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | MASTER
-        |--------------------------------------------------------------------------
-        */
-
-        [
-            'header' => 'MASTER',
-        ],
-
-
-        [
-            'text' => 'Kategori',
-
-            'url' => '#',
-
-            'icon' =>
-                'fas fa-folder',
-        ],
-
-
-        [
-            'text' => 'User',
-
-            'url' => '#',
-
-            'icon' =>
-                'fas fa-users',
-        ],
-
-
-        [
-            'text' => 'Teknisi',
-
-            'route' =>
-                'technicians.index',
-
-            'icon' =>
-                'fas fa-user-cog',
-        ],
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | INVENTORY BARANG
-        |--------------------------------------------------------------------------
-        */
-
-        [
-            'text' => 'Inventory Barang',
-
-            'route' =>
-                'inventory.index',
-
-            'icon' =>
-                'fas fa-boxes',
-        ],
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | LAPORAN
-        |--------------------------------------------------------------------------
-        */
-
-        [
-            'header' => 'LAPORAN',
-        ],
-
-
-        [
-            'text' => 'Activity Log',
-
-            'route' =>
-                'activity_logs.index',
-
-            'icon' =>
-                'fas fa-history',
-        ],
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | AKUN
-        |--------------------------------------------------------------------------
-        */
-
-        [
-            'header' => 'AKUN',
-        ],
-
-
-        [
-            'text' => 'Profil',
-
-            'route' =>
-                'profile.edit',
-
-            'icon' =>
-                'fas fa-user',
-        ],
-
+        'topnav_right' => true,
     ],
 
+
+    [
+        'type' => 'fullscreen-widget',
+
+        'topnav_right' => true,
+    ],
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MAIN MENU
+    |--------------------------------------------------------------------------
+    */
+
+
+    [
+        'header' => 'MAIN MENU',
+    ],
+
+
+
+    [
+        'text' => 'Dashboard',
+
+        'route' => 'dashboard',
+
+        'icon' => 'fas fa-tachometer-alt',
+    ],
+
+
+
+    [
+        'text' => 'e-Logbook Facility',
+
+        'route' => 'logbook.index',
+
+        'icon' => 'fas fa-book',
+    ],
+
+
+
+
+    [
+        'header' => 'DOKUMEN',
+    ],
+
+
+
+    [
+        'text' => 'Daftar Dokumen',
+
+        'route' => 'documents.index',
+
+        'icon' => 'fas fa-folder-open',
+    ],
+
+
+
+    [
+        'text' => 'Upload Dokumen',
+
+        'route' => 'documents.create',
+
+        'icon' => 'fas fa-upload',
+    ],
+
+
+
+
+    [
+        'header' => 'MASTER',
+    ],
+
+
+
+    [
+        'text' => 'Kategori',
+
+        'url' => '#',
+
+        'icon' => 'fas fa-folder',
+    ],
+
+
+
+    [
+        'text' => 'User',
+
+        'url' => '#',
+
+        'icon' => 'fas fa-users',
+    ],
+
+
+
+    [
+        'text' => 'Teknisi',
+
+        'route' => 'technicians.index',
+
+        'icon' => 'fas fa-user-cog',
+    ],
+
+
+
+    [
+        'text' => 'Inventory Barang',
+
+        'route' => 'inventory.index',
+
+        'icon' => 'fas fa-boxes',
+    ],
+
+
+
+
+    [
+        'header' => 'LAPORAN',
+    ],
+
+
+
+    [
+        'text' => 'Activity Log',
+
+        'route' => 'activity_logs.index',
+
+        'icon' => 'fas fa-history',
+    ],
+
+
+
+
+    [
+        'header' => 'AKUN',
+    ],
+
+
+
+    [
+        'text' => 'Profil',
+
+        'route' => 'profile.edit',
+
+        'icon' => 'fas fa-user',
+    ],
+
+
+],
 
     /*
     |--------------------------------------------------------------------------

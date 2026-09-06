@@ -11,6 +11,7 @@ use App\Http\Controllers\FacilityLogbookController;
 use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\NotificationController;
 
 
 /*
@@ -20,9 +21,7 @@ use App\Http\Controllers\InventoryController;
 */
 
 Route::get('/', function () {
-
     return view('welcome');
-
 });
 
 
@@ -35,15 +34,12 @@ Route::get('/', function () {
 Route::get(
     '/google/auth',
     [GoogleAuthController::class, 'redirect']
-)
-->name('google.auth');
-
+)->name('google.auth');
 
 Route::get(
     '/google/callback',
     [GoogleAuthController::class, 'callback']
-)
-->name('google.callback');
+)->name('google.callback');
 
 
 /*
@@ -52,21 +48,16 @@ Route::get(
 |--------------------------------------------------------------------------
 */
 
-Route::get(
-    '/google/create-folder',
-    function () {
+Route::get('/google/create-folder', function () {
 
-        $drive = app(
-            \App\Services\GoogleDriveService::class
-        );
+    $drive = app(
+        \App\Services\GoogleDriveService::class
+    );
 
-        $folderId = $drive->createFolder();
+    $folderId = $drive->createFolder();
 
-        return 'Folder AirNav DMS berhasil dibuat. ID: '
-            . $folderId;
-
-    }
-);
+    return 'Folder AirNav DMS berhasil dibuat. ID: ' . $folderId;
+});
 
 
 /*
@@ -78,8 +69,7 @@ Route::get(
 Route::middleware([
     'auth',
     'verified'
-])
-->group(function () {
+])->group(function () {
 
 
     /*
@@ -91,150 +81,121 @@ Route::middleware([
     Route::get(
         '/dashboard',
         [DashboardController::class, 'index']
-    )
-    ->name('dashboard');
+    )->name('dashboard');
 
 
     /*
     |--------------------------------------------------------------------------
-    | DOCUMENT - INDEX
+    | NOTIFICATION
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/notifications',
+        [NotificationController::class, 'index']
+    )->name('notifications.index');
+
+
+    /*
+    |----------------------------------------------------------------------
+    | JUMLAH NOTIFIKASI BELUM DIBACA
+    |----------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/notifications/unread-count',
+        [NotificationController::class, 'unreadCount']
+    )->name('notifications.unread-count');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | READ NOTIFICATION
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/notifications/{id}/read',
+        [NotificationController::class, 'read']
+    )->name('notifications.read');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | READ ALL
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/notifications/read-all',
+        [NotificationController::class, 'readAll']
+    )->name('notifications.read.all');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOCUMENT
     |--------------------------------------------------------------------------
     */
 
     Route::get(
         '/documents',
         [DocumentController::class, 'index']
-    )
-    ->name('documents.index');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT - CREATE
-    |--------------------------------------------------------------------------
-    */
+    )->name('documents.index');
 
     Route::get(
         '/documents/create',
         [DocumentController::class, 'create']
-    )
-    ->name('documents.create');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT - STORE
-    |--------------------------------------------------------------------------
-    */
+    )->name('documents.create');
 
     Route::post(
         '/documents',
         [DocumentController::class, 'store']
-    )
-    ->name('documents.store');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT - EDIT
-    |--------------------------------------------------------------------------
-    */
+    )->name('documents.store');
 
     Route::get(
         '/documents/{document}/edit',
         [DocumentController::class, 'edit']
-    )
-    ->name('documents.edit');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT - UPDATE
-    |--------------------------------------------------------------------------
-    */
+    )->name('documents.edit');
 
     Route::put(
         '/documents/{document}',
         [DocumentController::class, 'update']
-    )
-    ->name('documents.update');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT - DELETE
-    |--------------------------------------------------------------------------
-    |
-    | PENTING:
-    | Route ini TIDAK memakai role:admin.
-    | Selama user sudah login + verified,
-    | user bisa menghapus dokumen.
-    |
-    */
+    )->name('documents.update');
 
     Route::delete(
         '/documents/{document}',
         [DocumentController::class, 'destroy']
-    )
-    ->name('documents.destroy');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT - PREVIEW
-    |--------------------------------------------------------------------------
-    */
+    )->name('documents.destroy');
 
     Route::get(
         '/documents/{id}/preview',
         [DocumentController::class, 'preview']
-    )
-    ->name('documents.preview');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT - DOWNLOAD
-    |--------------------------------------------------------------------------
-    */
+    )->name('documents.preview');
 
     Route::get(
         '/documents/{id}/download',
         [DocumentController::class, 'download']
-    )
-    ->name('documents.download');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT - SHOW
-    |--------------------------------------------------------------------------
-    */
+    )->name('documents.download');
 
     Route::get(
         '/documents/{document}',
         [DocumentController::class, 'show']
-    )
-    ->name('documents.show');
+    )->name('documents.show');
 
 
     /*
     |--------------------------------------------------------------------------
     | ACTIVITY LOG
     |--------------------------------------------------------------------------
-    |
-    | Activity Log tetap admin.
-    |
     */
 
-    Route::middleware('role:admin')
-    ->group(function () {
+    Route::middleware('role:admin')->group(function () {
 
         Route::get(
             '/activity-logs',
             [ActivityLogController::class, 'index']
-        )
-        ->name('activity_logs.index');
+        )->name('activity_logs.index');
 
     });
 
@@ -248,22 +209,17 @@ Route::middleware([
     Route::get(
         '/profile',
         [ProfileController::class, 'edit']
-    )
-    ->name('profile.edit');
-
+    )->name('profile.edit');
 
     Route::patch(
         '/profile',
         [ProfileController::class, 'update']
-    )
-    ->name('profile.update');
-
+    )->name('profile.update');
 
     Route::delete(
         '/profile',
         [ProfileController::class, 'destroy']
-    )
-    ->name('profile.destroy');
+    )->name('profile.destroy');
 
 });
 
@@ -285,13 +241,12 @@ require __DIR__ . '/auth.php';
 
 Route::middleware([
     'auth'
-])
-->group(function () {
+])->group(function () {
 
 
     /*
     |--------------------------------------------------------------------------
-    | FACILITY LOGBOOK
+    | LOGBOOK
     |--------------------------------------------------------------------------
     */
 
@@ -301,9 +256,7 @@ Route::middleware([
             FacilityLogbookController::class,
             'sign'
         ]
-    )
-    ->name('logbook.sign');
-
+    )->name('logbook.sign');
 
     Route::post(
         '/logbook/sign/{token}',
@@ -311,15 +264,13 @@ Route::middleware([
             FacilityLogbookController::class,
             'signConfirm'
         ]
-    )
-    ->name('logbook.sign.confirm');
+    )->name('logbook.sign.confirm');
 
 
     Route::resource(
         'logbook',
         FacilityLogbookController::class
-    )
-    ->only([
+    )->only([
         'index',
         'create',
         'store',
@@ -335,8 +286,7 @@ Route::middleware([
             FacilityLogbookController::class,
             'scan'
         ]
-    )
-    ->name('logbook.scan');
+    )->name('logbook.scan');
 
 
     /*
@@ -348,8 +298,7 @@ Route::middleware([
     Route::resource(
         'inventory',
         InventoryController::class
-    )
-    ->only([
+    )->only([
         'index',
         'create',
         'store',
@@ -366,8 +315,7 @@ Route::middleware([
             InventoryController::class,
             'stockIn'
         ]
-    )
-    ->name('inventory.stock.in');
+    )->name('inventory.stock.in');
 
 
     Route::post(
@@ -376,8 +324,7 @@ Route::middleware([
             InventoryController::class,
             'stockOut'
         ]
-    )
-    ->name('inventory.stock.out');
+    )->name('inventory.stock.out');
 
 
     /*
