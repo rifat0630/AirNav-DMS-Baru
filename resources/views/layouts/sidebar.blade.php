@@ -1,63 +1,203 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="airnav-sidebar">
 
-    <!-- Brand Logo -->
-    <a href="{{ route('dashboard') }}" class="brand-link">
-        <span class="brand-text font-weight-light">
-            AirNav DMS
-        </span>
-    </a>
+    {{-- BRAND --}}
+    <div class="airnav-brand">
+        <a href="{{ route('dashboard') }}" class="airnav-brand-link">
+            <span class="airnav-brand-main">
+                AirNav <span>DMS</span>
+            </span>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
+            <span class="airnav-brand-subtitle">
+                ENTERPRISE CONTROL
+            </span>
+        </a>
+    </div>
 
-        <!-- Sidebar Menu -->
-        <nav class="mt-2">
 
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+    {{-- SIDEBAR MENU --}}
+    <div class="airnav-sidebar-content">
 
-                <!-- Dashboard -->
-                <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link">
-                        <i class="nav-icon fas fa-home"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
+        {{-- MAIN MENU --}}
+        <div class="airnav-menu-section">
+            <div class="airnav-section-title">
+                MAIN MENU
+            </div>
 
-                <!-- Dokumen -->
-                <li class="nav-item">
-                    <a href="{{ route('documents.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-folder"></i>
-                        <p>Dokumen</p>
-                    </a>
-                </li>
+            {{-- Dashboard --}}
+            <a href="{{ route('dashboard') }}"
+               class="airnav-menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
 
-                <!-- Menu e-Logbook Facility -->
-                <li class="nav-item">
-                    <a href="{{ route('logbook.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-book"></i>
-                        <p>e-Logbook Facility</p>
-                    </a>
-                </li>
+                <span class="airnav-menu-icon">
+                    <i class="fas fa-th-large"></i>
+                </span>
 
-                <!-- Kategori -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-list"></i>
-                        <p>Kategori</p>
-                    </a>
-                </li>
+                <span>Dashboard</span>
+            </a>
 
-                <!-- User -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>User</p>
-                    </a>
-                </li>
 
-            </ul>
+            {{-- e-Logbook Facility --}}
+            <a href="{{ route('logbook.index') }}"
+               class="airnav-menu-item {{ request()->routeIs('logbook.*') ? 'active' : '' }}">
 
-        </nav>
+                <span class="airnav-menu-icon">
+                    <i class="fas fa-book-open"></i>
+                </span>
+
+                <span>e-Logbook Facility</span>
+            </a>
+        </div>
+
+
+        {{-- DOKUMEN --}}
+        <div class="airnav-menu-section">
+
+            <div class="airnav-section-title">
+                DOKUMEN
+            </div>
+
+
+            {{-- Daftar Dokumen --}}
+            <a href="{{ route('documents.index') }}"
+               class="airnav-menu-item {{ request()->routeIs('documents.index', 'documents.show', 'documents.edit') ? 'active' : '' }}">
+
+                <span class="airnav-menu-icon">
+                    <i class="far fa-file-alt"></i>
+                </span>
+
+                <span>Daftar Dokumen</span>
+            </a>
+
+
+            {{-- Upload Dokumen --}}
+            <a href="{{ route('documents.create') }}"
+               class="airnav-menu-item {{ request()->routeIs('documents.create') ? 'active' : '' }}">
+
+                <span class="airnav-menu-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </span>
+
+                <span>Upload Dokumen</span>
+            </a>
+
+        </div>
+
+
+        {{-- MASTER --}}
+        <div class="airnav-menu-section">
+
+            <div class="airnav-section-title">
+                MASTER
+            </div>
+
+
+            {{-- Kategori --}}
+            <a href="#"
+               class="airnav-menu-item">
+
+                <span class="airnav-menu-icon">
+                    <i class="far fa-folder"></i>
+                </span>
+
+                <span>Kategori</span>
+            </a>
+
+
+            {{-- User --}}
+            <a href="{{ route('users.index') }}"
+               class="airnav-menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+
+                <span class="airnav-menu-icon">
+                    <i class="fas fa-users"></i>
+                </span>
+
+                <span>User</span>
+            </a>
+
+
+            {{-- Teknisi --}}
+            <a href="{{ route('technicians.index') }}"
+               class="airnav-menu-item {{ request()->routeIs('technicians.*') ? 'active' : '' }}">
+
+                <span class="airnav-menu-icon">
+                    <i class="fas fa-user-cog"></i>
+                </span>
+
+                <span>Teknisi</span>
+            </a>
+
+
+            {{-- Inventory --}}
+            <a href="{{ route('inventory.index') }}"
+               class="airnav-menu-item {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
+
+                <span class="airnav-menu-icon">
+                    <i class="fas fa-box"></i>
+                </span>
+
+                <span>Inventory Barang</span>
+            </a>
+
+        </div>
+
+
+        {{-- LAPORAN --}}
+        <div class="airnav-menu-section">
+
+            <div class="airnav-section-title">
+                LAPORAN
+            </div>
+
+
+            {{-- Activity Log --}}
+            <a href="{{ route('activity_logs.index') }}"
+               class="airnav-menu-item {{ request()->routeIs('activity_logs.*') ? 'active' : '' }}">
+
+                <span class="airnav-menu-icon">
+                    <i class="fas fa-history"></i>
+                </span>
+
+                <span>Activity Log</span>
+            </a>
+
+        </div>
+
+
+        {{-- AKUN --}}
+        <div class="airnav-menu-section airnav-account-section">
+
+            <div class="airnav-section-title">
+                AKUN
+            </div>
+
+
+            {{-- Settings / Profile --}}
+            <a href="{{ route('profile.edit') }}"
+               class="airnav-menu-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+
+                <span class="airnav-menu-icon">
+                    <i class="fas fa-cog"></i>
+                </span>
+
+                <span>Settings</span>
+            </a>
+
+
+            {{-- Logout --}}
+            <form method="POST" action="{{ route('logout') }}" class="airnav-logout-form">
+                @csrf
+
+                <button type="submit" class="airnav-menu-item airnav-logout-button">
+
+                    <span class="airnav-menu-icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </span>
+
+                    <span>Logout</span>
+
+                </button>
+            </form>
+
+        </div>
 
     </div>
 
