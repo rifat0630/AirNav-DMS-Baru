@@ -1,0 +1,1701 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   AIRNAV DMS - SIDEBAR
+   FINAL VERSION
+   ========================================================= */
+
+:root {
+    /* ==========================================
+       SIDEBAR SIZE
+       Ubah angka ini untuk memperbesar/memperkecil
+       ========================================== */
+
+    --airnav-sidebar-width: 50px;
+
+    /* ==========================================
+       SIDEBAR FONT
+       ========================================== */
+
+    --airnav-sidebar-font-size: 16px;
+    --airnav-sidebar-font-weight: 500;
+
+    /* ==========================================
+       COLORS
+       ========================================== */
+
+    --airnav-sidebar-bg: #0b142d;
+    --airnav-sidebar-border: #1c2942;
+
+    --airnav-sidebar-text: #c8d1e2;
+    --airnav-sidebar-muted: #8d9ab0;
+
+    --airnav-sidebar-active: #2f68e8;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.airnav-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: var(--airnav-sidebar-width);
+    height: 100vh;
+
+    background: var(--airnav-sidebar-bg);
+
+    color: #ffffff;
+
+    z-index: 1030;
+
+    overflow-y: auto;
+
+    border-right: 1px solid var(--airnav-sidebar-border);
+
+    /* Membuat rendering font lebih bersih */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    text-rendering: optimizeLegibility;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.airnav-brand {
+    height: 105px;
+
+    padding: 28px 28px 20px;
+
+    border-bottom: 1px solid var(--airnav-sidebar-border);
+
+    display: flex;
+    align-items: flex-start;
+}
+
+
+.airnav-brand-link {
+    display: block;
+
+    text-decoration: none !important;
+
+    width: 100%;
+}
+
+
+/* LOGO */
+
+.airnav-brand-main {
+    display: block;
+
+    color: #ffffff;
+
+    font-size: 28px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.6px;
+
+    line-height: 1.1;
+
+    white-space: nowrap;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+.airnav-brand-main span {
+    color: #2f70ed;
+
+    font-weight: 750;
+}
+
+
+/* SUBTITLE */
+
+.airnav-brand-subtitle {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--airnav-sidebar-muted);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   SIDEBAR CONTENT
+   ========================================================= */
+
+.airnav-sidebar-content {
+    padding: 20px 18px 30px;
+}
+
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.airnav-menu-section {
+    margin-bottom: 24px;
+}
+
+
+.airnav-section-title {
+    color: var(--airnav-sidebar-muted);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+
+    line-height: 1.2;
+
+    padding: 0 14px;
+
+    margin-bottom: 9px;
+
+    text-transform: uppercase;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =========================================================
+   MENU ITEM
+   ========================================================= */
+
+.airnav-menu-item {
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    min-height: 54px;
+
+    padding: 0 14px;
+
+    margin-bottom: 3px;
+
+    color: var(--airnav-sidebar-text) !important;
+
+    background: transparent;
+
+    border-radius: 9px;
+
+    text-decoration: none !important;
+
+    font-size: var(--airnav-sidebar-font-size);
+
+    font-weight: var(--airnav-sidebar-font-weight);
+
+    letter-spacing: -0.1px;
+
+    line-height: 1.2;
+
+    transition:
+        background-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    text-rendering: optimizeLegibility;
+}
+
+
+/* HOVER */
+
+.airnav-menu-item:hover {
+    color: #ffffff !important;
+
+    background: #172545;
+
+    text-decoration: none !important;
+}
+
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.airnav-menu-icon {
+    width: 28px;
+
+    min-width: 28px;
+
+    height: 28px;
+
+    margin-right: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #c8d1e2;
+
+    font-size: 17px;
+
+    line-height: 1;
+
+    transition: color 0.18s ease;
+}
+
+
+/* =========================================================
+   ACTIVE
+   ========================================================= */
+
+.airnav-menu-item.active {
+    background: var(--airnav-sidebar-active);
+
+    color: #ffffff !important;
+
+    font-weight: 650;
+
+    box-shadow:
+        0 4px 12px rgba(47, 104, 232, 0.20);
+}
+
+
+.airnav-menu-item.active .airnav-menu-icon {
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+.airnav-logout-form {
+    margin: 0;
+
+    padding: 0;
+}
+
+
+.airnav-logout-button {
+    border: none;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    font-family: inherit;
+}
+
+
+/* =========================================================
+   ACCOUNT
+   ========================================================= */
+
+.airnav-account-section {
+    padding-top: 4px;
+
+    margin-top: 7px;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.airnav-sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+
+.airnav-sidebar::-webkit-scrollbar-track {
+    background: var(--airnav-sidebar-bg);
+}
+
+
+.airnav-sidebar::-webkit-scrollbar-thumb {
+    background: #263654;
+
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.content-wrapper {
+    margin-left: var(--airnav-sidebar-width) !important;
+
+    min-height: 100vh;
+
+    background: #f6f8fc;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.airnav-header {
+    left: var(--airnav-sidebar-width);
+}
+
+
+/* =========================================================
+   COLLAPSED SIDEBAR
+   ========================================================= */
+
+body.airnav-sidebar-collapsed .airnav-sidebar {
+    width: 88px;
+}
+
+
+body.airnav-sidebar-collapsed .airnav-header {
+    left: 88px;
+}
+
+
+body.airnav-sidebar-collapsed .content-wrapper {
+    margin-left: 88px !important;
+}
+
+
+body.airnav-sidebar-collapsed .airnav-brand-main,
+body.airnav-sidebar-collapsed .airnav-brand-subtitle,
+body.airnav-sidebar-collapsed .airnav-section-title,
+body.airnav-sidebar-collapsed
+.airnav-menu-item > span:not(.airnav-menu-icon) {
+    display: none;
+}
+
+
+body.airnav-sidebar-collapsed .airnav-brand {
+    padding-left: 28px;
+
+    padding-right: 28px;
+}
+
+
+body.airnav-sidebar-collapsed .airnav-menu-item {
+    justify-content: center;
+
+    padding-left: 0;
+
+    padding-right: 0;
+}
+
+
+body.airnav-sidebar-collapsed .airnav-menu-icon {
+    margin-right: 0;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .airnav-sidebar {
+        width: 260px;
+
+        transform: translateX(-100%);
+
+        transition: transform 0.25s ease;
+    }
+
+    .airnav-header {
+        left: 0;
+    }
+
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    .airnav-user {
+        min-width: auto;
+    }
+
+    .airnav-user-info {
+        display: none;
+    }
+
+    body.airnav-sidebar-collapsed .airnav-sidebar {
+        width: 260px;
+
+        transform: translateX(0);
+    }
+
+    body.airnav-sidebar-collapsed .airnav-header {
+        left: 0;
+    }
+
+    body.airnav-sidebar-collapsed .content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    body.airnav-sidebar-collapsed .airnav-brand-main,
+    body.airnav-sidebar-collapsed .airnav-brand-subtitle,
+    body.airnav-sidebar-collapsed .airnav-section-title,
+    body.airnav-sidebar-collapsed
+    .airnav-menu-item > span:not(.airnav-menu-icon) {
+        display: block;
+    }
+
+    body.airnav-sidebar-collapsed .airnav-menu-item {
+        justify-content: flex-start;
+
+        padding-left: 14px;
+
+        padding-right: 14px;
+    }
+
+    body.airnav-sidebar-collapsed .airnav-menu-icon {
+        margin-right: 12px;
+    }
+}
+
+/* =========================================================
+   AIRNAV DMS - HEADER
+   ========================================================= */
+
+.airnav-header {
+    position: fixed;
+    top: 0;
+    left: 320px;
+    right: 0;
+
+    height: 92px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #dfe5ef;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 28px 0 36px;
+
+    z-index: 1020;
+}
+
+
+/* LEFT */
+
+.airnav-header-left {
+    display: flex;
+    align-items: center;
+}
+
+
+/* RIGHT */
+
+.airnav-header-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+
+/* HEADER BUTTON */
+
+.airnav-header-button {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: #64748b;
+
+    font-size: 20px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    text-decoration: none !important;
+
+    transition: all 0.2s ease;
+}
+
+.airnav-header-button:hover {
+    background: #f1f5f9;
+    color: #2563eb;
+}
+
+
+/* NOTIFICATION */
+
+.airnav-notification {
+    position: relative;
+}
+
+.airnav-notification-badge {
+    position: absolute;
+
+    top: 1px;
+    right: 0;
+
+    min-width: 20px;
+    height: 20px;
+
+    padding: 0 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #dc2626;
+
+    color: #ffffff;
+
+    border-radius: 50%;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+/* DIVIDER */
+
+.airnav-header-divider {
+    width: 1px;
+    height: 38px;
+
+    background: #d7deea;
+
+    margin: 0 8px 0 4px;
+}
+
+
+/* USER */
+
+.airnav-user {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 360px;
+}
+
+
+/* USER INFORMATION */
+
+.airnav-user-info {
+    text-align: left;
+}
+
+.airnav-user-name {
+    color: #20252d;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+}
+
+.airnav-user-role {
+    margin-top: 3px;
+
+    color: #64748b;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+
+/* AVATAR */
+
+.airnav-user-avatar {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eef4ff;
+
+    border: 1px solid #dbe7ff;
+
+    color: #2563eb;
+
+    border-radius: 50%;
+
+    font-size: 19px;
+}
+
+
+/* ARROW */
+
+.airnav-user-arrow {
+    color: #64748b;
+
+    font-size: 12px;
+
+    margin-left: 2px;
+}
+
+
+/* MAIN CONTENT */
+
+.content-wrapper {
+    margin-left: 320px !important;
+
+    padding-top: 92px;
+
+    min-height: 100vh;
+
+    background: #f6f8fc;
+}
+
+
+/* CONTENT */
+
+.content-wrapper .content {
+    padding-top: 0 !important;
+}
+
+
+/* =========================================================
+   SIDEBAR COLLAPSE
+   ========================================================= */
+
+body.airnav-sidebar-collapsed .airnav-sidebar {
+    width: 88px;
+}
+
+body.airnav-sidebar-collapsed .airnav-header {
+    left: 88px;
+}
+
+body.airnav-sidebar-collapsed .content-wrapper {
+    margin-left: 88px !important;
+}
+
+
+/* Hide sidebar text when collapsed */
+
+body.airnav-sidebar-collapsed .airnav-brand-main,
+body.airnav-sidebar-collapsed .airnav-brand-subtitle,
+body.airnav-sidebar-collapsed .airnav-section-title,
+body.airnav-sidebar-collapsed .airnav-menu-item > span:not(.airnav-menu-icon) {
+    display: none;
+}
+
+
+body.airnav-sidebar-collapsed .airnav-brand {
+    padding-left: 28px;
+    padding-right: 28px;
+}
+
+
+body.airnav-sidebar-collapsed .airnav-menu-item {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+body.airnav-sidebar-collapsed .airnav-menu-icon {
+    margin-right: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .airnav-sidebar {
+        width: 260px;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+    }
+
+    .airnav-header {
+        left: 0;
+    }
+
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    .airnav-user {
+        min-width: auto;
+    }
+
+    .airnav-user-info {
+        display: none;
+    }
+
+    body.airnav-sidebar-collapsed .airnav-sidebar {
+        width: 260px;
+        transform: translateX(0);
+    }
+
+    body.airnav-sidebar-collapsed .airnav-header {
+        left: 0;
+    }
+
+    body.airnav-sidebar-collapsed .content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    body.airnav-sidebar-collapsed .airnav-brand-main,
+    body.airnav-sidebar-collapsed .airnav-brand-subtitle,
+    body.airnav-sidebar-collapsed .airnav-section-title,
+    body.airnav-sidebar-collapsed .airnav-menu-item > span:not(.airnav-menu-icon) {
+        display: block;
+    }
+
+    body.airnav-sidebar-collapsed .airnav-menu-item {
+        justify-content: flex-start;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    body.airnav-sidebar-collapsed .airnav-menu-icon {
+        margin-right: 12px;
+    }
+}
+
+/* =========================================================
+   AIRNAV DMS - DASHBOARD
+   ========================================================= */
+
+.airnav-dashboard {
+    padding: 26px 18px 35px;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.airnav-page-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 42px;
+}
+
+
+.airnav-page-title {
+    margin: 0;
+
+    color: #171b21;
+
+    font-size: 40px;
+
+    font-weight: 700;
+
+    letter-spacing: -1.5px;
+
+    line-height: 1.1;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+.airnav-page-subtitle {
+    margin: 10px 0 0;
+
+    color: #63728a;
+
+    font-size: 16px;
+
+    font-weight: 400;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   NEW DOCUMENT BUTTON
+   ========================================================= */
+
+.airnav-new-document {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 13px;
+
+    min-width: 210px;
+
+    height: 50px;
+
+    padding: 0 24px;
+
+    background: #0757d5;
+
+    color: #ffffff !important;
+
+    border-radius: 9px;
+
+    text-decoration: none !important;
+
+    font-size: 16px;
+
+    font-weight: 650;
+
+    transition: all 0.2s ease;
+
+    box-shadow: 0 4px 12px rgba(7, 87, 213, 0.15);
+}
+
+
+.airnav-new-document:hover {
+    background: #064dbd;
+
+    transform: translateY(-1px);
+
+    color: #ffffff !important;
+}
+
+
+.airnav-new-document i {
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   STATISTICS GRID
+   ========================================================= */
+
+.airnav-stat-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 28px;
+
+    margin-bottom: 54px;
+}
+
+
+.airnav-stat-card {
+    min-height: 135px;
+
+    padding: 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: #ffffff;
+
+    border: 1px solid #dce4ef;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 5px 18px rgba(24, 43, 73, 0.04);
+}
+
+
+.airnav-stat-content {
+    min-width: 0;
+}
+
+
+.airnav-stat-label {
+    color: #596b85;
+
+    font-size: 17px;
+
+    font-weight: 500;
+
+    line-height: 1.3;
+
+    margin-bottom: 22px;
+}
+
+
+.airnav-stat-number {
+    color: #191d23;
+
+    font-size: 34px;
+
+    font-weight: 650;
+
+    line-height: 1;
+
+    letter-spacing: -0.5px;
+}
+
+
+/* =========================================================
+   STAT ICON
+   ========================================================= */
+
+.airnav-stat-icon {
+    width: 38px;
+
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 18px;
+}
+
+
+.airnav-stat-icon.blue {
+    color: #1761d8;
+
+    background: #e5efff;
+}
+
+
+.airnav-stat-icon.gray {
+    color: #626a74;
+
+    background: #e8e9eb;
+}
+
+
+/* =========================================================
+   LOWER GRID
+   ========================================================= */
+
+.airnav-dashboard-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(300px, 0.92fr)
+        minmax(500px, 2fr);
+
+    gap: 28px;
+
+    align-items: start;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.airnav-section-heading {
+    margin: 0 0 28px;
+
+    color: #171c23;
+
+    font-size: 21px;
+
+    font-weight: 650;
+
+    line-height: 1.2;
+
+    letter-spacing: -0.3px;
+}
+
+
+/* =========================================================
+   QUICK ACTION
+   ========================================================= */
+
+.airnav-action-card {
+    min-height: 120px;
+
+    margin-bottom: 16px;
+
+    padding: 20px 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #dce4ef;
+
+    border-radius: 17px;
+
+    text-decoration: none !important;
+
+    box-shadow:
+        0 5px 18px rgba(24, 43, 73, 0.035);
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+
+
+.airnav-action-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #cbd9ec;
+
+    box-shadow:
+        0 8px 24px rgba(24, 43, 73, 0.08);
+}
+
+
+.airnav-action-icon {
+    width: 54px;
+
+    height: 54px;
+
+    flex: 0 0 54px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 22px;
+}
+
+
+.airnav-action-icon.blue {
+    color: #1260dc;
+
+    background: #e8f0ff;
+}
+
+
+.airnav-action-icon.gray {
+    color: #596270;
+
+    background: #e8e9eb;
+}
+
+
+.airnav-action-content {
+    min-width: 0;
+}
+
+
+.airnav-action-title {
+    color: #22272f;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    line-height: 1.3;
+
+    margin-bottom: 4px;
+}
+
+
+.airnav-action-description {
+    color: #687992;
+
+    font-size: 16px;
+
+    font-weight: 400;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   STATUS CARD
+   ========================================================= */
+
+.airnav-status-card {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dce4ef;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 5px 18px rgba(24, 43, 73, 0.035);
+}
+
+
+.airnav-status-row {
+    min-height: 101px;
+
+    padding: 20px 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    border-bottom: 1px solid #e3e8ef;
+}
+
+
+.airnav-status-row:last-child {
+    border-bottom: none;
+}
+
+
+/* STATUS LEFT */
+
+.airnav-status-left {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    min-width: 0;
+}
+
+
+.airnav-status-icon {
+    width: 46px;
+
+    height: 46px;
+
+    flex: 0 0 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 18px;
+}
+
+
+.airnav-status-icon.warning {
+    color: #e48a00;
+
+    background: #fff6dc;
+}
+
+
+.airnav-status-icon.danger {
+    color: #e53935;
+
+    background: #fff0f0;
+}
+
+
+.airnav-status-icon.success {
+    color: #12a56b;
+
+    background: #e9faf3;
+}
+
+
+.airnav-status-text {
+    color: #303944;
+
+    font-size: 16px;
+
+    font-weight: 500;
+
+    line-height: 1.4;
+}
+
+
+/* STATUS RIGHT */
+
+.airnav-status-right {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    flex-shrink: 0;
+}
+
+
+/* STATUS BADGE */
+
+.airnav-status-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 92px;
+
+    height: 34px;
+
+    padding: 0 15px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+.airnav-status-badge.warning {
+    color: #bd7200;
+
+    background: #fff1c7;
+}
+
+
+.airnav-status-badge.danger {
+    color: #d52e2e;
+
+    background: #ffe1e1;
+}
+
+
+.airnav-status-badge.success {
+    color: #07945f;
+
+    background: #d9f7ea;
+}
+
+
+/* DETAIL LINK */
+
+.airnav-detail-link {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #1e65dc !important;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    text-decoration: none !important;
+}
+
+
+.airnav-detail-link:hover {
+    color: #0c4db9 !important;
+}
+
+
+.airnav-detail-link i {
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   DASHBOARD RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .airnav-page-title {
+        font-size: 42px;
+    }
+
+    .airnav-stat-grid {
+        gap: 18px;
+    }
+
+    .airnav-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .airnav-dashboard {
+        padding: 25px 10px 35px;
+    }
+
+    .airnav-page-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        margin-bottom: 30px;
+    }
+
+    .airnav-page-title {
+        font-size: 34px;
+    }
+
+    .airnav-page-subtitle {
+        font-size: 16px;
+    }
+
+    .airnav-new-document {
+        width: 100%;
+    }
+
+    .airnav-stat-grid {
+        grid-template-columns: 1fr;
+
+        gap: 15px;
+
+        margin-bottom: 38px;
+    }
+
+    .airnav-stat-card {
+        min-height: 130px;
+    }
+
+    .airnav-section-heading {
+        font-size: 22px;
+    }
+
+    .airnav-status-row {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+    .airnav-status-right {
+        width: 100%;
+
+        justify-content: flex-end;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .airnav-page-title {
+        font-size: 29px;
+    }
+
+    .airnav-stat-number {
+        font-size: 32px;
+    }
+
+    .airnav-action-card {
+        padding: 20px;
+
+        gap: 15px;
+    }
+
+    .airnav-action-icon {
+        width: 48px;
+
+        height: 48px;
+
+        flex-basis: 48px;
+    }
+
+    .airnav-status-row {
+        padding: 18px;
+    }
+
+}
+
+/* =========================================================
+   AIRNAV DMS - WIDE / COMPACT DASHBOARD
+   ========================================================= */
+
+:root {
+    --airnav-sidebar-width: 290px;
+}
+
+
+/* SIDEBAR */
+
+.airnav-sidebar {
+    width: var(--airnav-sidebar-width) !important;
+}
+
+
+/* HEADER */
+
+.airnav-header {
+    left: var(--airnav-sidebar-width) !important;
+}
+
+
+/* CONTENT */
+
+.content-wrapper {
+    margin-left: var(--airnav-sidebar-width) !important;
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.airnav-dashboard {
+    width: 100% !important;
+    max-width: none !important;
+
+    padding: 24px 18px 35px !important;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.airnav-page-header {
+    margin-bottom: 30px !important;
+}
+
+
+.airnav-page-title {
+    font-size: 40px !important;
+    line-height: 1.1 !important;
+    letter-spacing: -1px !important;
+}
+
+
+.airnav-page-subtitle {
+    margin-top: 8px !important;
+
+    font-size: 16px !important;
+}
+
+
+/* BUTTON */
+
+.airnav-new-document {
+    height: 46px !important;
+
+    min-width: 195px !important;
+
+    padding: 0 20px !important;
+
+    font-size: 15px !important;
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.airnav-stat-grid {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 22px !important;
+
+    margin-bottom: 45px !important;
+}
+
+
+.airnav-stat-card {
+    min-height: 130px !important;
+
+    padding: 22px 25px !important;
+
+    border-radius: 15px !important;
+}
+
+
+.airnav-stat-label {
+    font-size: 15px !important;
+
+    margin-bottom: 17px !important;
+}
+
+
+.airnav-stat-number {
+    font-size: 34px !important;
+}
+
+
+/* =========================================================
+   LOWER SECTION
+   ========================================================= */
+
+.airnav-dashboard-grid {
+    grid-template-columns:
+        minmax(320px, 0.85fr)
+        minmax(600px, 2fr) !important;
+
+    gap: 30px !important;
+}
+
+
+.airnav-section-heading {
+    margin-bottom: 22px !important;
+
+    font-size: 21px !important;
+}
+
+
+/* =========================================================
+   QUICK ACTION
+   ========================================================= */
+
+.airnav-action-card {
+    min-height: 105px !important;
+
+    margin-bottom: 15px !important;
+
+    padding: 19px 23px !important;
+
+    gap: 19px !important;
+
+    border-radius: 15px !important;
+}
+
+
+.airnav-action-icon {
+    width: 48px !important;
+
+    height: 48px !important;
+
+    flex-basis: 48px !important;
+
+    font-size: 20px !important;
+}
+
+
+.airnav-action-title {
+    font-size: 16px !important;
+
+    margin-bottom: 3px !important;
+}
+
+
+.airnav-action-description {
+    font-size: 14px !important;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.airnav-status-row {
+    min-height: 90px !important;
+
+    padding: 17px 24px !important;
+}
+
+
+.airnav-status-icon {
+    width: 42px !important;
+
+    height: 42px !important;
+
+    flex-basis: 42px !important;
+
+    font-size: 17px !important;
+}
+
+
+.airnav-status-text {
+    font-size: 15px !important;
+}
+
+
+.airnav-status-badge {
+    height: 31px !important;
+
+    font-size: 12px !important;
+
+    padding: 0 13px !important;
+}
+
+
+.airnav-detail-link {
+    font-size: 13px !important;
+}
+
+
+/* =========================================================
+   DESKTOP WIDE
+   ========================================================= */
+
+@media (min-width: 1400px) {
+
+    .airnav-dashboard {
+        padding-left: 28px !important;
+        padding-right: 28px !important;
+    }
+
+}
+
+
+/* =========================================================
+   COLLAPSED SIDEBAR
+   ========================================================= */
+
+body.airnav-sidebar-collapsed .airnav-sidebar {
+    width: 88px !important;
+}
+
+body.airnav-sidebar-collapsed .airnav-header {
+    left: 88px !important;
+}
+
+body.airnav-sidebar-collapsed .content-wrapper {
+    margin-left: 88px !important;
+}

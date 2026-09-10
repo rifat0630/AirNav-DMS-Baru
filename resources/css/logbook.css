@@ -1,0 +1,818 @@
+/* =========================================================
+   AIRNAV DMS - FACILITY LOGBOOK
+   ========================================================= */
+
+.airnav-logbook {
+    width: 100%;
+    padding: 28px 18px 40px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.airnav-logbook-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 28px;
+}
+
+
+.airnav-logbook-title {
+    margin: 0;
+
+    color: #171b21;
+
+    font-size: 36px;
+    font-weight: 700;
+
+    line-height: 1.15;
+    letter-spacing: -1px;
+}
+
+
+.airnav-logbook-subtitle {
+    margin: 8px 0 0;
+
+    color: #63728a;
+
+    font-size: 15px;
+    font-weight: 400;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ADD BUTTON
+   ========================================================= */
+
+.airnav-logbook-add {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    min-width: 185px;
+    height: 46px;
+
+    padding: 0 20px;
+
+    background: #0757d5;
+
+    color: #ffffff !important;
+
+    border-radius: 9px;
+
+    text-decoration: none !important;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    box-shadow:
+        0 4px 12px rgba(7, 87, 213, 0.15);
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.airnav-logbook-add:hover {
+    background: #064dbd;
+
+    color: #ffffff !important;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 18px rgba(7, 87, 213, 0.20);
+}
+
+
+.airnav-logbook-add i {
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   ALERT
+   ========================================================= */
+
+.airnav-logbook-alert {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 13px 16px;
+
+    margin-bottom: 20px;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+.airnav-logbook-alert.success {
+    color: #087a50;
+
+    background: #e9faf3;
+
+    border: 1px solid #c8f0df;
+}
+
+
+.airnav-logbook-alert.error {
+    color: #c52e2e;
+
+    background: #fff0f0;
+
+    border: 1px solid #ffd2d2;
+}
+
+
+/* =========================================================
+   SEARCH CARD
+   ========================================================= */
+
+.airnav-logbook-search-card {
+    width: 100%;
+
+    padding: 16px;
+
+    margin-bottom: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #dce4ef;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 4px 15px rgba(24, 43, 73, 0.035);
+
+    box-sizing: border-box;
+}
+
+
+.airnav-logbook-search-form {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    width: 100%;
+}
+
+
+.airnav-logbook-search-input {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.airnav-logbook-search-input i {
+    position: absolute;
+
+    left: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #8b98aa;
+
+    font-size: 15px;
+
+    pointer-events: none;
+}
+
+
+.airnav-logbook-search-input input {
+    width: 100%;
+
+    height: 44px;
+
+    padding: 0 16px 0 43px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d6dfeb;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #252b33;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.airnav-logbook-search-input input::placeholder {
+    color: #9aa6b6;
+}
+
+
+.airnav-logbook-search-input input:focus {
+    border-color: #3c7bea;
+
+    box-shadow:
+        0 0 0 3px rgba(60, 123, 234, 0.10);
+}
+
+
+.airnav-logbook-search-button {
+    height: 44px;
+
+    min-width: 82px;
+
+    padding: 0 18px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #0757d5;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.airnav-logbook-search-button:hover {
+    background: #064dbd;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   TABLE CARD
+   ========================================================= */
+
+.airnav-logbook-table-card {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #dce4ef;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 15px rgba(24, 43, 73, 0.035);
+}
+
+
+.airnav-logbook-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.airnav-logbook-table {
+    width: 100%;
+
+    min-width: 1050px;
+
+    border-collapse: collapse;
+
+    table-layout: auto;
+}
+
+
+.airnav-logbook-table thead {
+    background: #f7f9fc;
+}
+
+
+.airnav-logbook-table th {
+    height: 62px;
+
+    padding: 12px 16px;
+
+    border-bottom: 1px solid #dce4ef;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.45px;
+
+    line-height: 1.35;
+
+    text-align: left;
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+}
+
+
+.airnav-logbook-table td {
+    min-height: 92px;
+
+    padding: 15px 16px;
+
+    border-bottom: 1px solid #e7ebf1;
+
+    color: #303944;
+
+    font-size: 13px;
+
+    font-weight: 400;
+
+    line-height: 1.45;
+
+    vertical-align: middle;
+}
+
+
+.airnav-logbook-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+.airnav-logbook-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+
+.airnav-logbook-table tbody tr:hover {
+    background: #fafcff;
+}
+
+
+/* =========================================================
+   COLUMN SIZING
+   ========================================================= */
+
+.airnav-logbook-table .col-no {
+    width: 48px;
+
+    text-align: center;
+}
+
+
+.airnav-logbook-table .col-qr {
+    width: 125px;
+
+    text-align: center;
+}
+
+
+.airnav-logbook-table .col-kegiatan {
+    width: 220px;
+}
+
+
+.airnav-logbook-table .col-action {
+    width: 145px;
+}
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+.logbook-date {
+    color: #4f5d71 !important;
+
+    white-space: nowrap;
+
+    font-size: 12px !important;
+}
+
+
+/* =========================================================
+   TECHNICIAN
+   ========================================================= */
+
+.logbook-technician {
+    color: #252c35 !important;
+
+    font-weight: 600 !important;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   ACTIVITY
+   ========================================================= */
+
+.logbook-activity {
+    max-width: 250px;
+}
+
+
+.logbook-activity-title {
+    color: #303944;
+
+    display: -webkit-box;
+
+    -webkit-box-orient: vertical;
+
+    -webkit-line-clamp: 3;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CREATED BY
+   ========================================================= */
+
+.logbook-created-by {
+    color: #59677a !important;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   QR
+   ========================================================= */
+
+.airnav-logbook-qr {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+}
+
+
+.airnav-logbook-qr img {
+    display: block;
+
+    width: 70px;
+    height: 70px;
+
+    padding: 4px;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e6ee;
+
+    border-radius: 5px;
+
+    object-fit: contain;
+}
+
+
+.airnav-logbook-qr span {
+    color: #7a8798;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+}
+
+
+.airnav-logbook-no-qr {
+    color: #d52e2e;
+
+    font-size: 11px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.airnav-logbook-status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 105px;
+
+    min-height: 30px;
+
+    padding: 5px 12px;
+
+    border-radius: 20px;
+
+    box-sizing: border-box;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+.airnav-logbook-status.verified {
+    color: #07865a;
+
+    background: #dff7ec;
+}
+
+
+.airnav-logbook-status.pending {
+    color: #b87500;
+
+    background: #fff0c7;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.airnav-logbook-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+}
+
+
+.airnav-logbook-action {
+    min-width: 32px;
+    height: 32px;
+
+    padding: 0 9px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    text-decoration: none !important;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+.airnav-logbook-action:hover {
+    transform: translateY(-1px);
+}
+
+
+.airnav-logbook-action.edit {
+    color: #ffffff !important;
+
+    background: #2563eb;
+}
+
+
+.airnav-logbook-action.edit:hover {
+    color: #ffffff !important;
+
+    background: #1d4ed8;
+}
+
+
+.airnav-logbook-action.scan {
+    color: #8a5700 !important;
+
+    background: #fff0bd;
+}
+
+
+.airnav-logbook-action.scan:hover {
+    color: #8a5700 !important;
+
+    background: #ffe69a;
+}
+
+
+.airnav-logbook-action.delete {
+    color: #ffffff;
+
+    background: #dc3545;
+}
+
+
+.airnav-logbook-action.delete:hover {
+    background: #c82333;
+}
+
+
+.airnav-logbook-delete-form {
+    margin: 0;
+
+    padding: 0;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.airnav-logbook-empty {
+    height: 180px;
+
+    text-align: center !important;
+
+    color: #8793a5 !important;
+}
+
+
+.airnav-logbook-empty i {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #aab5c4;
+
+    font-size: 28px;
+}
+
+
+.airnav-logbook-empty span {
+    font-size: 14px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.airnav-logbook-footer {
+    min-height: 58px;
+
+    padding: 0 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-top: 1px solid #e7ebf1;
+
+    box-sizing: border-box;
+}
+
+
+.airnav-logbook-total {
+    color: #7a8798;
+
+    font-size: 12px;
+}
+
+
+.airnav-logbook-total strong {
+    color: #4d5a6d;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .airnav-logbook {
+        padding: 25px 14px 35px;
+    }
+
+
+    .airnav-logbook-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        margin-bottom: 24px;
+    }
+
+
+    .airnav-logbook-add {
+        width: 100%;
+    }
+
+
+    .airnav-logbook-search-form {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    .airnav-logbook-search-button {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .airnav-logbook {
+        padding: 20px 10px 30px;
+    }
+
+
+    .airnav-logbook-title {
+        font-size: 30px;
+    }
+
+
+    .airnav-logbook-subtitle {
+        font-size: 14px;
+    }
+
+
+    .airnav-logbook-search-card {
+        padding: 12px;
+    }
+
+
+    .airnav-logbook-table {
+        min-width: 1000px;
+    }
+
+}

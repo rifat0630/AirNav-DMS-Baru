@@ -1,0 +1,275 @@
+/* =========================================================
+   AIRNAV DMS - HEADER
+   ========================================================= */
+
+.airnav-header {
+    position: fixed;
+
+    top: 0;
+    left: var(--airnav-sidebar-width);
+    right: 0;
+
+    height: 92px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #dfe5ef;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 28px 0 36px;
+
+    box-sizing: border-box;
+
+    z-index: 1020;
+}
+
+
+/* =========================================================
+   HEADER LEFT
+   ========================================================= */
+
+.airnav-header-left {
+    display: flex;
+
+    align-items: center;
+}
+
+
+/* =========================================================
+   HEADER RIGHT
+   ========================================================= */
+
+.airnav-header-right {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   HEADER BUTTON
+   ========================================================= */
+
+.airnav-header-button {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background: transparent;
+
+    color: #64748b;
+
+    font-size: 20px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    text-decoration: none !important;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.airnav-header-button:hover {
+    background: #f1f5f9;
+
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   NOTIFICATION
+   ========================================================= */
+
+.airnav-notification {
+    position: relative;
+}
+
+
+.airnav-notification-badge {
+    position: absolute;
+
+    top: 1px;
+    right: 0;
+
+    min-width: 20px;
+    height: 20px;
+
+    padding: 0 5px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #dc2626;
+
+    color: #ffffff;
+
+    border-radius: 50%;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.airnav-header-divider {
+    width: 1px;
+    height: 38px;
+
+    background: #d7deea;
+
+    margin: 0 8px 0 4px;
+}
+
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+.airnav-user {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 360px;
+}
+
+
+/* =========================================================
+   USER INFORMATION
+   ========================================================= */
+
+.airnav-user-info {
+    text-align: left;
+}
+
+
+.airnav-user-name {
+    color: #20252d;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+}
+
+
+.airnav-user-role {
+    margin-top: 3px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
+
+.airnav-user-avatar {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #eef4ff;
+
+    border: 1px solid #dbe7ff;
+
+    color: #2563eb;
+
+    border-radius: 50%;
+
+    font-size: 19px;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.airnav-user-arrow {
+    color: #64748b;
+
+    font-size: 12px;
+
+    margin-left: 2px;
+}
+
+
+/* =========================================================
+   COLLAPSED SIDEBAR
+   ========================================================= */
+
+body.airnav-sidebar-collapsed .airnav-header {
+    left: var(--airnav-sidebar-collapsed-width);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .airnav-header {
+        left: 0;
+
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+
+    .airnav-user {
+        min-width: auto;
+    }
+
+
+    .airnav-user-info {
+        display: none;
+    }
+
+
+    body.airnav-sidebar-collapsed .airnav-header {
+        left: 0;
+    }
+
+}
