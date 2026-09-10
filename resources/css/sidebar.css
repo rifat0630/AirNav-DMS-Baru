@@ -47,6 +47,48 @@
     transition: width 0.25s ease, transform 0.25s ease;
 }
 
+/* =========================================================
+   MAIN CONTENT OFFSET
+   ========================================================= */
+
+.content-wrapper {
+    margin-left: calc(var(--airnav-sidebar-width) + 12px) !important;
+    min-height: 100vh;
+    transition: margin-left 0.25s ease;
+}
+
+
+/* Jarak konten dari Topbar */
+.content-wrapper > .content {
+    padding-top: 105px !important;
+}
+
+
+/* Saat sidebar di-collapse */
+body.airnav-sidebar-collapsed .content-wrapper {
+    margin-left: calc(var(--airnav-sidebar-collapsed-width) + 12px) !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .content-wrapper,
+    body.airnav-sidebar-collapsed .content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    .content-wrapper > .content {
+        padding-top: 92px !important;
+    }
+
+}
+
+
+
 
 /* =========================================================
    BRAND

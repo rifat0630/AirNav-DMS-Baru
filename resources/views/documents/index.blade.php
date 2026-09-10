@@ -1,48 +1,45 @@
 @extends('adminlte::page')
 
-
 @section('title', 'Daftar Dokumen')
 
-
+@section('css')
+    @vite('resources/css/documents.css')
+@stop
 
 @section('content_header')
 
+<div class="airnav-document-header">
 
-<div class="d-flex justify-content-between align-items-center">
+    <div class="airnav-document-heading">
 
+        <div class="airnav-document-icon">
+            <i class="fas fa-folder-open"></i>
+        </div>
 
-    <h1>
+        <div>
+            <h1 class="airnav-document-title">
+                Daftar Dokumen
+            </h1>
 
-        <i class="fas fa-folder-open"></i>
+            <p class="airnav-document-subtitle">
+                Kelola dan pantau seluruh dokumen AirNav DMS
+            </p>
+        </div>
 
-        Daftar Dokumen
-
-    </h1>
-
-
-
+    </div>
 
     <a href="{{ route('documents.create') }}"
-       class="btn btn-primary">
-
+       class="airnav-document-add">
 
         <i class="fas fa-plus"></i>
 
-        Tambah Dokumen
-
+        <span>Tambah Dokumen</span>
 
     </a>
 
-
 </div>
 
-
 @stop
-
-
-
-
-
 
 @section('content')
 
