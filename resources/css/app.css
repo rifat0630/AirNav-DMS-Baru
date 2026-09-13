@@ -3,6 +3,8 @@
 @import './dashboard.css';
 @import './logbook.css';
 @import './documents.css';
+@import './technicians.css';
+@import './inventory.css';
 
 @tailwind base;
 @tailwind components;

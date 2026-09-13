@@ -115,3 +115,645 @@
     }
 
 }
+
+/* =========================================================
+   UPLOAD DOCUMENT PAGE
+   ========================================================= */
+
+.airnav-upload-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 24px;
+}
+
+.airnav-upload-page-header h1 {
+    margin: 0;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+.airnav-upload-page-header p {
+    margin: 7px 0 0;
+
+    font-size: 14px;
+    color: #6b7280;
+}
+
+
+/* =========================================================
+   UPLOAD CARD
+   ========================================================= */
+
+.airnav-upload-card {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e5eb;
+    border-radius: 12px;
+
+    padding: 30px 32px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================================================
+   DROPZONE
+   ========================================================= */
+
+.airnav-dropzone {
+    position: relative;
+
+    min-height: 245px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 30px;
+
+    border: 2px dashed #c9d1dc;
+    border-radius: 10px;
+
+    background: #fafbfc;
+
+    transition: all 0.2s ease;
+}
+
+.airnav-dropzone:hover,
+.airnav-dropzone.dragover {
+    border-color: #1f67d8;
+
+    background: #f5f9ff;
+}
+
+
+/* =========================================================
+   UPLOAD ICON
+   ========================================================= */
+
+.airnav-upload-icon {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 16px;
+
+    border-radius: 50%;
+
+    background: #e8f1ff;
+}
+
+.airnav-upload-icon i {
+    font-size: 28px;
+
+    color: #1769df;
+}
+
+
+/* =========================================================
+   DROPZONE TEXT
+   ========================================================= */
+
+.airnav-dropzone h3 {
+    margin: 0 0 8px;
+
+    font-size: 20px;
+    font-weight: 600;
+
+    color: #252a31;
+}
+
+.airnav-dropzone p {
+    margin: 0 0 12px;
+
+    font-size: 14px;
+
+    color: #697386;
+}
+
+.airnav-browse {
+    margin: 0 3px;
+
+    color: #1769df;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.airnav-browse:hover {
+    color: #0e55bd;
+
+    text-decoration: underline;
+}
+
+.airnav-dropzone > span {
+    font-size: 12px;
+
+    color: #7a8494;
+}
+
+
+/* Hide actual file input */
+.airnav-dropzone input[type="file"] {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SELECTED FILE
+   ========================================================= */
+
+.airnav-selected-file {
+    display: none;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 12px;
+
+    padding: 11px 14px;
+
+    border: 1px solid #d7e5fb;
+    border-radius: 8px;
+
+    background: #f4f8ff;
+
+    font-size: 13px;
+
+    color: #315d99;
+}
+
+.airnav-selected-file.show {
+    display: flex;
+}
+
+.airnav-selected-file i {
+    color: #1769df;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.airnav-upload-divider {
+    width: 100%;
+    height: 1px;
+
+    margin: 30px 0;
+
+    background: #e3e6eb;
+}
+
+
+/* =========================================================
+   FORM GROUP
+   ========================================================= */
+
+.airnav-form-group {
+    width: 100%;
+
+    margin-bottom: 23px;
+}
+
+.airnav-form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #343a40;
+}
+
+.airnav-form-group label span {
+    color: #dc3545;
+
+    margin-left: 2px;
+}
+
+
+/* =========================================================
+   INPUT & SELECT
+   ========================================================= */
+
+.airnav-form-group input,
+.airnav-form-group select {
+    width: 100%;
+    height: 46px;
+
+    padding: 0 14px;
+
+    border: 1px solid #cdd3db;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    color: #343a40;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.airnav-form-group input::placeholder {
+    color: #858d99;
+}
+
+.airnav-form-group input:focus,
+.airnav-form-group select:focus {
+    border-color: #2670dd;
+
+    box-shadow:
+        0 0 0 3px rgba(38, 112, 221, 0.10);
+}
+
+
+/* =========================================================
+   TWO COLUMN FORM
+   ========================================================= */
+
+.airnav-form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 24px;
+}
+
+
+/* =========================================================
+   SELECT ARROW
+   ========================================================= */
+
+.airnav-select-wrapper {
+    position: relative;
+}
+
+.airnav-select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+
+    padding-right: 42px;
+
+    cursor: pointer;
+}
+
+.airnav-select-wrapper i {
+    position: absolute;
+
+    top: 50%;
+    right: 15px;
+
+    transform: translateY(-50%);
+
+    font-size: 12px;
+
+    color: #687180;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   DATE INPUT
+   ========================================================= */
+
+.airnav-date-wrapper {
+    position: relative;
+}
+
+.airnav-date-wrapper input {
+    padding-right: 45px;
+}
+
+.airnav-date-wrapper i {
+    position: absolute;
+
+    top: 50%;
+    right: 15px;
+
+    transform: translateY(-50%);
+
+    font-size: 15px;
+
+    color: #687180;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   FORM HELP TEXT
+   ========================================================= */
+
+.airnav-form-group small {
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 12px;
+
+    color: #7b8492;
+}
+
+
+/* =========================================================
+   BUTTON AREA
+   ========================================================= */
+
+.airnav-upload-actions {
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 8px;
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.airnav-btn {
+    height: 44px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 22px;
+
+    border-radius: 7px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+/* Cancel */
+
+.airnav-btn-cancel {
+    min-width: 90px;
+
+    border: 1px solid #cbd1d8;
+
+    background: #ffffff;
+
+    color: #4b5563;
+}
+
+.airnav-btn-cancel:hover {
+    border-color: #adb5bf;
+
+    background: #f8f9fa;
+
+    color: #343a40;
+
+    text-decoration: none;
+}
+
+
+/* Primary */
+
+.airnav-btn-primary {
+    min-width: 150px;
+
+    border: 1px solid #1769df;
+
+    background: #1769df;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 2px 5px rgba(23, 105, 223, 0.18);
+}
+
+.airnav-btn-primary:hover {
+    border-color: #0f58c2;
+
+    background: #0f58c2;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 3px 8px rgba(23, 105, 223, 0.24);
+}
+
+
+/* =========================================================
+   ALERT
+   ========================================================= */
+
+.airnav-upload-card + .alert {
+    margin-top: 15px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .airnav-upload-page-header h1 {
+        font-size: 25px;
+    }
+
+    .airnav-upload-card {
+        padding: 22px 20px;
+    }
+
+    .airnav-form-row {
+        grid-template-columns: 1fr;
+
+        gap: 0;
+    }
+
+    .airnav-upload-actions {
+        justify-content: stretch;
+    }
+
+    .airnav-btn {
+        flex: 1;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .airnav-upload-page-header {
+        margin-bottom: 18px;
+    }
+
+    .airnav-upload-page-header h1 {
+        font-size: 23px;
+    }
+
+    .airnav-upload-page-header p {
+        font-size: 13px;
+    }
+
+    .airnav-upload-card {
+        padding: 18px 15px;
+    }
+
+    .airnav-dropzone {
+        min-height: 210px;
+
+        padding: 20px 12px;
+    }
+
+    .airnav-dropzone h3 {
+        font-size: 18px;
+    }
+
+    .airnav-upload-actions {
+        flex-direction: column-reverse;
+    }
+
+    .airnav-btn {
+        width: 100%;
+    }
+
+}
+
+/* =========================================================
+   SELECTED FILE PREVIEW
+   ========================================================= */
+
+.airnav-file-preview {
+    display: none;
+    width: min(560px, 90%);
+    align-items: center;
+    gap: 18px;
+    padding: 18px 20px;
+    border: 1px solid #d8e1ee;
+    border-radius: 10px;
+    background: #ffffff;
+    text-align: left;
+}
+
+.airnav-file-preview.show {
+    display: flex;
+}
+
+.airnav-file-preview-icon {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    background: #eef3f8;
+
+    font-size: 27px;
+    color: #64748b;
+}
+
+.airnav-file-preview-icon.pdf {
+    background: #fff1f1;
+    color: #dc2626;
+}
+
+.airnav-file-preview-icon.word {
+    background: #eef5ff;
+    color: #2563eb;
+}
+
+.airnav-file-preview-icon.excel {
+    background: #eefbf3;
+    color: #16a34a;
+}
+
+.airnav-file-preview-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.airnav-file-preview-info h4 {
+    margin: 0 0 5px;
+
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.airnav-file-preview-info p {
+    margin: 0;
+
+    font-size: 12px;
+    color: #7b8492;
+}
+
+.airnav-remove-file {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: #f1f3f5;
+    color: #6b7280;
+
+    cursor: pointer;
+}
+
+.airnav-remove-file:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}

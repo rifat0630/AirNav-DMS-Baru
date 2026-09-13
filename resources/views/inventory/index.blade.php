@@ -1,32 +1,38 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Inventory Barang')
 
 
-@section('content_header')
-
-<div class="d-flex justify-content-between align-items-center">
-
-    <h1>
-        <i class="fas fa-boxes"></i>
-        Inventory Barang
-    </h1>
-
-    <a
-        href="{{ route('inventory.create') }}"
-        class="btn btn-primary"
-    >
-        <i class="fas fa-plus"></i>
-        Tambah Barang
-    </a>
-
-</div>
-
-@stop
-
-
 @section('content')
 
+<div class="airnav-inventory-header">
+
+    <div class="airnav-inventory-title">
+
+        <div class="airnav-inventory-icon">
+            <i class="fas fa-box"></i>
+        </div>
+
+        <div>
+            <h1>Inventory Barang</h1>
+
+            <p>
+                Sistem Pemantauan Aset Fasilitas Telekomunikasi, Navigasi & Pengamatan Udara
+            </p>
+        </div>
+
+    </div>
+
+  <button
+    type="button"
+    class="airnav-inventory-add"
+    id="btnTambahBarang"
+>
+    <i class="fas fa-plus"></i>
+    <span>Tambah Barang</span>
+</button>
+
+</div>
 
 @if(session('success'))
 
@@ -75,62 +81,45 @@
 
 
 
-<div class="card">
+<div class="card airnav-inventory-card">
 
-    <div class="card-header">
-
-        <h3 class="card-title">
-
-            <strong>
-                <i class="fas fa-boxes"></i>
-                Data Barang
-            </strong>
-
-        </h3>
-
+    <div class="airnav-inventory-card-header">
+        <div class="airnav-inventory-card-title">
+            <i class="fas fa-database"></i>
+            <span>Data Barang</span>
+        </div>
     </div>
 
-
-    <div class="card-body">
-
-
-        {{-- SEARCH --}}
+    <div class="airnav-inventory-search-wrapper">
 
         <form
             method="GET"
             action="{{ route('inventory.index') }}"
-            class="mb-4"
+            class="airnav-inventory-search"
         >
 
-            <div class="input-group">
+            <div class="airnav-inventory-search-input">
+                <i class="fas fa-search"></i>
 
                 <input
                     type="text"
                     name="search"
-                    class="form-control"
                     value="{{ request('search') }}"
                     placeholder="Cari nama barang, kode barang, atau serial number..."
                 >
-
-                <div class="input-group-append">
-
-                    <button
-                        class="btn btn-secondary"
-                        type="submit"
-                    >
-
-                        <i class="fas fa-search"></i>
-                        Cari
-
-                    </button>
-
-                </div>
-
             </div>
+
+            <button
+                type="submit"
+                class="airnav-inventory-search-button"
+            >
+                <i class="fas fa-search"></i>
+                <span>Cari</span>
+            </button>
 
         </form>
 
-
+    </div>
 
         {{-- TABLE --}}
 
@@ -427,35 +416,29 @@
 
                                 {{-- DETAIL --}}
 
-                                <a
-                                    href="{{ route(
-                                        'inventory.show',
-                                        $inventory->id
-                                    ) }}"
-                                    class="btn btn-info btn-sm mr-1 mb-1"
-                                >
-
-                                    <i class="fas fa-eye"></i>
-                                    Detail
-
-                                </a>
+                              <button
+    type="button"
+    class="btn btn-info btn-sm mr-1 mb-1"
+    data-toggle="modal"
+    data-target="#modalDetailBarang{{ $inventory->id }}"
+>
+    <i class="fas fa-eye"></i>
+    Detail
+</button>
 
 
 
                                 {{-- EDIT --}}
 
-                                <a
-                                    href="{{ route(
-                                        'inventory.edit',
-                                        $inventory->id
-                                    ) }}"
-                                    class="btn btn-primary btn-sm mr-1 mb-1"
-                                >
-
-                                    <i class="fas fa-edit"></i>
-                                    Edit
-
-                                </a>
+                          <button
+    type="button"
+    class="btn btn-primary btn-sm mr-1 mb-1 airnav-inventory-edit"
+    data-toggle="modal"
+    data-target="#modalEditBarang{{ $inventory->id }}"
+>
+    <i class="fas fa-edit"></i>
+    Edit
+</button>
 
 
 
@@ -497,6 +480,309 @@
 
                     </tr>
 
+                    {{-- MODAL DETAIL BARANG --}}
+<div class="modal fade" id="modalDetailBarang{{ $inventory->id }}" tabindex="-1" role="dialog" aria-labelledby="modalDetailBarangLabel{{ $inventory->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content airnav-inventory-modal">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="modalDetailBarangLabel{{ $inventory->id }}">
+                        <i class="fas fa-box text-primary mr-2"></i>Detail Barang
+                    </h5>
+                    <small class="text-muted">Informasi lengkap barang inventory</small>
+                </div>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+
+            <div class="modal-body airnav-inventory-modal-body">
+                <div class="form-group">
+                    <label><i class="fas fa-images mr-1"></i> Foto Barang</label>
+                    @if(!empty($inventory->photos) && count($inventory->photos) > 0)
+                        <div class="row">
+                            @foreach($inventory->photos as $photo)
+                                <div class="col-md-4 col-6 mb-3">
+                                    <img src="{{ asset('storage/' . $photo) }}" class="img-thumbnail" style="width:100%;height:180px;object-fit:cover;" alt="Foto {{ $inventory->name }}">
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-muted"><i class="fas fa-image mr-1"></i>Tidak ada foto barang.</div>
+                    @endif
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Nama Barang</label>
+                            <div class="form-control bg-light">{{ $inventory->name }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Kode Barang</label>
+                            <div class="form-control bg-light">{{ $inventory->code }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Stok</label>
+                            <div class="form-control bg-light">{{ $inventory->stock }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Satuan</label>
+                            <div class="form-control bg-light">{{ $inventory->unit }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Kondisi Barang</label>
+                    <div>
+                        @if(strtolower($inventory->condition) === 'rusak')
+                            <span class="badge badge-warning p-2"><i class="fas fa-exclamation-triangle mr-1"></i>Rusak</span>
+                        @else
+                            <span class="badge badge-success p-2"><i class="fas fa-check-circle mr-1"></i>Normal</span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-barcode mr-1"></i> Serial Number</label>
+                    @if(!empty($inventory->serial_numbers) && count($inventory->serial_numbers) > 0)
+                        <div class="border rounded p-3 bg-light">
+                            <ul class="mb-0 pl-3">
+                                @foreach($inventory->serial_numbers as $serial)
+                                    <li>{{ $serial }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <div class="text-muted">-</div>
+                    @endif
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-user mr-1"></i> Dibuat Oleh</label>
+                    <div class="form-control bg-light">{{ $inventory->user->name ?? '-' }}</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i>Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+              {{-- MODAL EDIT BARANG --}}
+<div class="modal fade" id="modalEditBarang{{ $inventory->id }}" tabindex="-1" role="dialog"
+    aria-labelledby="modalEditBarangLabel{{ $inventory->id }}" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content airnav-inventory-modal">
+
+            {{-- HEADER --}}
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="modalEditBarangLabel{{ $inventory->id }}">
+                        <i class="fas fa-edit text-primary mr-2"></i>
+                        Edit Barang
+                    </h5>
+                    <small class="text-muted">Perbarui informasi barang inventory</small>
+                </div>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            {{-- FORM --}}
+            <form action="{{ route('inventory.update', $inventory->id) }}" method="POST"
+                enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body airnav-inventory-modal-body">
+
+                    {{-- NAMA & KODE --}}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nama Barang <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control"
+                                    value="{{ $inventory->name }}" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Kode Barang <span class="text-danger">*</span></label>
+                                <input type="text" name="code" class="form-control"
+                                    value="{{ $inventory->code }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- SERIAL NUMBER --}}
+                    <div class="form-group">
+                        <label>Serial Number</label>
+
+                        <div id="edit-serial-container-{{ $inventory->id }}">
+                            @if(!empty($inventory->serial_numbers) && count($inventory->serial_numbers) > 0)
+
+                                @foreach($inventory->serial_numbers as $serial)
+                                    <div class="input-group mb-2 edit-serial-row">
+                                        <input type="text" name="serial_numbers[]" class="form-control"
+                                            value="{{ $serial }}" placeholder="Serial Number">
+
+                                        <div class="input-group-append">
+                                            <button type="button"
+                                                class="btn btn-danger edit-remove-serial">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                            @else
+                                <div class="input-group mb-2 edit-serial-row">
+                                    <input type="text" name="serial_numbers[]" class="form-control"
+                                        placeholder="Serial Number">
+
+                                    <div class="input-group-append">
+                                        <button type="button"
+                                            class="btn btn-danger edit-remove-serial">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <button type="button" class="btn btn-outline-primary btn-sm"
+                            onclick="addEditSerial({{ $inventory->id }})">
+                            <i class="fas fa-plus"></i>
+                            Tambah Serial Number
+                        </button>
+
+                        <small class="form-text text-muted">
+                            Tambahkan serial number sesuai jumlah barang.
+                        </small>
+                    </div>
+
+                    {{-- STOK & SATUAN --}}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Stok <span class="text-danger">*</span></label>
+                                <input type="number" name="stock" class="form-control"
+                                    value="{{ $inventory->stock }}" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Satuan <span class="text-danger">*</span></label>
+                                <input type="text" name="unit" class="form-control"
+                                    value="{{ $inventory->unit }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- KONDISI --}}
+                    <div class="form-group">
+                        <label>Kondisi Barang <span class="text-danger">*</span></label>
+
+                        <select name="condition" class="form-control" required>
+                            <option value="normal"
+                                {{ $inventory->condition === 'normal' ? 'selected' : '' }}>
+                                Normal
+                            </option>
+
+                            <option value="rusak"
+                                {{ $inventory->condition === 'rusak' ? 'selected' : '' }}>
+                                Rusak
+                            </option>
+                        </select>
+                    </div>
+
+                    {{-- FOTO LAMA --}}
+                    <div class="form-group">
+                        <label>Foto Saat Ini</label>
+
+                        @if(!empty($inventory->photos) && count($inventory->photos) > 0)
+
+                            <div class="row">
+                                @foreach($inventory->photos as $photo)
+                                    <div class="col-md-4 col-6 mb-2">
+                                        <img src="{{ asset('storage/' . $photo) }}"
+                                            class="img-thumbnail"
+                                            style="width:100%;height:130px;object-fit:cover;"
+                                            alt="Foto {{ $inventory->name }}">
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <small class="text-muted">
+                                Jika memilih foto baru, foto lama akan diganti.
+                            </small>
+
+                        @else
+                            <div class="text-muted">
+                                <i class="fas fa-image mr-1"></i>
+                                Belum ada foto.
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- FOTO BARU --}}
+                    <div class="form-group">
+                        <label>Ganti Foto Barang</label>
+
+                        <div class="custom-file">
+                            <input type="file"
+                                name="photos[]"
+                                id="edit-photos-{{ $inventory->id }}"
+                                class="custom-file-input"
+                                accept="image/*"
+                                multiple>
+
+                            <label class="custom-file-label"
+                                for="edit-photos-{{ $inventory->id }}">
+                                Pilih foto baru
+                            </label>
+                        </div>
+
+                        <small class="form-text text-muted">
+                            Maksimal 3 foto. Jika tidak memilih foto baru, foto lama tetap digunakan.
+                        </small>
+                    </div>
+
+                </div>
+
+                {{-- FOOTER --}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i>
+                        Batal
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save mr-1"></i>
+                        Simpan Perubahan
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
                 @empty
 
                     <tr>
@@ -563,6 +849,113 @@
     </div>
 
 </div>
+{{-- MODAL TAMBAH BARANG --}}
+<div
+    class="modal fade"
+    id="modalTambahBarang"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalTambahBarangLabel"
+    aria-hidden="true"
+>
+    <div
+        class="modal-dialog modal-lg modal-dialog-centered"
+        role="document"
+    >
+        <div class="modal-content airnav-inventory-modal">
+
+            {{-- HEADER MODAL --}}
+            <div class="modal-header airnav-inventory-modal-header">
+
+                <div class="airnav-inventory-modal-title">
+
+                    <div class="airnav-inventory-modal-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+
+                    <div>
+                        <h5 id="modalTambahBarangLabel">
+                            Tambah Barang
+                        </h5>
+
+                        <p>
+                            Tambahkan data barang baru ke inventory
+                        </p>
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="close airnav-inventory-modal-close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+
+
+            {{-- ISI FORM --}}
+            <div class="modal-body airnav-inventory-modal-body">
+
+                @include('inventory._form')
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 @stop
+
+@section('js')
+<script>
+$(document).ready(function () {
+
+    console.log('INVENTORY JS BERJALAN');
+
+
+    // ==========================================
+    // MODAL TAMBAH BARANG
+    // ==========================================
+    $('.airnav-inventory-add').on('click', function () {
+
+        console.log('TOMBOL TAMBAH DIKLIK');
+
+        $('#modalTambahBarang').modal('show');
+
+    });
+
+
+    // ==========================================
+    // MODAL EDIT BARANG
+    // ==========================================
+    $('.airnav-inventory-edit').on('click', function () {
+
+        var modalId = $(this).data('target');
+
+        console.log('TOMBOL EDIT DIKLIK');
+        console.log('TARGET MODAL:', modalId);
+
+        if (modalId) {
+            $(modalId).modal('show');
+        }
+
+    });
+
+
+    // ==========================================
+    // TUTUP MODAL
+    // ==========================================
+    $('.modal').on('hidden.bs.modal', function () {
+
+        console.log('MODAL DITUTUP');
+
+    });
+
+});
+</script>
+@endsection

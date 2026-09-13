@@ -1,309 +1,315 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Data Teknisi')
 
+@section('content')
 
-@section('content_header')
-
-<div class="d-flex justify-content-between">
-
-    <h1>
-        Data Teknisi
-    </h1>
-
+<div class="airnav-technician-header">
+    <div class="airnav-technician-heading">
+        <div>
+            <h1>Data Teknisi</h1>
+            <p>
+                Kelola data teknisi navigasi dan verifikasi tanda tangan digital (QR TTD) AirNav
+            </p>
+        </div>
+    </div>
 
     <a
         href="{{ route('technicians.create') }}"
-        class="btn btn-primary"
+        class="airnav-technician-add"
     >
-
         <i class="fas fa-plus"></i>
-
-        Tambah Teknisi
-
+        <span>Tambah Teknisi</span>
     </a>
-
 </div>
 
-@stop
 
-
-@section('content')
-
-
+{{-- Alert Success --}}
 @if(session('success'))
-
-    <div class="alert alert-success">
-
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
 
+        <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-
 @endif
 
 
+{{-- Alert Error --}}
 @if(session('error'))
-
-    <div class="alert alert-danger">
-
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ session('error') }}
 
+        <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-
 @endif
 
 
-<div class="card">
+{{-- Data Teknisi --}}
+<div class="card airnav-technician-card">
 
-    <div class="card-body">
+    <div class="card-body p-0">
 
-        <table class="table table-bordered table-striped">
+        <div class="table-responsive">
 
-            <thead>
+            <table class="table airnav-technician-table mb-0">
 
-                <tr>
-
-                    <th width="5%">
-                        No
-                    </th>
-
-                    <th>
-                        Nama Teknisi
-                    </th>
-
-                    <th>
-                        QR TTD Teknisi
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                    <th width="20%">
-                        Aksi
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                @forelse($technicians as $technician)
-
+                <thead>
                     <tr>
+                        <th width="70">NO</th>
+                        <th>NAMA TEKNISI</th>
+                        <th width="220">QR TTD TEKNISI</th>
+                        <th width="130">STATUS</th>
+                        <th width="180">AKSI</th>
+                    </tr>
+                </thead>
 
-                        <td>
-                            {{ $loop->iteration }}
-                        </td>
+                <tbody>
 
+                    @forelse($technicians as $index => $technician)
 
-                        <td>
+                        @php
+                            $initials = collect(
+                                preg_split('/\s+/', trim($technician->name))
+                            )
+                            ->filter()
+                            ->take(2)
+                            ->map(fn ($word) => strtoupper(substr($word, 0, 1)))
+                            ->implode('');
+                        @endphp
 
-                            {{ $technician->name }}
+                        <tr>
 
-                        </td>
-
-
-                        <td class="text-center">
-
-                            @if($technician->qr_token)
-
-                                <img
-                                    src="{{ asset(
-                                        'qrcodes/technicians/' .
-                                        $technician->qr_token .
-                                        '.svg'
-                                    ) }}"
-                                    width="130"
-                                    alt="QR TTD {{ $technician->name }}"
-                                >
-
-                                <br>
-
-                                <small class="text-muted">
-
-                                    QR TTD Teknisi
-
-                                </small>
-
-                            @else
-
-                                <span class="text-muted">
-
-                                    QR belum tersedia
-
+                            {{-- Nomor --}}
+                            <td>
+                                <span class="airnav-technician-number">
+                                    {{ $index + 1 }}
                                 </span>
-
-                            @endif
-
-                        </td>
+                            </td>
 
 
-                        <td>
+                            {{-- Nama Teknisi --}}
+                            <td>
 
-                            @if($technician->status == 'aktif')
+                                <div class="airnav-technician-profile">
 
-                                <span class="badge badge-success">
+                                    <div class="airnav-technician-avatar">
+                                        {{ $initials ?: 'T' }}
+                                    </div>
 
-                                    Aktif
+                                    <div class="airnav-technician-info">
 
-                                </span>
+                                        <div class="airnav-technician-name">
+                                            {{ $technician->name }}
+                                        </div>
 
-                            @elseif($technician->status == 'mutasi')
+                                        <div class="airnav-technician-role">
+                                            Teknisi Navigasi
+                                        </div>
 
-                                <span class="badge badge-warning">
+                                    </div>
 
-                                    Mutasi
+                                </div>
 
-                                </span>
-
-                            @else
-
-                                <span class="badge badge-danger">
-
-                                    Tidak Aktif
-
-                                </span>
-
-                            @endif
-
-                        </td>
+                            </td>
 
 
-                        <td>
+                            {{-- QR TTD --}}
+                            <td>
 
-                            @if($technician->status == 'aktif')
+                                <div class="airnav-technician-qr">
 
-                                <form
-                                    method="POST"
-                                    action="{{ route(
-                                        'technicians.update',
-                                        $technician->id
-                                    ) }}"
-                                    style="display:inline"
-                                >
+                                    <div class="airnav-technician-qr-box">
 
-                                    @csrf
+                                        <img
+                                            src="{{ asset('qrcodes/technicians/' . $technician->qr_token . '.svg') }}"
+                                            alt="QR TTD {{ $technician->name }}"
+                                        >
 
-                                    @method('PUT')
+                                    </div>
 
+                                    <div class="airnav-technician-qr-label">
+                                        <i class="fas fa-qrcode"></i>
+                                        <span>QR TTD Teknisi</span>
+                                    </div>
 
-                                    <input
-                                        type="hidden"
-                                        name="status"
-                                        value="mutasi"
-                                    >
+                                </div>
+
+                            </td>
 
 
-                                    <button
-                                        type="submit"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                            {{-- Status --}}
+                            <td>
 
-                                        <i class="fas fa-exchange-alt"></i>
+                                @if($technician->status === 'aktif')
 
+                                    <span class="airnav-status-badge active">
+                                        <span class="airnav-status-dot"></span>
+                                        Aktif
+                                    </span>
+
+                                @elseif($technician->status === 'mutasi')
+
+                                    <span class="airnav-status-badge mutation">
+                                        <span class="airnav-status-dot"></span>
                                         Mutasi
+                                    </span>
 
-                                    </button>
+                                @else
 
-                                </form>
+                                    <span class="airnav-status-badge inactive">
+                                        <span class="airnav-status-dot"></span>
+                                        Tidak Aktif
+                                    </span>
 
-                            @elseif($technician->status == 'mutasi')
+                                @endif
 
-                                <form
-                                    method="POST"
-                                    action="{{ route(
-                                        'technicians.update',
-                                        $technician->id
-                                    ) }}"
-                                    style="display:inline"
-                                >
-
-                                    @csrf
-
-                                    @method('PUT')
+                            </td>
 
 
-                                    <input
-                                        type="hidden"
-                                        name="status"
-                                        value="aktif"
+                            {{-- Aksi --}}
+                            <td>
+
+                                <div class="airnav-technician-actions">
+
+                                    {{-- Mutasi --}}
+                                    @if($technician->status === 'aktif')
+
+                                        <form
+                                            action="{{ route('technicians.update', $technician) }}"
+                                            method="POST"
+                                            class="d-inline"
+                                        >
+                                            @csrf
+                                            @method('PUT')
+
+                                            <input
+                                                type="hidden"
+                                                name="status"
+                                                value="mutasi"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="airnav-action-mutation"
+                                                title="Mutasikan Teknisi"
+                                            >
+                                                <i class="fas fa-exchange-alt"></i>
+                                                <span>Mutasi</span>
+                                            </button>
+
+                                        </form>
+
+                                    {{-- Aktifkan --}}
+                                    @elseif($technician->status === 'mutasi')
+
+                                        <form
+                                            action="{{ route('technicians.update', $technician) }}"
+                                            method="POST"
+                                            class="d-inline"
+                                        >
+                                            @csrf
+                                            @method('PUT')
+
+                                            <input
+                                                type="hidden"
+                                                name="status"
+                                                value="aktif"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="airnav-action-activate"
+                                                title="Aktifkan Teknisi"
+                                            >
+                                                <i class="fas fa-check"></i>
+                                                <span>Aktifkan</span>
+                                            </button>
+
+                                        </form>
+
+                                    @endif
+
+
+                                    {{-- Hapus --}}
+                                    <form
+                                        action="{{ route('technicians.destroy', $technician) }}"
+                                        method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus teknisi ini?')"
                                     >
+                                        @csrf
+                                        @method('DELETE')
 
+                                        <button
+                                            type="submit"
+                                            class="airnav-action-delete"
+                                            title="Hapus Teknisi"
+                                        >
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
 
-                                    <button
-                                        type="submit"
-                                        class="btn btn-success btn-sm"
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+                            <td colspan="5">
+
+                                <div class="airnav-technician-empty">
+
+                                    <div class="airnav-technician-empty-icon">
+                                        <i class="fas fa-users-cog"></i>
+                                    </div>
+
+                                    <h3>Belum Ada Data Teknisi</h3>
+
+                                    <p>
+                                        Belum ada teknisi yang terdaftar di dalam sistem.
+                                    </p>
+
+                                    <a
+                                        href="{{ route('technicians.create') }}"
+                                        class="airnav-technician-add"
                                     >
+                                        <i class="fas fa-plus"></i>
+                                        <span>Tambah Teknisi</span>
+                                    </a>
 
-                                        <i class="fas fa-user-check"></i>
+                                </div>
 
-                                        Aktifkan
+                            </td>
+                        </tr>
 
-                                    </button>
+                    @endforelse
 
-                                </form>
+                </tbody>
 
-                            @endif
+            </table>
 
-
-                            <form
-                                method="POST"
-                                action="{{ route(
-                                    'technicians.destroy',
-                                    $technician->id
-                                ) }}"
-                                style="display:inline"
-                            >
-
-                                @csrf
-
-                                @method('DELETE')
-
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm(
-                                        'Hapus teknisi ini?'
-                                    )"
-                                >
-
-                                    <i class="fas fa-trash"></i>
-
-                                </button>
-
-                            </form>
-
-                        </td>
-
-                    </tr>
-
-                @empty
-
-                    <tr>
-
-                        <td
-                            colspan="5"
-                            class="text-center"
-                        >
-
-                            Belum ada data teknisi
-
-                        </td>
-
-                    </tr>
-
-                @endforelse
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
 
 </div>
 
-@stop
+@endsection

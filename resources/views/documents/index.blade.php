@@ -1,12 +1,8 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Daftar Dokumen')
 
-@section('css')
-    @vite('resources/css/documents.css')
-@stop
-
-@section('content_header')
+@section('content')
 
 <div class="airnav-document-header">
 
@@ -383,13 +379,6 @@ Aksi
 
 
 </td>
-
-
-
-
-
-
-
 
 <td>
 
