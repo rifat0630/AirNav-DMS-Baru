@@ -1,0 +1,340 @@
+.airnav-activity-page {
+    padding: 20px 0 30px;
+}
+
+.airnav-activity-header {
+    margin-bottom: 22px;
+}
+
+.airnav-activity-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #172033;
+}
+
+.airnav-activity-header p {
+    margin: 5px 0 0;
+    color: #718096;
+    font-size: 13px;
+}
+
+.airnav-activity-filter {
+    background: #fff;
+    border: 1px solid #e5e9f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, .04);
+}
+
+.airnav-activity-filter form {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.airnav-activity-search {
+    position: relative;
+    flex: 1;
+}
+
+.airnav-activity-search i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9aa6b2;
+    font-size: 14px;
+}
+
+.airnav-activity-search input {
+    width: 100%;
+    height: 38px;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    padding: 0 14px 0 39px;
+    font-size: 14px;
+    color: #344054;
+    outline: none;
+}
+
+.airnav-activity-search input:focus {
+    border-color: #2864dc;
+    box-shadow: 0 0 0 2px rgba(40, 100, 220, .08);
+}
+
+.airnav-activity-select {
+    position: relative;
+    width: 220px;
+}
+
+.airnav-activity-select select {
+    width: 100%;
+    height: 38px;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    background: #fff;
+    padding: 0 38px 0 14px;
+    font-size: 14px;
+    color: #475467;
+    appearance: none;
+    outline: none;
+}
+
+.airnav-activity-select i {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: #98a2b3;
+    pointer-events: none;
+}
+
+.airnav-activity-search-btn {
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    background: #2864dc;
+    color: #fff;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.airnav-activity-search-btn:hover {
+    background: #1f55bd;
+}
+
+.airnav-activity-search-btn i {
+    margin-right: 7px;
+}
+
+.airnav-activity-card {
+    background: #fff;
+    border: 1px solid #e5e9f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, .04);
+}
+
+.airnav-activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    table-layout: fixed;
+}
+
+.airnav-activity-table thead th {
+    height: 44px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e9f0;
+    padding: 0 15px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    color: #526071;
+}
+
+.airnav-activity-table tbody td {
+    padding: 15px 15px;
+    border-bottom: 1px solid #edf0f4;
+    font-size: 13px;
+    color: #344054;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.airnav-activity-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.airnav-activity-table tbody tr:hover {
+    background: #fafcff;
+}
+
+.airnav-activity-table th:nth-child(1),
+.airnav-activity-table td:nth-child(1) {
+    width: 14%;
+}
+
+.airnav-activity-table th:nth-child(2),
+.airnav-activity-table td:nth-child(2) {
+    width: 21%;
+}
+
+.airnav-activity-table th:nth-child(3),
+.airnav-activity-table td:nth-child(3) {
+    width: 12%;
+}
+
+.airnav-activity-table th:nth-child(4),
+.airnav-activity-table td:nth-child(4) {
+    width: 15%;
+}
+
+.airnav-activity-table th:nth-child(5),
+.airnav-activity-table td:nth-child(5) {
+    width: 38%;
+}
+
+.activity-time {
+    font-family: monospace;
+    font-size: 12px !important;
+    color: #7b8794 !important;
+    white-space: nowrap;
+    text-align: center !important;
+}
+
+.activity-user {
+    font-weight: 500;
+    color: #172033 !important;
+    text-align: center !important;
+}
+
+.activity-name {
+    font-weight: 500;
+    color: #27364a !important;
+    text-align: center !important;
+}
+
+.activity-detail {
+    color: #667085 !important;
+    line-height: 1.45;
+    max-width: none;
+    width: 100%;
+    white-space: normal;
+    word-break: break-word;
+    text-align: center !important;
+}
+
+.activity-module {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid #b8eee7;
+    color: #16756d;
+    background: #f5fffd;
+    text-transform: lowercase;
+}
+
+.activity-module.dokumen,
+.activity-module.document {
+    border: 0;
+    background: transparent;
+    color: #526071;
+    padding: 0;
+}
+
+.activity-module.dokumen .activity-dot,
+.activity-module.document .activity-dot {
+    width: 8px;
+    height: 8px;
+    background: #3984e8;
+    border-radius: 50%;
+}
+
+.activity-module.inventory .activity-dot {
+    display: none;
+}
+
+.activity-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.activity-empty {
+    text-align: center !important;
+    padding: 40px !important;
+    color: #98a2b3 !important;
+}
+
+.airnav-activity-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: 1px solid #edf0f4;
+}
+
+.activity-count {
+    font-size: 12px;
+    color: #7b8794;
+}
+
+.activity-pagination nav {
+    margin: 0;
+}
+
+.activity-pagination .pagination {
+    margin: 0;
+}
+
+.activity-pagination .page-link {
+    border: 1px solid #e1e6ed !important;
+    color: #475467;
+    background: #fff;
+    border-radius: 7px !important;
+    margin-left: 5px;
+    padding: 6px 11px;
+    font-size: 13px;
+}
+
+.activity-pagination .page-item.active .page-link {
+    background: #2864dc !important;
+    border-color: #2864dc !important;
+    color: #fff;
+}
+
+.activity-pagination .page-item.disabled .page-link {
+    color: #b0b8c4;
+    background: #fff;
+}
+
+.activity-pagination svg {
+    width: 15px;
+    height: 15px;
+}
+
+.activity-pagination p {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .airnav-activity-filter form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .airnav-activity-search,
+    .airnav-activity-select {
+        width: 100%;
+    }
+
+    .airnav-activity-search-btn {
+        width: 100%;
+    }
+
+    .airnav-activity-table {
+        min-width: 900px;
+    }
+
+    .airnav-activity-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .airnav-activity-header h1 {
+        font-size: 24px;
+    }
+}

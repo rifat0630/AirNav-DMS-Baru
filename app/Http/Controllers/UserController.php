@@ -19,17 +19,27 @@ class UserController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function index()
-    {
-        $users = User::with('technician')
-            ->latest()
-            ->get();
+ public function index()
+{
+    $users = User::with('technician')
+        ->latest()
+        ->get();
 
-        return view(
-            'users.index',
-            compact('users')
-        );
-    }
+    $technicians = Technician::where(
+        'status',
+        'aktif'
+    )
+    ->orderBy('name')
+    ->get();
+
+    return view(
+        'users.index',
+        compact(
+            'users',
+            'technicians'
+        )
+    );
+}
 
 
     /*

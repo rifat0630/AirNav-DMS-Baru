@@ -466,3 +466,48 @@ body.airnav-sidebar-collapsed .airnav-menu-icon {
         margin-right: 12px;
     }
 }
+
+/* =========================================================
+   SIDEBAR SMOOTH TOGGLE
+   ========================================================= */
+
+.main-sidebar {
+    transition:
+        width 0.3s ease-in-out,
+        transform 0.3s ease-in-out !important;
+}
+
+.main-sidebar .brand-link {
+    transition:
+        width 0.3s ease-in-out,
+        padding 0.3s ease-in-out !important;
+}
+
+.main-sidebar .nav-sidebar {
+    transition:
+        width 0.3s ease-in-out !important;
+}
+
+.main-sidebar .nav-link {
+    transition:
+        padding 0.25s ease-in-out,
+        margin 0.25s ease-in-out,
+        background-color 0.2s ease,
+        color 0.2s ease !important;
+}
+
+.main-sidebar .nav-link i {
+    transition:
+        margin 0.25s ease-in-out,
+        transform 0.25s ease-in-out !important;
+}
+
+.content-wrapper {
+    transition:
+        margin-left 0.3s ease-in-out !important;
+}
+
+.main-header {
+    transition:
+        margin-left 0.3s ease-in-out !important;
+}

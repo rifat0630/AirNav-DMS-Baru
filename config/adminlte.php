@@ -410,24 +410,12 @@ return [
 
 
 
-    [
-        'text' => 'Kategori',
-
-        'url' => '#',
-
-        'icon' => 'fas fa-folder',
-    ],
-
-
-
-    [
-        'text' => 'User',
-
-        'url' => '#',
-
-        'icon' => 'fas fa-users',
-    ],
-
+   
+[
+    'text' => 'User',
+    'url' => '#',
+    'icon' => 'fas fa-users',
+],
 
 
     [

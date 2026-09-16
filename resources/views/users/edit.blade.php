@@ -12,14 +12,7 @@
 </h1>
 
 @stop
-
-
-
-
-
 @section('content')
-
-
 @if($errors->any())
 
 <div class="alert alert-danger">
@@ -40,16 +33,10 @@
 
 @endif
 
-
-
-
-
 <div class="card">
 
 
 <div class="card-body">
-
-
 
 <form action="{{ route('users.update',$user->id) }}"
       method="POST">
@@ -58,10 +45,6 @@
 @csrf
 
 @method('PUT')
-
-
-
-
 
 <div class="form-group">
 
@@ -79,12 +62,6 @@ Nama
 
 </div>
 
-
-
-
-
-
-
 <div class="form-group">
 
 <label>
@@ -101,12 +78,6 @@ Username
 
 </div>
 
-
-
-
-
-
-
 <div class="form-group">
 
 <label>
@@ -120,15 +91,7 @@ Email
        value="{{ old('email',$user->email) }}"
        required>
 
-
 </div>
-
-
-
-
-
-
-
 <div class="form-group">
 
 <label>
@@ -143,12 +106,6 @@ Password Baru
 
 
 </div>
-
-
-
-
-
-
 
 <div class="form-group">
 
@@ -167,121 +124,54 @@ Role
 Admin
 </option>
 
-
-
 <option value="teknisi"
 {{ $user->role == 'teknisi' ? 'selected' : '' }}>
 Teknisi
 </option>
-
-
 
 <option value="pegawai"
 {{ $user->role == 'pegawai' ? 'selected' : '' }}>
 Pegawai
 </option>
 
-
 </select>
-
 
 </div>
 
-
-
-
-
-
-
-
 <div class="form-group">
-
 <label>
 Teknisi
 </label>
-
-
-
 <select name="technician_id"
         class="form-control">
-
-
 <option value="">
 -- Tidak Ada Teknisi --
 </option>
-
-
-
 @foreach($technicians as $technician)
-
-
 <option value="{{ $technician->id }}"
-
 {{ $user->technician_id == $technician->id ? 'selected' : '' }}
-
 >
-
 {{ $technician->name }}
-
 </option>
-
-
-
 @endforeach
-
-
-
 </select>
-
-
 @if($technicians->count() == 0)
-
 <small class="text-danger">
-
 Belum ada teknisi aktif.
-
 Silakan tambah teknisi terlebih dahulu.
-
 </small>
-
 @endif
-
-
-
 </div>
-
-
-
-
-
-
-
 <button type="submit"
         class="btn btn-primary">
 
-
 <i class="fas fa-save"></i>
-
 Simpan Perubahan
-
-
 </button>
-
-
-
-
-
 <a href="{{ route('users.index') }}"
    class="btn btn-secondary">
-
 Kembali
-
 </a>
-
-
-
-
-
 </form>
 
 

@@ -1,10 +1,12 @@
 @import './sidebar.css';
 @import './header.css';
+@import './user.css';
 @import './dashboard.css';
 @import './logbook.css';
 @import './documents.css';
 @import './technicians.css';
 @import './inventory.css';
+@import './activity.css';
 
 @tailwind base;
 @tailwind components;

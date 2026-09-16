@@ -90,16 +90,6 @@
             </div>
 
 
-            {{-- Kategori --}}
-            <a href="#"
-               class="airnav-menu-item">
-
-                <span class="airnav-menu-icon">
-                    <i class="far fa-folder"></i>
-                </span>
-
-                <span>Kategori</span>
-            </a>
 
 
             {{-- User --}}

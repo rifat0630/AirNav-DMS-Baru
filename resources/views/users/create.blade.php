@@ -157,12 +157,7 @@ class="form-control">
 
 </select>
 
-
 </div>
-
-
-
-
 
 <button class="btn btn-primary">
 
