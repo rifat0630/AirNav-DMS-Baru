@@ -1,149 +1,893 @@
-@extends('layouts.guest')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title','AirNav DMS - Login')
+<head>
 
-@section('content')
+    <meta charset="UTF-8">
 
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <title>AirNav DMS</title>
 
-<script>
-tailwind.config = {
-    darkMode: "class",
-    theme: {
-        extend: {
-            colors: {
-                "error-container": "#ffdad6",
-                "on-primary-container": "#eeefff",
-                "on-secondary-fixed-variant": "#38485d",
-                "on-secondary-fixed": "#0b1c30",
-                "on-primary-fixed-variant": "#003ea8",
-                "background": "#f7f9fd",
-                "outline": "#737686",
-                "inverse-primary": "#b4c5ff",
-                "on-tertiary-container": "#e4f2ff",
-                "on-tertiary": "#ffffff",
-                "secondary-fixed-dim": "#b7c8e1",
-                "surface-container": "#eceef2",
-                "inverse-on-surface": "#eff1f5",
-                "secondary": "#505f76",
-                "tertiary-fixed-dim": "#89ceff",
-                "inverse-surface": "#2d3134",
-                "surface-dim": "#d8dade",
-                "outline-variant": "#c3c6d7",
-                "surface-variant": "#e0e3e6",
-                "tertiary-fixed": "#c9e6ff",
-                "on-tertiary-fixed-variant": "#004c6e",
-                "on-secondary": "#ffffff",
-                "primary-fixed-dim": "#b4c5ff",
-                "primary-fixed": "#dbe1ff",
-                "error": "#ba1a1a",
-                "primary-container": "#2563eb",
-                "surface-container-highest": "#e0e3e6",
-                "on-primary-fixed": "#00174b",
-                "surface-tint": "#0053db",
-                "surface-container-high": "#e6e8ec",
-                "secondary-fixed": "#d3e4fe",
-                "primary": "#004ac6",
-                "on-surface": "#181c1f",
-                "on-background": "#181c1f",
-                "secondary-container": "#d0e1fb",
-                "tertiary-container": "#0074a6",
-                "on-secondary-container": "#54647a",
-                "surface-bright": "#f7f9fd",
-                "surface-container-low": "#f2f4f8",
-                "on-tertiary-fixed": "#001e2f",
-                "on-surface-variant": "#434655",
-                "on-primary": "#ffffff",
-                "tertiary": "#005a82",
-                "surface-container-lowest": "#ffffff",
-                "on-error": "#ffffff",
-                "surface": "#f7f9fd",
-                "on-error-container": "#93000a"
-            },
-            borderRadius:{
-                DEFAULT:"0.25rem",
-                lg:"0.5rem",
-                xl:"0.75rem",
-                full:"9999px"
-            },
-            spacing:{
-                "margin-desktop":"32px",
-                "3xl":"64px",
-                "container-max":"1440px",
-                "sm":"8px",
-                "xs":"4px",
-                "2xl":"48px",
-                "md":"16px",
-                "xl":"32px",
-                "unit":"8px",
-                "lg":"24px",
-                "margin-mobile":"16px",
-                "gutter":"24px"
-            }
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'
+    ])
+
+
+    <style>
+
+        /* =====================================================
+           REGISTER PASSWORD WARNING
+        ====================================================== */
+
+        .password-warning {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-top: 8px;
+            padding: 8px 12px;
+
+            border-radius: 8px;
+
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+
+            color: #c2410c;
+
+            font-size: 12px;
+            line-height: 1.4;
+
+            animation: passwordWarningIn 0.2s ease;
         }
-    }
-}
-</script>
 
-<style>
 
-.fade-in-up{
-animation:fadeInUp .6s ease-out forwards;
-opacity:0;
-transform:translateY(20px);
-}
+        .password-warning i {
+            font-size: 13px;
+            flex-shrink: 0;
+        }
 
-@keyframes fadeInUp{
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
 
-.floating-input:focus~.floating-label,
-.floating-input:not(:placeholder-shown)~.floating-label{
-transform:translateY(-130%) scale(.85);
-color:#004ac6;
-background:white;
-padding:0 4px;
-}
+        @keyframes passwordWarningIn {
 
-</style>
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
 
-<body class="bg-background text-on-background font-body-md min-h-screen overflow-hidden antialiased">
-<img src="{{ asset('images/logo-airnav.png') }}" width="200">
-<div class="flex h-screen w-full">
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
 
-<div class="hidden lg:block w-[45%] relative overflow-hidden">
+        }
 
-    <!-- Background -->
-    <img
-        src="{{ asset('images/login-bg.jpg') }}"
-        class="absolute inset-0 w-full h-full object-cover"
-        alt="Login Background">
 
-    <!-- Overlay lembut -->
-    <div class="absolute inset-0 bg-gradient-to-r from-white/55 via-white/30 to-transparent"></div>
+        /* =====================================================
+           PASSWORD INVALID
+        ====================================================== */
 
-    <!-- Content -->
-    <div class="relative z-10 flex items-center h-full px-16">
+        #register_password.password-invalid {
+            border-color: #f97316 !important;
+        }
 
-        <div class="max-w-md">
 
-            <h1 class="text-5xl font-bold text-slate-800 leading-tight">
-                Welcome Back
-            </h1>
+        /* =====================================================
+           PASSWORD VALID
+        ====================================================== */
 
-            <p class="mt-6 text-xl text-slate-700 leading-relaxed">
-                Sign in to access the AirNav Document Management System.
-            </p>
+        #register_password.password-valid {
+            border-color: #22c55e !important;
+        }
 
-            <p class="mt-3 text-slate-600 leading-relaxed">
-                Your mission-critical documents, secure and readily available.
-            </p>
+
+        /* =====================================================
+           PASSWORD CONFIRMATION INVALID
+        ====================================================== */
+
+        #register_password_confirmation.password-invalid {
+            border-color: #f97316 !important;
+        }
+
+
+        /* =====================================================
+           PASSWORD CONFIRMATION VALID
+        ====================================================== */
+
+        #register_password_confirmation.password-valid {
+            border-color: #22c55e !important;
+        }
+
+
+        /* =====================================================
+           CONFIRM PASSWORD WARNING
+        ====================================================== */
+
+        .password-match-warning {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-top: 8px;
+            padding: 8px 12px;
+
+            border-radius: 8px;
+
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+
+            color: #c2410c;
+
+            font-size: 12px;
+            line-height: 1.4;
+
+            animation: passwordWarningIn 0.2s ease;
+        }
+
+
+        .password-match-success {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-top: 8px;
+            padding: 8px 12px;
+
+            border-radius: 8px;
+
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+
+            color: #15803d;
+
+            font-size: 12px;
+            line-height: 1.4;
+
+            animation: passwordWarningIn 0.2s ease;
+        }
+
+
+        /* =====================================================
+           AUTH PANEL TRANSITION
+        ====================================================== */
+
+        .auth-panel {
+            transition:
+                opacity 0.25s ease,
+                transform 0.25s ease;
+        }
+
+
+        .auth-panel-hidden {
+            display: none;
+        }
+
+
+        /* =====================================================
+           REGISTER TERMS
+        ====================================================== */
+
+        .register-terms {
+            margin-top: 4px;
+        }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="login-page">
+
+
+    {{-- =====================================================
+        LEFT SIDE / VISUAL
+    ====================================================== --}}
+
+    <div class="login-visual">
+
+        <div class="login-visual-overlay"></div>
+
+
+        <div class="login-visual-content">
+
+
+            {{-- BRAND --}}
+
+            <div class="login-brand">
+
+                <div class="login-brand-icon">
+
+                    <i class="fas fa-plane"></i>
+
+                </div>
+
+                <span>
+                    AirNav DMS
+                </span>
+
+            </div>
+
+
+            {{-- WELCOME --}}
+
+            <div class="login-welcome">
+
+                <h1>
+                    Welcome
+                </h1>
+
+                <p>
+                    Sistem Manajemen Dokumen dan Informasi
+                    AirNav Indonesia.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    {{-- =====================================================
+        RIGHT SIDE
+    ====================================================== --}}
+
+    <div class="login-form-area">
+
+
+        <div class="login-form-container">
+
+
+            {{-- =================================================
+                LOGIN PANEL
+            ================================================== --}}
+
+            <div
+                class="auth-panel"
+                id="loginPanel"
+            >
+
+
+                {{-- HEADER --}}
+
+                <div class="login-form-header">
+
+                    <h2>
+                        Sign in
+                    </h2>
+
+                    <p>
+                        Masuk ke akun AirNav DMS Anda
+                    </p>
+
+                </div>
+
+
+
+                {{-- SUCCESS MESSAGE --}}
+
+                @if (session('status'))
+
+                    <div class="login-alert login-alert-success">
+
+                        {{ session('status') }}
+
+                    </div>
+
+                @endif
+
+
+
+                {{-- ERROR MESSAGE --}}
+
+                @if ($errors->any() && old('name') === null)
+
+                    <div class="login-alert login-alert-danger">
+
+                        <ul>
+
+                            @foreach ($errors->all() as $error)
+
+                                <li>
+                                    {{ $error }}
+                                </li>
+
+                            @endforeach
+
+                        </ul>
+
+                    </div>
+
+                @endif
+
+
+
+                {{-- =================================================
+                    LOGIN FORM
+                ================================================== --}}
+
+                <form
+                    method="POST"
+                    action="{{ route('login') }}"
+                    class="login-form"
+                >
+
+                    @csrf
+
+
+                    {{-- EMAIL --}}
+
+                    <div class="login-form-group">
+
+                        <label for="login_email">
+                            Email
+                        </label>
+
+
+                        <div class="login-input-wrapper">
+
+                            <i class="fas fa-envelope"></i>
+
+
+                            <input
+                                id="login_email"
+                                type="email"
+                                name="email"
+                                value="{{ old('email') }}"
+                                placeholder="Masukkan email Anda"
+                                required
+                                autofocus
+                                autocomplete="username"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- PASSWORD --}}
+
+                    <div class="login-form-group">
+
+                        <div class="login-label-row">
+
+                            <label for="login_password">
+                                Password
+                            </label>
+
+
+                            @if (Route::has('password.request'))
+
+                                <a
+                                    href="{{ route('password.request') }}"
+                                >
+                                    Lupa password?
+                                </a>
+
+                            @endif
+
+                        </div>
+
+
+                        <div class="login-input-wrapper">
+
+                            <i class="fas fa-lock"></i>
+
+
+                            <input
+                                id="login_password"
+                                type="password"
+                                name="password"
+                                placeholder="Masukkan password Anda"
+                                required
+                                autocomplete="current-password"
+                            >
+
+
+                            <button
+                                type="button"
+                                class="login-password-toggle"
+                                id="toggleLoginPassword"
+                                title="Tampilkan password"
+                            >
+
+                                <i class="fas fa-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- REMEMBER ME --}}
+
+                    <div class="login-remember">
+
+                        <label>
+
+                            <input
+                                type="checkbox"
+                                name="remember"
+                                {{ old('remember') ? 'checked' : '' }}
+                            >
+
+                            <span>
+                                Ingat saya
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+
+                    {{-- LOGIN BUTTON --}}
+
+                    <button
+                        type="submit"
+                        class="login-submit"
+                    >
+
+                        <span>
+                            Sign In
+                        </span>
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+
+
+                {{-- REGISTER SWITCH --}}
+
+                <div class="login-register">
+
+                    <span>
+                        Belum memiliki akun?
+                    </span>
+
+
+                    <button
+                        type="button"
+                        class="auth-switch-button"
+                        id="showRegister"
+                    >
+                        Buat akun
+                    </button>
+
+                </div>
+
+
+
+                {{-- BACK HOME --}}
+
+                <a
+                    href="{{ url('/') }}"
+                    class="login-back-home"
+                >
+
+                    <i class="fas fa-arrow-left"></i>
+
+                    <span>
+                        Kembali ke halaman utama
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            {{-- =================================================
+                REGISTER PANEL
+            ================================================== --}}
+
+            <div
+                class="auth-panel auth-panel-hidden"
+                id="registerPanel"
+            >
+
+
+                {{-- HEADER --}}
+
+                <div class="login-form-header">
+
+                    <h2>
+                        Create Account
+                    </h2>
+
+                    <p>
+                        Buat akun baru AirNav DMS Anda
+                    </p>
+
+                </div>
+
+
+
+                {{-- REGISTER ERROR --}}
+
+                @if ($errors->any() && old('name') !== null)
+
+                    <div
+                        class="login-alert login-alert-danger"
+                        id="registerError"
+                    >
+
+                        <ul>
+
+                            @foreach ($errors->all() as $error)
+
+                                <li>
+                                    {{ $error }}
+                                </li>
+
+                            @endforeach
+
+                        </ul>
+
+                    </div>
+
+                @endif
+
+
+
+                {{-- =================================================
+                    REGISTER FORM
+                ================================================== --}}
+
+                <form
+                    method="POST"
+                    action="{{ route('register') }}"
+                    class="login-form"
+                    id="registerForm"
+                >
+
+                    @csrf
+
+
+
+                    {{-- =================================================
+                        FULL NAME
+                    ================================================== --}}
+
+                    <div class="login-form-group">
+
+                        <label for="register_name">
+                            Full Name
+                        </label>
+
+
+                        <div class="login-input-wrapper">
+
+                            <i class="fas fa-user"></i>
+
+
+                            <input
+                                id="register_name"
+                                type="text"
+                                name="name"
+                                value="{{ old('name') }}"
+                                placeholder="Masukkan nama lengkap"
+                                required
+                                autocomplete="name"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- =================================================
+                        EMAIL
+                    ================================================== --}}
+
+                    <div class="login-form-group">
+
+                        <label for="register_email">
+                            Email
+                        </label>
+
+
+                        <div class="login-input-wrapper">
+
+                            <i class="fas fa-envelope"></i>
+
+
+                            <input
+                                id="register_email"
+                                type="email"
+                                name="email"
+                                value="{{ old('email') }}"
+                                placeholder="Masukkan email Anda"
+                                required
+                                autocomplete="email"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- =================================================
+                        USERNAME
+                    ================================================== --}}
+
+                    <div class="login-form-group">
+
+                        <label for="register_username">
+                            Username
+                        </label>
+
+
+                        <div class="login-input-wrapper">
+
+                            <i class="fas fa-at"></i>
+
+
+                            <input
+                                id="register_username"
+                                type="text"
+                                name="username"
+                                value="{{ old('username') }}"
+                                placeholder="Masukkan username"
+                                required
+                                autocomplete="username"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- =================================================
+                        PASSWORD
+                    ================================================== --}}
+
+                    <div class="login-form-group">
+
+                        <label for="register_password">
+                            Password
+                        </label>
+
+
+                        <div class="login-input-wrapper">
+
+                            <i class="fas fa-lock"></i>
+
+
+                            <input
+                                id="register_password"
+                                type="password"
+                                name="password"
+                                placeholder="Masukkan password"
+                                required
+                                minlength="8"
+                                autocomplete="new-password"
+                            >
+
+
+                            <button
+                                type="button"
+                                class="login-password-toggle"
+                                id="toggleRegisterPassword"
+                                title="Tampilkan password"
+                            >
+
+                                <i class="fas fa-eye"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        {{-- REALTIME PASSWORD WARNING --}}
+
+                        <div
+                            id="registerPasswordWarning"
+                            class="password-warning"
+                            style="display: none;"
+                        >
+
+                            <i class="fas fa-circle-exclamation"></i>
+
+                            <span>
+                                Password harus memiliki minimal 8 karakter.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- =================================================
+                        CONFIRM PASSWORD
+                    ================================================== --}}
+
+                    <div class="login-form-group">
+
+                        <label for="register_password_confirmation">
+                            Confirm Password
+                        </label>
+
+
+                        <div class="login-input-wrapper">
+
+                            <i class="fas fa-lock"></i>
+
+
+                            <input
+                                id="register_password_confirmation"
+                                type="password"
+                                name="password_confirmation"
+                                placeholder="Ulangi password"
+                                required
+                                autocomplete="new-password"
+                            >
+
+
+                            <button
+                                type="button"
+                                class="login-password-toggle"
+                                id="toggleRegisterConfirmPassword"
+                                title="Tampilkan password"
+                            >
+
+                                <i class="fas fa-eye"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        {{-- PASSWORD MATCH WARNING --}}
+
+                        <div
+                            id="passwordMatchWarning"
+                            class="password-match-warning"
+                            style="display: none;"
+                        >
+
+                            <i class="fas fa-circle-exclamation"></i>
+
+                            <span>
+                                Konfirmasi password belum sama.
+                            </span>
+
+                        </div>
+
+
+                        {{-- PASSWORD MATCH SUCCESS --}}
+
+                        <div
+                            id="passwordMatchSuccess"
+                            class="password-match-success"
+                            style="display: none;"
+                        >
+
+                            <i class="fas fa-circle-check"></i>
+
+                            <span>
+                                Password sudah cocok.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- =================================================
+                        TERMS
+                    ================================================== --}}
+
+                    <div class="login-remember register-terms">
+
+                        <label>
+
+                            <input
+                                type="checkbox"
+                                name="terms"
+                                required
+                            >
+
+                            <span>
+
+                                Saya menyetujui
+
+                                <a href="#">
+                                    Terms of Service
+                                </a>
+
+                                dan
+
+                                <a href="#">
+                                    Privacy Policy
+                                </a>
+
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+
+                    {{-- =================================================
+                        REGISTER BUTTON
+                    ================================================== --}}
+
+                    <button
+                        type="submit"
+                        class="login-submit"
+                        id="registerSubmit"
+                    >
+
+                        <span>
+                            Create Account
+                        </span>
+
+                        <i class="fas fa-user-plus"></i>
+
+                    </button>
+
+                </form>
+
+
+
+                {{-- LOGIN SWITCH --}}
+
+                <div class="login-register">
+
+                    <span>
+                        Sudah memiliki akun?
+                    </span>
+
+
+                    <button
+                        type="button"
+                        class="auth-switch-button"
+                        id="showLogin"
+                    >
+                        Sign In
+                    </button>
+
+                </div>
+
+
+
+                {{-- BACK HOME --}}
+
+                <a
+                    href="{{ url('/') }}"
+                    class="login-back-home"
+                >
+
+                    <i class="fas fa-arrow-left"></i>
+
+                    <span>
+                        Kembali ke halaman utama
+                    </span>
+
+                </a>
+
+            </div>
+
 
         </div>
 
@@ -151,232 +895,566 @@ padding:0 4px;
 
 </div>
 
-<div class="w-full lg:w-[55%] flex items-center justify-center bg-surface relative z-30 shadow-[-10px_0_30px_rgba(0,0,0,0.03)] p-margin-mobile md:p-margin-desktop">
 
-<div class="w-full max-w-[480px] bg-surface-container-lowest rounded-[20px] p-xl shadow-[0px_4px_24px_rgba(15,23,42,0.06)] border border-surface-variant fade-in-up">
 
-<div class="lg:hidden text-center mb-xl">
+{{-- =====================================================
+    JAVASCRIPT
+====================================================== --}}
 
-<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold">
+<script>
 
-AirNav DMS
 
-</h1>
+    /* =====================================================
+       PANEL SWITCH
+    ====================================================== */
 
-</div>
+    const loginPanel =
+        document.getElementById('loginPanel');
 
-<div class="mb-lg">
+    const registerPanel =
+        document.getElementById('registerPanel');
 
-<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">
+    const showRegister =
+        document.getElementById('showRegister');
 
-Sign In
+    const showLogin =
+        document.getElementById('showLogin');
 
-</h2>
 
-<p class="font-body-sm text-body-sm text-on-surface-variant">
+    function openRegister() {
 
-Enter your credentials to continue
+        if (!loginPanel || !registerPanel) {
+            return;
+        }
 
-</p>
 
-</div>
+        loginPanel.classList.add(
+            'auth-panel-hidden'
+        );
 
-<form method="POST" action="{{ route('login') }}" class="space-y-lg">
+        registerPanel.classList.remove(
+            'auth-panel-hidden'
+        );
 
-@csrf
 
-{{-- ================= EMAIL ================= --}}
+        setTimeout(() => {
 
-<div class="relative group">
+            document
+                .getElementById('register_name')
+                ?.focus();
 
-    <div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+        }, 150);
 
-        <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">
-            mail
-        </span>
+    }
 
-    </div>
 
-    <input
-        id="email"
-        name="email"
-        type="email"
-        value="{{ old('email') }}"
-        required
-        autofocus
-        placeholder=" "
-        class="floating-input w-full h-[48px] pl-[48px] pr-md bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all peer @error('email') border-red-500 @enderror">
+    function openLogin() {
 
-    <label
-        for="email"
-        class="floating-label absolute left-[48px] top-1/2 -translate-y-1/2 text-body-md text-outline transition-all duration-200 pointer-events-none origin-left">
+        if (!loginPanel || !registerPanel) {
+            return;
+        }
 
-        Email Address
 
-    </label>
+        registerPanel.classList.add(
+            'auth-panel-hidden'
+        );
 
-</div>
+        loginPanel.classList.remove(
+            'auth-panel-hidden'
+        );
 
-@error('email')
 
-<p class="text-red-500 text-sm -mt-3">
+        setTimeout(() => {
 
-    {{ $message }}
+            document
+                .getElementById('login_email')
+                ?.focus();
 
-</p>
+        }, 150);
 
-@enderror
+    }
 
 
-{{-- ================= PASSWORD ================= --}}
+    showRegister?.addEventListener(
+        'click',
+        openRegister
+    );
 
-<div class="relative group">
 
-    <div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+    showLogin?.addEventListener(
+        'click',
+        openLogin
+    );
 
-        <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">
 
-            lock
 
-        </span>
+    /* =====================================================
+       PASSWORD TOGGLE
+    ====================================================== */
 
-    </div>
+    function setupPasswordToggle(
+        buttonId,
+        inputId
+    ) {
 
-    <input
+        const button =
+            document.getElementById(buttonId);
 
-        id="password"
-        name="password"
-        type="password"
-        required
-        placeholder=" "
+        const input =
+            document.getElementById(inputId);
 
-        class="floating-input w-full h-[48px] pl-[48px] pr-md bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all peer @error('password') border-red-500 @enderror">
 
-    <label
+        button?.addEventListener(
+            'click',
+            function () {
 
-        for="password"
+                if (!input) {
+                    return;
+                }
 
-        class="floating-label absolute left-[48px] top-1/2 -translate-y-1/2 text-body-md text-outline transition-all duration-200 pointer-events-none origin-left">
 
-        Password
+                const icon =
+                    this.querySelector('i');
 
-    </label>
 
-</div>
+                if (input.type === 'password') {
 
-@error('password')
+                    input.type = 'text';
 
-<p class="text-red-500 text-sm -mt-3">
 
-    {{ $message }}
+                    icon?.classList.remove(
+                        'fa-eye'
+                    );
 
-</p>
 
-@enderror
+                    icon?.classList.add(
+                        'fa-eye-slash'
+                    );
 
+                } else {
 
+                    input.type = 'password';
 
-{{-- ================= OPTIONS ================= --}}
 
-<div class="flex items-center justify-between mt-sm">
+                    icon?.classList.remove(
+                        'fa-eye-slash'
+                    );
 
-    <label class="flex items-center gap-sm cursor-pointer group">
 
-        <input
+                    icon?.classList.add(
+                        'fa-eye'
+                    );
 
-            type="checkbox"
+                }
 
-            name="remember"
+            }
+        );
 
-            class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20 transition-colors">
+    }
 
-        <span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">
 
-            Remember me
+    setupPasswordToggle(
+        'toggleLoginPassword',
+        'login_password'
+    );
 
-        </span>
 
-    </label>
+    setupPasswordToggle(
+        'toggleRegisterPassword',
+        'register_password'
+    );
 
-    @if (Route::has('password.request'))
 
-    <a
+    setupPasswordToggle(
+        'toggleRegisterConfirmPassword',
+        'register_password_confirmation'
+    );
 
-        href="{{ route('password.request') }}"
 
-        class="font-label-md text-label-md text-primary hover:text-primary-fixed-variant transition-colors">
 
-        Forgot Password?
+    /* =====================================================
+       REALTIME PASSWORD VALIDATION
+    ====================================================== */
 
-    </a>
+    const registerPassword =
+        document.getElementById(
+            'register_password'
+        );
+
+
+    const registerPasswordWarning =
+        document.getElementById(
+            'registerPasswordWarning'
+        );
+
+
+    registerPassword?.addEventListener(
+        'input',
+        function () {
+
+            const length =
+                this.value.length;
+
+
+            /*
+            |--------------------------------------------------
+            | KOSONG
+            |--------------------------------------------------
+            */
+
+            if (length === 0) {
+
+                this.classList.remove(
+                    'password-invalid',
+                    'password-valid'
+                );
+
+
+                if (registerPasswordWarning) {
+
+                    registerPasswordWarning.style.display =
+                        'none';
+
+                }
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------
+            | KURANG DARI 8
+            |--------------------------------------------------
+            */
+
+            if (length < 8) {
+
+                this.classList.add(
+                    'password-invalid'
+                );
+
+
+                this.classList.remove(
+                    'password-valid'
+                );
+
+
+                if (registerPasswordWarning) {
+
+                    registerPasswordWarning.style.display =
+                        'flex';
+
+                }
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------
+            | 8 ATAU LEBIH
+            |--------------------------------------------------
+            */
+
+            this.classList.remove(
+                'password-invalid'
+            );
+
+
+            this.classList.add(
+                'password-valid'
+            );
+
+
+            if (registerPasswordWarning) {
+
+                registerPasswordWarning.style.display =
+                    'none';
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       REALTIME CONFIRM PASSWORD
+    ====================================================== */
+
+    const registerPasswordConfirmation =
+        document.getElementById(
+            'register_password_confirmation'
+        );
+
+
+    const passwordMatchWarning =
+        document.getElementById(
+            'passwordMatchWarning'
+        );
+
+
+    const passwordMatchSuccess =
+        document.getElementById(
+            'passwordMatchSuccess'
+        );
+
+
+    function validatePasswordMatch() {
+
+        if (
+            !registerPassword ||
+            !registerPasswordConfirmation
+        ) {
+
+            return;
+
+        }
+
+
+        const password =
+            registerPassword.value;
+
+
+        const confirmation =
+            registerPasswordConfirmation.value;
+
+
+        /*
+        |--------------------------------------------------
+        | KOSONG
+        |--------------------------------------------------
+        */
+
+        if (confirmation.length === 0) {
+
+            registerPasswordConfirmation.classList.remove(
+                'password-invalid',
+                'password-valid'
+            );
+
+
+            if (passwordMatchWarning) {
+
+                passwordMatchWarning.style.display =
+                    'none';
+
+            }
+
+
+            if (passwordMatchSuccess) {
+
+                passwordMatchSuccess.style.display =
+                    'none';
+
+            }
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------
+        | PASSWORD TIDAK SAMA
+        |--------------------------------------------------
+        */
+
+        if (password !== confirmation) {
+
+            registerPasswordConfirmation.classList.add(
+                'password-invalid'
+            );
+
+
+            registerPasswordConfirmation.classList.remove(
+                'password-valid'
+            );
+
+
+            if (passwordMatchWarning) {
+
+                passwordMatchWarning.style.display =
+                    'flex';
+
+            }
+
+
+            if (passwordMatchSuccess) {
+
+                passwordMatchSuccess.style.display =
+                    'none';
+
+            }
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------
+        | PASSWORD SAMA
+        |--------------------------------------------------
+        */
+
+        registerPasswordConfirmation.classList.remove(
+            'password-invalid'
+        );
+
+
+        registerPasswordConfirmation.classList.add(
+            'password-valid'
+        );
+
+
+        if (passwordMatchWarning) {
+
+            passwordMatchWarning.style.display =
+                'none';
+
+        }
+
+
+        if (passwordMatchSuccess) {
+
+            passwordMatchSuccess.style.display =
+                'flex';
+
+        }
+
+    }
+
+
+    registerPasswordConfirmation?.addEventListener(
+        'input',
+        validatePasswordMatch
+    );
+
+
+    registerPassword?.addEventListener(
+        'input',
+        validatePasswordMatch
+    );
+
+
+
+    /* =====================================================
+       REGISTER FORM VALIDATION
+    ====================================================== */
+
+    const registerForm =
+        document.getElementById('registerForm');
+
+
+    registerForm?.addEventListener(
+        'submit',
+        function (event) {
+
+            if (!registerPassword) {
+                return;
+            }
+
+
+            const passwordLength =
+                registerPassword.value.length;
+
+
+            /*
+            |--------------------------------------------------
+            | PASSWORD < 8
+            |--------------------------------------------------
+            */
+
+            if (passwordLength < 8) {
+
+                event.preventDefault();
+
+
+                registerPassword.focus();
+
+
+                registerPassword.classList.add(
+                    'password-invalid'
+                );
+
+
+                if (registerPasswordWarning) {
+
+                    registerPasswordWarning.style.display =
+                        'flex';
+
+                }
+
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------
+            | CONFIRM PASSWORD
+            |--------------------------------------------------
+            */
+
+            if (
+                registerPasswordConfirmation &&
+                registerPassword.value !==
+                    registerPasswordConfirmation.value
+            ) {
+
+                event.preventDefault();
+
+
+                registerPasswordConfirmation.focus();
+
+
+                registerPasswordConfirmation.classList.add(
+                    'password-invalid'
+                );
+
+
+                if (passwordMatchWarning) {
+
+                    passwordMatchWarning.style.display =
+                        'flex';
+
+                }
+
+
+                if (passwordMatchSuccess) {
+
+                    passwordMatchSuccess.style.display =
+                        'none';
+
+                }
+
+
+                return;
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       AUTOMATICALLY OPEN REGISTER AFTER VALIDATION ERROR
+    ====================================================== */
+
+    @if ($errors->any() && old('name') !== null)
+
+        openRegister();
 
     @endif
 
-</div>
 
-{{-- ================= ACTION BUTTONS ================= --}}
+</script>
 
-<div class="pt-sm space-y-md">
+</body>
 
-    <button
-
-        type="submit"
-
-        class="w-full flex items-center justify-center gap-sm h-[48px] bg-gradient-to-r from-primary to-surface-tint text-on-primary rounded-full font-label-md text-label-md hover:shadow-[0px_4px_12px_rgba(0,74,198,0.2)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-200">
-
-        Sign In
-
-        <span class="material-symbols-outlined text-[20px]">
-
-            arrow_right_alt
-
-        </span>
-
-    </button>
-
-    <button
-
-        type="button"
-
-        onclick="window.location='{{ url('/') }}'"
-
-        class="w-full flex items-center justify-center h-[48px] bg-surface-container-lowest border border-outline-variant text-on-surface rounded-full font-label-md text-label-md hover:bg-surface-container-low active:bg-surface-container transition-colors duration-200">
-
-        Back to Home
-
-    </button>
-
-</div>
-
-</form>
-
-{{-- ================= FOOTER ================= --}}
-
-<div class="mt-xl text-center">
-
-    <p class="font-body-sm text-body-sm text-on-surface-variant">
-
-        Don't have an account?
-
-        <a
-
-            href="{{ route('register') }}"
-
-            class="font-label-md text-label-md text-primary hover:underline ml-xs">
-
-            Create Account
-
-        </a>
-
-    </p>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-@endsection
-
+</html>

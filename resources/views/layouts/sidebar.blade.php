@@ -104,17 +104,6 @@
             </a>
 
 
-            {{-- Teknisi --}}
-            <a href="{{ route('technicians.index') }}"
-               class="airnav-menu-item {{ request()->routeIs('technicians.*') ? 'active' : '' }}">
-
-                <span class="airnav-menu-icon">
-                    <i class="fas fa-user-cog"></i>
-                </span>
-
-                <span>Teknisi</span>
-            </a>
-
 
             {{-- Inventory --}}
             <a href="{{ route('inventory.index') }}"
@@ -160,16 +149,7 @@
             </div>
 
 
-            {{-- Settings / Profile --}}
-            <a href="{{ route('profile.edit') }}"
-               class="airnav-menu-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
-
-                <span class="airnav-menu-icon">
-                    <i class="fas fa-cog"></i>
-                </span>
-
-                <span>Settings</span>
-            </a>
+        
 
 
             {{-- Logout --}}
@@ -177,18 +157,12 @@
                 @csrf
 
                 <button type="submit" class="airnav-menu-item airnav-logout-button">
-
                     <span class="airnav-menu-icon">
                         <i class="fas fa-sign-out-alt"></i>
                     </span>
-
                     <span>Logout</span>
-
                 </button>
             </form>
-
         </div>
-
     </div>
-
 </aside>

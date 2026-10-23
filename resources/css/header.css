@@ -1,6 +1,6 @@
 /* =========================================================
    AIRNAV DMS - HEADER
-   ========================================================= */
+========================================================= */
 
 .airnav-header {
     position: fixed;
@@ -31,7 +31,7 @@
 
 /* =========================================================
    HEADER LEFT
-   ========================================================= */
+========================================================= */
 
 .airnav-header-left {
     display: flex;
@@ -42,7 +42,7 @@
 
 /* =========================================================
    HEADER RIGHT
-   ========================================================= */
+========================================================= */
 
 .airnav-header-right {
     display: flex;
@@ -55,7 +55,7 @@
 
 /* =========================================================
    HEADER BUTTON
-   ========================================================= */
+========================================================= */
 
 .airnav-header-button {
     position: relative;
@@ -97,7 +97,7 @@
 
 /* =========================================================
    NOTIFICATION
-   ========================================================= */
+========================================================= */
 
 .airnav-notification {
     position: relative;
@@ -135,7 +135,7 @@
 
 /* =========================================================
    DIVIDER
-   ========================================================= */
+========================================================= */
 
 .airnav-header-divider {
     width: 1px;
@@ -148,8 +148,8 @@
 
 
 /* =========================================================
-   USER
-   ========================================================= */
+   USER PROFILE
+========================================================= */
 
 .airnav-user {
     display: flex;
@@ -159,14 +159,32 @@
     gap: 12px;
 
     min-width: 360px;
+
+    padding: 7px 8px 7px 12px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease;
+}
+
+
+.airnav-user:hover {
+    background: #f8fafc;
 }
 
 
 /* =========================================================
    USER INFORMATION
-   ========================================================= */
+========================================================= */
 
 .airnav-user-info {
+    flex: 1;
+
+    min-width: 0;
+
     text-align: left;
 }
 
@@ -181,11 +199,17 @@
     line-height: 1.3;
 
     white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    max-width: 300px;
 }
 
 
 .airnav-user-role {
-    margin-top: 3px;
+    margin-top: 4px;
 
     color: #64748b;
 
@@ -193,17 +217,28 @@
 
     font-weight: 500;
 
+    line-height: 1.3;
+
     white-space: nowrap;
 }
 
 
+.airnav-user-role span {
+    margin: 0 3px;
+
+    color: #94a3b8;
+}
+
+
 /* =========================================================
-   AVATAR
-   ========================================================= */
+   USER AVATAR
+========================================================= */
 
 .airnav-user-avatar {
     width: 44px;
     height: 44px;
+
+    flex-shrink: 0;
 
     display: flex;
 
@@ -218,26 +253,34 @@
 
     border-radius: 50%;
 
-    font-size: 19px;
+    font-size: 17px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    box-sizing: border-box;
 }
 
 
 /* =========================================================
-   ARROW
-   ========================================================= */
+   USER ARROW
+========================================================= */
 
 .airnav-user-arrow {
+    flex-shrink: 0;
+
     color: #64748b;
 
-    font-size: 12px;
+    font-size: 11px;
 
-    margin-left: 2px;
+    margin-left: 1px;
 }
 
 
 /* =========================================================
    COLLAPSED SIDEBAR
-   ========================================================= */
+========================================================= */
 
 body.airnav-sidebar-collapsed .airnav-header {
     left: var(--airnav-sidebar-collapsed-width);
@@ -246,30 +289,116 @@ body.airnav-sidebar-collapsed .airnav-header {
 
 /* =========================================================
    RESPONSIVE
-   ========================================================= */
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .airnav-user {
+        min-width: 300px;
+    }
+
+
+    .airnav-user-name {
+        max-width: 240px;
+    }
+
+}
+
 
 @media (max-width: 991px) {
 
     .airnav-header {
+
         left: 0;
 
         padding-left: 20px;
         padding-right: 20px;
+
     }
 
 
     .airnav-user {
+
         min-width: auto;
+
+        padding: 4px;
+
     }
 
 
     .airnav-user-info {
+
         display: none;
+
+    }
+
+
+    .airnav-user-arrow {
+
+        display: none;
+
     }
 
 
     body.airnav-sidebar-collapsed .airnav-header {
+
         left: 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL SCREEN
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .airnav-header {
+
+        height: 72px;
+
+        padding-left: 12px;
+        padding-right: 12px;
+
+    }
+
+
+    .airnav-header-right {
+
+        gap: 5px;
+
+    }
+
+
+    .airnav-header-button {
+
+        width: 38px;
+        height: 38px;
+
+        font-size: 18px;
+
+    }
+
+
+    .airnav-header-divider {
+
+        height: 30px;
+
+        margin-left: 3px;
+        margin-right: 3px;
+
+    }
+
+
+    .airnav-user-avatar {
+
+        width: 40px;
+        height: 40px;
+
+        font-size: 16px;
+
     }
 
 }

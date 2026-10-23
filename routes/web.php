@@ -8,7 +8,6 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\FacilityLogbookController;
-use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\NotificationController;
@@ -21,7 +20,13 @@ use App\Http\Controllers\NotificationController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+
+    return redirect()->route('login');
+
 });
 
 
@@ -57,6 +62,7 @@ Route::get('/google/create-folder', function () {
     $folderId = $drive->createFolder();
 
     return 'Folder AirNav DMS berhasil dibuat. ID: ' . $folderId;
+
 });
 
 
@@ -97,9 +103,9 @@ Route::middleware([
 
 
     /*
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
     | JUMLAH NOTIFIKASI BELUM DIBACA
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
     */
 
     Route::get(
@@ -218,7 +224,10 @@ Route::middleware([
 
     Route::delete(
         '/profile',
-        [ProfileController::class, 'destroy']
+        [
+            ProfileController::class,
+            'destroy'
+        ]
     )->name('profile.destroy');
 
 });
@@ -329,25 +338,105 @@ Route::middleware([
 
     /*
     |--------------------------------------------------------------------------
-    | TEKNISI
+    | USER MANAGEMENT
+    | ADMIN + TEKNISI BOLEH MELIHAT
     |--------------------------------------------------------------------------
     */
 
-    Route::resource(
-        'technicians',
-        TechnicianController::class
-    );
+    Route::get(
+        'users',
+        [
+            UserController::class,
+            'index'
+        ]
+    )->name('users.index');
 
 
     /*
     |--------------------------------------------------------------------------
     | USER MANAGEMENT
+    | HANYA ADMIN UNTUK PERUBAHAN DATA
     |--------------------------------------------------------------------------
     */
 
-    Route::resource(
-        'users',
-        UserController::class
-    );
+    Route::middleware('role:admin')->group(function () {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TAMBAH USER
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            'users/create',
+            [
+                UserController::class,
+                'create'
+            ]
+        )->name('users.create');
+
+        Route::post(
+            'users',
+            [
+                UserController::class,
+                'store'
+            ]
+        )->name('users.store');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT USER
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            'users/{user}/edit',
+            [
+                UserController::class,
+                'edit'
+            ]
+        )->name('users.edit');
+
+        Route::put(
+            'users/{user}',
+            [
+                UserController::class,
+                'update'
+            ]
+        )->name('users.update');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS USER
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete(
+            'users/{user}',
+            [
+                UserController::class,
+                'destroy'
+            ]
+        )->name('users.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MUTASI / AKTIFKAN TEKNISI
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            'users/{id}/technician-status',
+            [
+                UserController::class,
+                'updateTechnicianStatus'
+            ]
+        )->name('users.technician-status');
+
+    });
 
 });

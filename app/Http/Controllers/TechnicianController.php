@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Technician;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class TechnicianController extends Controller
 {
     /**
-     * Daftar Teknisi
+     * Menampilkan daftar teknisi.
+     *
+     * Sementara masih dipertahankan agar halaman lama
+     * tidak langsung error.
      */
     public function index()
     {
@@ -24,94 +25,44 @@ class TechnicianController extends Controller
 
 
     /**
-     * Form Tambah Teknisi
+     * Form tambah teknisi.
+     *
+     * Sementara masih dipertahankan.
+     * Pembuatan teknisi baru nantinya dilakukan
+     * melalui Data User.
      */
     public function create()
     {
-        return view(
-            'technicians.create'
-        );
+        return view('technicians.create');
     }
 
 
     /**
-     * Simpan Teknisi
+     * Menyimpan teknisi baru.
+     *
+     * Sementara masih dipertahankan untuk kompatibilitas
+     * dengan route lama.
+     *
+     * Untuk alur utama, teknisi baru dibuat melalui
+     * UserController.
      */
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
         ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Buat QR TTD unik untuk teknisi
-        |--------------------------------------------------------------------------
-        */
-
-        $qrToken = Str::uuid()->toString();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Simpan teknisi
-        |--------------------------------------------------------------------------
-        */
 
         $technician = Technician::create([
-
             'name' => $request->name,
-
-            'qr_token' => $qrToken,
-
+            'qr_token' => \Illuminate\Support\Str::uuid()->toString(),
             'status' => 'aktif',
-
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Folder QR Teknisi
-        |--------------------------------------------------------------------------
-        */
-
-        if (!file_exists(public_path('qrcodes/technicians'))) {
-
-            mkdir(
-                public_path('qrcodes/technicians'),
-                0755,
-                true
-            );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Nama file QR
-        |--------------------------------------------------------------------------
-        */
-
-        $qrName = $qrToken . '.svg';
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Isi QR
-        |
-        | QR ini adalah identitas TTD teknisi.
-        |--------------------------------------------------------------------------
-        */
-
-        QrCode::format('svg')
-            ->size(300)
-            ->generate(
-                'TECHNICIAN-TTD:' . $qrToken,
-                public_path(
-                    'qrcodes/technicians/' . $qrName
-                )
-            );
-
+        $this->generateQrCode($technician);
 
         return redirect()
             ->route('technicians.index')
@@ -123,21 +74,26 @@ class TechnicianController extends Controller
 
 
     /**
-     * Update status teknisi
+     * Update status teknisi.
+     *
+     * Status yang diperbolehkan hanya:
+     * - aktif
+     * - mutasi
      */
     public function update(
         Request $request,
         Technician $technician
     ) {
         $request->validate([
-            'status' => 'required|in:aktif,mutasi,tidak_aktif',
+            'status' => [
+                'required',
+                'in:aktif,mutasi',
+            ],
         ]);
-
 
         $technician->update([
             'status' => $request->status,
         ]);
-
 
         return back()
             ->with(
@@ -148,18 +104,61 @@ class TechnicianController extends Controller
 
 
     /**
-     * Hapus teknisi
+     * Hapus teknisi.
+     *
+     * Untuk sementara tetap dipertahankan karena
+     * route lama masih tersedia.
      */
     public function destroy(
         Technician $technician
     ) {
         $technician->delete();
 
-
         return back()
             ->with(
                 'success',
                 'Teknisi berhasil dihapus.'
+            );
+    }
+
+
+    /**
+     * Membuat QR TTD teknisi.
+     */
+    private function generateQrCode(
+        Technician $technician
+    ): void {
+        $qrDirectory = public_path(
+            'qrcodes/technicians'
+        );
+
+        /*
+         * Buat folder jika belum tersedia.
+         */
+        if (!file_exists($qrDirectory)) {
+            mkdir(
+                $qrDirectory,
+                0755,
+                true
+            );
+        }
+
+        /*
+         * Nama file QR.
+         */
+        $qrFile = $qrDirectory .
+            '/' .
+            $technician->qr_token .
+            '.svg';
+
+        /*
+         * Generate QR TTD.
+         */
+        \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+            ->size(300)
+            ->generate(
+                'TECHNICIAN-TTD:' . $technician->qr_token,
+                $qrFile
             );
     }
 }

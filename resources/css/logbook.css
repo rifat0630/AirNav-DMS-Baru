@@ -816,3 +816,250 @@
     }
 
 }
+
+.airnav-logbook-modal {
+    border: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.20);
+}
+
+.airnav-logbook-modal .modal-dialog {
+    max-width: 650px;
+}
+
+.airnav-logbook-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 26px;
+    border-bottom: 1px solid #edf0f4;
+    background: #fff;
+}
+
+.airnav-logbook-modal-header .modal-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #172033;
+}
+
+.airnav-logbook-modal-header .modal-title i {
+    margin-right: 10px;
+    color: #2864dc;
+}
+
+.airnav-logbook-modal-header p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    color: #7b8794;
+}
+
+.airnav-logbook-modal-header .close {
+    margin: 0;
+    padding: 0;
+    font-size: 25px;
+    font-weight: 400;
+    color: #98a2b3;
+    opacity: 1;
+}
+
+.airnav-logbook-modal-header .close:hover {
+    color: #344054;
+}
+
+.airnav-logbook-modal-body {
+    padding: 24px 26px 18px;
+}
+
+.airnav-logbook-modal-body .form-group {
+    margin-bottom: 18px;
+}
+
+.airnav-logbook-modal-body label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #344054;
+}
+
+.airnav-logbook-modal-body .form-control {
+    height: 42px;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    padding: 0 13px;
+    font-size: 14px;
+    color: #344054;
+    box-shadow: none;
+}
+
+.airnav-logbook-modal-body textarea.form-control {
+    height: auto;
+    min-height: 110px;
+    padding: 11px 13px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.airnav-logbook-modal-body .form-control:focus {
+    border-color: #2864dc;
+    box-shadow: 0 0 0 3px rgba(40, 100, 220, 0.08);
+}
+
+.airnav-logbook-modal-body .form-control[readonly] {
+    background: #f8fafc;
+    color: #667085;
+}
+
+.airnav-logbook-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 17px 26px 22px;
+    border-top: 1px solid #edf0f4;
+    background: #fff;
+}
+
+.airnav-logbook-modal-cancel,
+.airnav-logbook-modal-save {
+    height: 40px;
+    border-radius: 8px;
+    padding: 0 18px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 0;
+}
+
+.airnav-logbook-modal-cancel {
+    background: #f1f3f5;
+    color: #475467;
+}
+
+.airnav-logbook-modal-cancel:hover {
+    background: #e5e7eb;
+}
+
+.airnav-logbook-modal-save {
+    background: #2864dc;
+    color: #fff;
+}
+
+.airnav-logbook-modal-save:hover {
+    background: #1f55c2;
+}
+
+.airnav-logbook-modal-save i {
+    margin-right: 7px;
+}
+
+.modal-backdrop.show {
+    opacity: 0.45;
+}
+
+@media (max-width: 576px) {
+
+    .airnav-logbook-modal .modal-dialog {
+        margin: 12px;
+    }
+
+    .airnav-logbook-modal-header {
+        padding: 18px 20px;
+    }
+
+    .airnav-logbook-modal-body {
+        padding: 20px;
+    }
+
+    .airnav-logbook-modal-footer {
+        padding: 15px 20px 18px;
+    }
+
+    .airnav-logbook-modal-header .modal-title {
+        font-size: 18px;
+    }
+
+}
+/* =========================================================
+   TOMBOL TAMBAH LOGBOOK
+   ========================================================= */
+
+.airnav-logbook-add {
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    gap: 8px;
+
+    height: 42px;
+
+    padding: 0 18px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: #ffffff !important;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.18);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.airnav-logbook-add i {
+
+    font-size: 13px;
+
+}
+
+
+.airnav-logbook-add:hover {
+
+    background: #1d4ed8;
+
+    color: #ffffff !important;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.24);
+
+}
+
+
+.airnav-logbook-add:focus {
+
+    outline: none;
+
+    color: #ffffff !important;
+
+}
+
+
+.airnav-logbook-add:active {
+
+    transform: translateY(0);
+
+}

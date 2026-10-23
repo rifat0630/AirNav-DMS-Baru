@@ -1,56 +1,42 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Notifikasi')
 
-
-@section('content_header')
-
-    <div class="d-flex justify-content-between align-items-center">
-
-        <h1>
-            <i class="fas fa-bell"></i>
-            Semua Notifikasi
-        </h1>
-
-    </div>
-
-@stop
-
+@section('css')
+    @vite('resources/css/notifications.css')
+@endsection
 
 @section('content')
 
-
-<div class="card">
+<div class="airnav-notification-page">
 
     {{-- =========================================================
-         HEADER
+         PAGE HEADER
     ========================================================== --}}
 
-    <div class="card-header">
+    <div class="airnav-notification-header">
 
-        <div class="d-flex justify-content-between align-items-center">
+        <div>
 
-            <strong>
-                Daftar Notifikasi
-            </strong>
+            <div class="airnav-notification-heading">
 
+                <div class="airnav-notification-heading-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
 
-            @if(
-                $notifications->where('is_read', 0)->count() > 0
-            )
+                <div>
 
-                <a
-                    href="{{ route('notifications.read.all') }}"
-                    class="btn btn-success btn-sm"
-                >
+                    <h1 class="airnav-notification-title">
+                        Notifikasi
+                    </h1>
 
-                    <i class="fas fa-check-double"></i>
+                    <p class="airnav-notification-subtitle">
+                        Lihat dan kelola seluruh pemberitahuan pada sistem AirNav DMS.
+                    </p>
 
-                    Tandai Semua Dibaca
+                </div>
 
-                </a>
-
-            @endif
+            </div>
 
         </div>
 
@@ -58,239 +44,381 @@
 
 
     {{-- =========================================================
-         BODY
+         ALERT SUCCESS
     ========================================================== --}}
 
-    <div class="card-body">
+    @if(session('success'))
+
+        <div class="airnav-notification-alert success">
+
+            <i class="fas fa-check-circle"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
+
+        </div>
+
+    @endif
 
 
-        @forelse($notifications as $notification)
+    {{-- =========================================================
+         ALERT ERROR
+    ========================================================== --}}
 
+    @if(session('error'))
+
+        <div class="airnav-notification-alert error">
+
+            <i class="fas fa-exclamation-circle"></i>
+
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
+    @endif
+
+
+    {{-- =========================================================
+         MAIN PANEL
+    ========================================================== --}}
+
+    <div class="airnav-notification-panel">
+
+
+        {{-- =====================================================
+             PANEL HEADER
+        ====================================================== --}}
+
+        <div class="airnav-notification-panel-header">
+
+            <div>
+
+                <div class="airnav-notification-panel-title">
+
+                    <i class="fas fa-bell"></i>
+
+                    <strong>
+                        Daftar Notifikasi
+                    </strong>
+
+                </div>
+
+                <p class="airnav-notification-panel-description">
+                    Pemberitahuan terbaru dari sistem AirNav DMS
+                </p>
+
+            </div>
+
+
+            {{-- =================================================
+                 MARK ALL
+            ================================================== --}}
+
+            @if($notifications->where('is_read', 0)->count() > 0)
+
+                <a
+                    href="{{ route('notifications.read.all') }}"
+                    class="airnav-notification-mark-all"
+                >
+
+                    <i class="fas fa-check-double"></i>
+
+                    <span>
+                        Tandai Semua Dibaca
+                    </span>
+
+                </a>
+
+            @endif
+
+        </div>
+
+
+        {{-- =====================================================
+             PANEL BODY
+        ====================================================== --}}
+
+        <div class="airnav-notification-panel-body">
+
+
+            {{-- =================================================
+                 UNREAD SUMMARY
+            ================================================== --}}
 
             @php
 
-                $isUnread =
-                    $notification->is_read == 0;
+                $unreadCount =
+                    $notifications->where('is_read', 0)->count();
 
             @endphp
 
 
-            {{-- =================================================
-                 NOTIFICATION CARD
-            ================================================== --}}
+            @if($unreadCount > 0)
 
-            <div
-                class="card
-                mb-3
-                border-left-{{ $notification->type == 'danger'
-                    ? 'danger'
-                    : ($notification->type == 'warning'
-                        ? 'warning'
-                        : ($notification->type == 'success'
-                            ? 'success'
-                            : 'info')) }}"
-                style="
-                    border-left-width: 5px;
-                    {{ $isUnread
-                        ? 'background-color:#fffdf5;'
-                        : ''
-                    }}
-                "
-            >
+                <div class="airnav-notification-summary">
 
+                    <div class="airnav-notification-summary-icon">
 
-                <div class="card-body">
-
-
-                    {{-- =================================================
-                         TITLE
-                    ================================================== --}}
-
-                    <div
-                        class="d-flex justify-content-between align-items-start"
-                    >
-
-                        <h5 class="mb-2">
-
-
-                            @if($notification->type == 'danger')
-
-                                <i
-                                    class="fas fa-exclamation-circle text-danger"
-                                ></i>
-
-                            @elseif($notification->type == 'warning')
-
-                                <i
-                                    class="fas fa-exclamation-triangle text-warning"
-                                ></i>
-
-                            @elseif($notification->type == 'success')
-
-                                <i
-                                    class="fas fa-check-circle text-success"
-                                ></i>
-
-                            @else
-
-                                <i
-                                    class="fas fa-info-circle text-info"
-                                ></i>
-
-                            @endif
-
-
-                            <strong>
-                                {{ $notification->title }}
-                            </strong>
-
-
-                            @if($isUnread)
-
-                                <span
-                                    class="badge badge-danger ml-2"
-                                >
-                                    BARU
-                                </span>
-
-                            @else
-
-                                <span
-                                    class="badge badge-secondary ml-2"
-                                >
-                                    Sudah Dibaca
-                                </span>
-
-                            @endif
-
-
-                        </h5>
-
-
-                        <small class="text-muted">
-
-                            <i class="far fa-clock"></i>
-
-                            {{ $notification->created_at
-                                ? $notification->created_at->format('d-m-Y H:i')
-                                : '-'
-                            }}
-
-                        </small>
-
+                        <i class="fas fa-bell"></i>
 
                     </div>
 
+                    <div>
 
+                        <div class="airnav-notification-summary-number">
+                            {{ $unreadCount }}
+                        </div>
 
-                    {{-- =================================================
-                         MESSAGE
-                    ================================================== --}}
-
-                    <p class="mb-3">
-
-                        {{ $notification->message }}
-
-                    </p>
-
-
-
-                    {{-- =================================================
-                         ACTION BUTTONS
-                    ================================================== --}}
-
-                    <div class="d-flex flex-wrap gap-2">
-
-
-                        {{-- =============================================
-                             LIHAT OBJEK TERKAIT
-                        ============================================== --}}
-
-                        @if(!empty($notification->url))
-
-
-                            <a
-                                href="{{ route(
-                                    'notifications.read',
-                                    $notification->id
-                                ) }}"
-                                class="btn btn-primary btn-sm"
-                            >
-
-                                <i class="fas fa-eye"></i>
-
-                                Lihat Dokumen
-
-                            </a>
-
-
-                        @endif
-
-
-
-                        {{-- =============================================
-                             TANDAI DIBACA
-                        ============================================== --}}
-
-                        @if($isUnread)
-
-
-                            <a
-                                href="{{ route(
-                                    'notifications.read',
-                                    $notification->id
-                                ) }}"
-                                class="btn btn-success btn-sm"
-                            >
-
-                                <i class="fas fa-check"></i>
-
-                                Tandai Dibaca
-
-                            </a>
-
-
-                        @endif
-
+                        <div class="airnav-notification-summary-label">
+                            Notifikasi belum dibaca
+                        </div>
 
                     </div>
-
 
                 </div>
 
+            @endif
+
+
+            {{-- =================================================
+                 NOTIFICATION LIST
+            ================================================== --}}
+
+            <div class="airnav-notification-list">
+
+
+                @forelse($notifications as $notification)
+
+
+                    @php
+
+                        $isUnread =
+                            $notification->is_read == 0;
+
+                        $type =
+                            $notification->type ?? 'info';
+
+                    @endphp
+
+
+                    {{-- =========================================
+                         NOTIFICATION ITEM
+                    ========================================== --}}
+
+                    <div
+                        class="airnav-notification-item
+                        {{ $isUnread ? 'unread' : 'read' }}"
+                    >
+
+
+                        {{-- =====================================
+                             ICON
+                        ====================================== --}}
+
+                        <div
+                            class="airnav-notification-icon {{ $type }}"
+                        >
+
+                            @if($type == 'danger')
+
+                                <i class="fas fa-exclamation-circle"></i>
+
+                            @elseif($type == 'warning')
+
+                                <i class="fas fa-exclamation-triangle"></i>
+
+                            @elseif($type == 'success')
+
+                                <i class="fas fa-check-circle"></i>
+
+                            @else
+
+                                <i class="fas fa-info-circle"></i>
+
+                            @endif
+
+                        </div>
+
+
+                        {{-- =====================================
+                             CONTENT
+                        ====================================== --}}
+
+                        <div class="airnav-notification-content">
+
+
+                            {{-- =================================
+                                 TOP
+                            ================================== --}}
+
+                            <div class="airnav-notification-top">
+
+
+                                <div class="airnav-notification-title-row">
+
+                                    <h3 class="airnav-notification-item-title">
+                                        {{ $notification->title }}
+                                    </h3>
+
+
+                                    @if($isUnread)
+
+                                        <span
+                                            class="airnav-notification-badge new"
+                                        >
+                                            Baru
+                                        </span>
+
+                                    @else
+
+                                        <span
+                                            class="airnav-notification-badge read"
+                                        >
+                                            Sudah Dibaca
+                                        </span>
+
+                                    @endif
+
+                                </div>
+
+
+                                {{-- =============================
+                                     TIME
+                                ============================== --}}
+
+                                <div class="airnav-notification-time">
+
+                                    <i class="far fa-clock"></i>
+
+                                    <span>
+
+                                        {{ $notification->created_at
+                                            ? $notification->created_at->format('d-m-Y H:i')
+                                            : '-'
+                                        }}
+
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+
+                            {{-- =================================
+                                 MESSAGE
+                            ================================== --}}
+
+                            <p class="airnav-notification-message">
+
+                                {{ $notification->message }}
+
+                            </p>
+
+
+                            {{-- =================================
+                                 ACTIONS
+                            ================================== --}}
+
+                            <div class="airnav-notification-actions">
+
+
+                                {{-- =============================
+                                     LIHAT DOKUMEN
+                                ============================== --}}
+
+                                @if(!empty($notification->url))
+
+                                    <a
+                                        href="{{ route(
+                                            'notifications.read',
+                                            $notification->id
+                                        ) }}"
+                                        class="airnav-notification-action primary"
+                                    >
+
+                                        <i class="fas fa-eye"></i>
+
+                                        <span>
+                                            Lihat Dokumen
+                                        </span>
+
+                                    </a>
+
+                                @endif
+
+
+                                {{-- =============================
+                                     TANDAI DIBACA
+                                ============================== --}}
+
+                                @if($isUnread)
+
+                                    <a
+                                        href="{{ route(
+                                            'notifications.read',
+                                            $notification->id
+                                        ) }}"
+                                        class="airnav-notification-action success"
+                                    >
+
+                                        <i class="fas fa-check"></i>
+
+                                        <span>
+                                            Tandai Dibaca
+                                        </span>
+
+                                    </a>
+
+                                @endif
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                @empty
+
+
+                    {{-- =========================================
+                         EMPTY STATE
+                    ========================================== --}}
+
+                    <div class="airnav-notification-empty">
+
+                        <div class="airnav-notification-empty-icon">
+
+                            <i class="fas fa-bell-slash"></i>
+
+                        </div>
+
+                        <h3 class="airnav-notification-empty-title">
+                            Tidak ada notifikasi
+                        </h3>
+
+                        <p class="airnav-notification-empty-text">
+                            Saat ini tidak ada notifikasi yang perlu diperiksa.
+                        </p>
+
+                    </div>
+
+
+                @endforelse
+
+
             </div>
 
-
-        @empty
-
-
-            <div class="text-center py-5">
-
-
-                <i
-                    class="fas fa-bell-slash fa-3x text-muted mb-3"
-                ></i>
-
-
-                <h5>
-                    Tidak ada notifikasi
-                </h5>
-
-
-                <p class="text-muted">
-                    Saat ini tidak ada notifikasi yang perlu diperiksa.
-                </p>
-
-
-            </div>
-
-
-        @endforelse
-
+        </div>
 
     </div>
 
 </div>
 
-
-@stop
+@endsection

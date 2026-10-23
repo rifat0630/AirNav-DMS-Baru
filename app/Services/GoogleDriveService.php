@@ -70,27 +70,37 @@ class GoogleDriveService
         |--------------------------------------------------------------------------
         */
 
-        $this->client->refreshToken(
-            $refreshToken
-        );
+    /*
+|--------------------------------------------------------------------------
+| REFRESH ACCESS TOKEN
+|--------------------------------------------------------------------------
+*/
 
-        /*
-        |--------------------------------------------------------------------------
-        | ACCESS TOKEN
-        |--------------------------------------------------------------------------
-        */
+$accessToken = $this->client->fetchAccessTokenWithRefreshToken(
+    $refreshToken
+);
 
-        $accessToken = $this->client->getAccessToken();
+if (
+    isset($accessToken['error'])
+) {
+    throw new Exception(
+        'Gagal mendapatkan Access Token Google: '
+        . ($accessToken['error_description']
+            ?? $accessToken['error'])
+    );
+}
 
-        if (!$accessToken) {
-            throw new Exception(
-                'Access Token Google tidak berhasil dibuat.'
-            );
-        }
+if (
+    !isset($accessToken['access_token'])
+) {
+    throw new Exception(
+        'Access Token Google tidak berhasil dibuat.'
+    );
+}
 
-        $this->client->setAccessToken(
-            $accessToken
-        );
+$this->client->setAccessToken(
+    $accessToken
+);
 
         /*
         |--------------------------------------------------------------------------

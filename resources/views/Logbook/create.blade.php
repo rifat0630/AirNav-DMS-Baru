@@ -12,10 +12,6 @@
 
 @stop
 
-
-
-
-
 @section('content')
 
 
@@ -29,9 +25,6 @@
 
 
 @csrf
-
-
-
 
 <div class="form-group">
 
@@ -47,12 +40,6 @@ Tanggal & Jam
 
 
 </div>
-
-
-
-
-
-
 
 <div class="form-group">
 
@@ -81,21 +68,12 @@ Nama Teknisi
 
 </option>
 
-
-
 @endforeach
 
 
 </select>
 
-
 </div>
-
-
-
-
-
-
 
 <div class="form-group">
 
@@ -103,21 +81,13 @@ Nama Teknisi
 Catatan Pekerjaan
 </label>
 
-
 <textarea name="action_notes"
           class="form-control"
           rows="4"
           placeholder="Masukkan pekerjaan teknisi..."
           required></textarea>
 
-
 </div>
-
-
-
-
-
-
 
 <button type="submit"
         class="btn btn-primary">

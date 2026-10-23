@@ -65,16 +65,26 @@ class FacilityLogbookController extends Controller
 
 
 
-        $logbooks = $query
-            ->latest()
-            ->get();
+     $logbooks = $query
+    ->latest()
+    ->get();
 
 
+$technicians = Technician::where(
+    'status',
+    'aktif'
+)
+->orderBy('name')
+->get();
 
-        return view(
-            'logbook.index',
-            compact('logbooks')
-        );
+
+return view(
+    'logbook.index',
+    compact(
+        'logbooks',
+        'technicians'
+    )
+);
 
     }
 
