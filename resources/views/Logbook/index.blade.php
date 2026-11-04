@@ -70,7 +70,7 @@
                             <td class="col-no">{{ $loop->iteration }}</td>
 
                             <td class="logbook-date">
-                                {{ \Carbon\Carbon::parse($log->log_datetime)->format('d/m/Y, H:i') }}
+                                {{ \Carbon\Carbon::parse($log->log_datetime ?? $log->created_at)->format('d/m/Y, H:i') }}
                             </td>
 
                             <td class="logbook-technician">
@@ -98,14 +98,19 @@
                                 {{ $log->user->name ?? '-' }}
                             </td>
 
+                            {{-- KOLOM STATUS DINAMIS --}}
                             <td>
-                                @if($log->signature_status == 'terverifikasi')
-                                    <div class="airnav-logbook-status verified">
-                                        <span>Terverifikasi</span>
+                                @if(!empty($log->paraf_teknisi) && !empty($log->paraf_mantek) || $log->signature_status == 'terverifikasi')
+                                    <div class="airnav-logbook-status verified" style="background-color: #d1e7dd; color: #0f5132; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: bold;">
+                                        <span>Telah Diverifikasi</span>
+                                    </div>
+                                @elseif(!empty($log->paraf_teknisi) || !empty($log->paraf_mantek) || $log->signature_status == 'sebagian')
+                                    <div class="airnav-logbook-status partial" style="background-color: #fff3cd; color: #664d03; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: bold;">
+                                        <span>Diverifikasi Sebagian</span>
                                     </div>
                                 @else
-                                    <div class="airnav-logbook-status pending">
-                                        <span>Belum Verifikasi</span>
+                                    <div class="airnav-logbook-status pending" style="background-color: #f8d7da; color: #842029; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: bold;">
+                                        <span>Belum Diverifikasi</span>
                                     </div>
                                 @endif
                             </td>
@@ -121,11 +126,18 @@
                                         <span>Edit</span>
                                     </button>
 
-                                    @if($log->signature_status != 'terverifikasi')
+                                    {{-- BUTANG DINAMIS: VIEW JIKA SUDAH LENGKAP, SCAN/SIGN JIKA BELUM --}}
+                                    @if((!empty($log->paraf_teknisi) && !empty($log->paraf_mantek)) || $log->signature_status == 'terverifikasi')
                                         <a href="{{ route('logbook.scan', $log->id) }}"
-                                           class="airnav-logbook-action scan">
+                                           class="airnav-logbook-action view" style="background-color: #0dcaf0; color: #fff;">
+                                            <i class="fas fa-eye"></i>
+                                            <span>View</span>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('logbook.scan', $log->id) }}"
+                                           class="airnav-logbook-action scan" style="background-color: #ffc107; color: #000;">
                                             <i class="fas fa-qrcode"></i>
-                                            <span>Scan</span>
+                                            <span>Scan / Sign</span>
                                         </a>
                                     @endif
 
@@ -175,7 +187,7 @@
 <div class="modal fade" id="modalTambahLogbook" tabindex="-1"
      role="dialog" aria-hidden="true">
 
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
 
         <div class="modal-content airnav-logbook-modal">
 
@@ -199,17 +211,8 @@
 
                 <div class="modal-body airnav-logbook-modal-body">
 
-                    <div class="form-group">
-                        <label>Tanggal & Jam</label>
-
-                        <input type="text"
-                               class="form-control"
-                               value="{{ date('d-m-Y H:i') }}"
-                               readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nama Teknisi</label>
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold">Nama Teknisi</label>
 
                         <select name="technician_id"
                                 class="form-control"
@@ -229,11 +232,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Catatan Pekerjaan</label>
+                        <label class="font-weight-bold">Catatan Pekerjaan</label>
 
                         <textarea name="action_notes"
                                   class="form-control"
-                                  rows="5"
+                                  rows="4"
                                   placeholder="Masukkan pekerjaan teknisi..."
                                   required></textarea>
                     </div>
@@ -274,7 +277,7 @@
      role="dialog"
      aria-hidden="true">
 
-    <div class="modal-dialog modal-lg modal-dialog-centered"
+    <div class="modal-dialog modal-dialog-centered"
          role="document">
 
         <div class="modal-content airnav-logbook-modal">
@@ -310,21 +313,9 @@
 
                 <div class="modal-body airnav-logbook-modal-body">
 
-                    <div class="form-group">
+                    <div class="form-group mb-3">
 
-                        <label>Tanggal & Jam</label>
-
-                        <input type="text"
-                               class="form-control"
-                               value="{{ \Carbon\Carbon::parse($log->log_datetime)->format('d-m-Y H:i') }}"
-                               readonly>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>Nama Teknisi</label>
+                        <label class="font-weight-bold">Nama Teknisi</label>
 
                         <select name="technician_id"
                                 class="form-control"
@@ -350,13 +341,13 @@
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="form-group mb-3">
 
-                        <label>Kegiatan</label>
+                        <label class="font-weight-bold">Kegiatan</label>
 
                         <textarea name="action_notes"
                                   class="form-control"
-                                  rows="5"
+                                  rows="4"
                                   required>{{ old('action_notes', $log->action_notes) }}</textarea>
 
                     </div>
@@ -364,11 +355,22 @@
 
                     <div class="form-group">
 
-                        <label>Status Tanda Tangan</label>
+                        <label class="font-weight-bold">Status Tanda Tangan</label>
+
+                        @php
+                            $statusText = 'Belum Ditandatangani';
+                            if (!empty($log->paraf_teknisi) && !empty($log->paraf_mantek)) {
+                                $statusText = 'Sudah Diverifikasi Lengkap (Teknisi & Mantek)';
+                            } elseif (!empty($log->paraf_teknisi)) {
+                                $statusText = 'Diverifikasi Sebagian (Paraf Teknisi)';
+                            } elseif (!empty($log->paraf_mantek)) {
+                                $statusText = 'Diverifikasi Sebagian (Paraf Mantek)';
+                            }
+                        @endphp
 
                         <input type="text"
-                               class="form-control"
-                               value="{{ $log->signature_status == 'terverifikasi' ? 'Sudah Ditandatangani' : 'Belum Ditandatangani' }}"
+                               class="form-control bg-light"
+                               value="{{ $statusText }}"
                                readonly>
 
                     </div>

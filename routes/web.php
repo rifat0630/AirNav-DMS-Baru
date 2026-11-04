@@ -12,431 +12,109 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\NotificationController;
 
-
 /*
 |--------------------------------------------------------------------------
 | HALAMAN UTAMA
 |--------------------------------------------------------------------------
 */
-
 Route::get('/', function () {
-
     if (auth()->check()) {
         return redirect()->route('dashboard');
     }
-
     return redirect()->route('login');
-
 });
-
 
 /*
 |--------------------------------------------------------------------------
 | GOOGLE DRIVE AUTH
 |--------------------------------------------------------------------------
 */
-
-Route::get(
-    '/google/auth',
-    [GoogleAuthController::class, 'redirect']
-)->name('google.auth');
-
-Route::get(
-    '/google/callback',
-    [GoogleAuthController::class, 'callback']
-)->name('google.callback');
-
-
-/*
-|--------------------------------------------------------------------------
-| TEST GOOGLE DRIVE
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/google/create-folder', function () {
-
-    $drive = app(
-        \App\Services\GoogleDriveService::class
-    );
-
-    $folderId = $drive->createFolder();
-
-    return 'Folder AirNav DMS berhasil dibuat. ID: ' . $folderId;
-
-});
-
+Route::get('/google/auth', [GoogleAuthController::class, 'redirect'])->name('google.auth');
+Route::get('/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
 
 /*
 |--------------------------------------------------------------------------
 | AUTH + VERIFIED
 |--------------------------------------------------------------------------
 */
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::middleware([
-    'auth',
-    'verified'
-])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::get('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::get('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read.all');
 
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/dashboard',
-        [DashboardController::class, 'index']
-    )->name('dashboard');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | NOTIFICATION
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/notifications',
-        [NotificationController::class, 'index']
-    )->name('notifications.index');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | JUMLAH NOTIFIKASI BELUM DIBACA
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/notifications/unread-count',
-        [NotificationController::class, 'unreadCount']
-    )->name('notifications.unread-count');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | READ NOTIFICATION
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/notifications/{id}/read',
-        [NotificationController::class, 'read']
-    )->name('notifications.read');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | READ ALL
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/notifications/read-all',
-        [NotificationController::class, 'readAll']
-    )->name('notifications.read.all');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENT
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/documents',
-        [DocumentController::class, 'index']
-    )->name('documents.index');
-
-    Route::get(
-        '/documents/create',
-        [DocumentController::class, 'create']
-    )->name('documents.create');
-
-    Route::post(
-        '/documents',
-        [DocumentController::class, 'store']
-    )->name('documents.store');
-
-    Route::get(
-        '/documents/{document}/edit',
-        [DocumentController::class, 'edit']
-    )->name('documents.edit');
-
-    Route::put(
-        '/documents/{document}',
-        [DocumentController::class, 'update']
-    )->name('documents.update');
-
-    Route::delete(
-        '/documents/{document}',
-        [DocumentController::class, 'destroy']
-    )->name('documents.destroy');
-
-    Route::get(
-        '/documents/{id}/preview',
-        [DocumentController::class, 'preview']
-    )->name('documents.preview');
-
-    Route::get(
-        '/documents/{id}/download',
-        [DocumentController::class, 'download']
-    )->name('documents.download');
-
-    Route::get(
-        '/documents/{document}',
-        [DocumentController::class, 'show']
-    )->name('documents.show');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ACTIVITY LOG
-    |--------------------------------------------------------------------------
-    */
+    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
+    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
+    Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
+    Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/documents/{id}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
+    Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
 
     Route::middleware('role:admin')->group(function () {
-
-        Route::get(
-            '/activity-logs',
-            [ActivityLogController::class, 'index']
-        )->name('activity_logs.index');
-
+        Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity_logs.index');
     });
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | PROFILE
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/profile',
-        [ProfileController::class, 'edit']
-    )->name('profile.edit');
-
-    Route::patch(
-        '/profile',
-        [ProfileController::class, 'update']
-    )->name('profile.update');
-
-    Route::delete(
-        '/profile',
-        [
-            ProfileController::class,
-            'destroy'
-        ]
-    )->name('profile.destroy');
-
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| AUTHENTICATION
-|--------------------------------------------------------------------------
-*/
-
 require __DIR__ . '/auth.php';
-
 
 /*
 |--------------------------------------------------------------------------
 | AIRNAV DMS MODULE
 |--------------------------------------------------------------------------
 */
-
-Route::middleware([
-    'auth'
-])->group(function () {
-
+Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
     | LOGBOOK
     |--------------------------------------------------------------------------
     */
+    Route::get('/logbook/sign/{token}', [FacilityLogbookController::class, 'sign'])->name('logbook.sign');
+    Route::post('/logbook/sign/{token}', [FacilityLogbookController::class, 'signConfirm'])->name('logbook.sign.confirm');
+    
+    // Route Penyimpanan Paraf via AJAX FormData
+    Route::post('/logbook/store-sign/{id}', [FacilityLogbookController::class, 'storeSign'])->name('logbook.storeSign');
 
-    Route::get(
-        '/logbook/sign/{token}',
-        [
-            FacilityLogbookController::class,
-            'sign'
-        ]
-    )->name('logbook.sign');
-
-    Route::post(
-        '/logbook/sign/{token}',
-        [
-            FacilityLogbookController::class,
-            'signConfirm'
-        ]
-    )->name('logbook.sign.confirm');
-
-
-    Route::resource(
-        'logbook',
-        FacilityLogbookController::class
-    )->only([
-        'index',
-        'create',
-        'store',
-        'edit',
-        'update',
-        'destroy'
+    Route::resource('logbook', FacilityLogbookController::class)->only([
+        'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
 
-
-    Route::get(
-        '/logbook/scan/{id}',
-        [
-            FacilityLogbookController::class,
-            'scan'
-        ]
-    )->name('logbook.scan');
-
+    Route::get('/logbook/scan/{id}', [FacilityLogbookController::class, 'scan'])->name('logbook.scan');
 
     /*
     |--------------------------------------------------------------------------
     | INVENTORY
     |--------------------------------------------------------------------------
     */
-
-    Route::resource(
-        'inventory',
-        InventoryController::class
-    )->only([
-        'index',
-        'create',
-        'store',
-        'show',
-        'edit',
-        'update',
-        'destroy'
+    Route::resource('inventory', InventoryController::class)->only([
+        'index', 'create', 'store', 'show', 'edit', 'update', 'destroy'
     ]);
-
-
-    Route::post(
-        '/inventory/{id}/stock-in',
-        [
-            InventoryController::class,
-            'stockIn'
-        ]
-    )->name('inventory.stock.in');
-
-
-    Route::post(
-        '/inventory/{id}/stock-out',
-        [
-            InventoryController::class,
-            'stockOut'
-        ]
-    )->name('inventory.stock.out');
-
+    Route::post('/inventory/{id}/stock-in', [InventoryController::class, 'stockIn'])->name('inventory.stock.in');
+    Route::post('/inventory/{id}/stock-out', [InventoryController::class, 'stockOut'])->name('inventory.stock.out');
 
     /*
     |--------------------------------------------------------------------------
     | USER MANAGEMENT
-    | ADMIN + TEKNISI BOLEH MELIHAT
     |--------------------------------------------------------------------------
     */
-
-    Route::get(
-        'users',
-        [
-            UserController::class,
-            'index'
-        ]
-    )->name('users.index');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | USER MANAGEMENT
-    | HANYA ADMIN UNTUK PERUBAHAN DATA
-    |--------------------------------------------------------------------------
-    */
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
 
     Route::middleware('role:admin')->group(function () {
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TAMBAH USER
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            'users/create',
-            [
-                UserController::class,
-                'create'
-            ]
-        )->name('users.create');
-
-        Route::post(
-            'users',
-            [
-                UserController::class,
-                'store'
-            ]
-        )->name('users.store');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | EDIT USER
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            'users/{user}/edit',
-            [
-                UserController::class,
-                'edit'
-            ]
-        )->name('users.edit');
-
-        Route::put(
-            'users/{user}',
-            [
-                UserController::class,
-                'update'
-            ]
-        )->name('users.update');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | HAPUS USER
-        |--------------------------------------------------------------------------
-        */
-
-        Route::delete(
-            'users/{user}',
-            [
-                UserController::class,
-                'destroy'
-            ]
-        )->name('users.destroy');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | MUTASI / AKTIFKAN TEKNISI
-        |--------------------------------------------------------------------------
-        */
-
-        Route::post(
-            'users/{id}/technician-status',
-            [
-                UserController::class,
-                'updateTechnicianStatus'
-            ]
-        )->name('users.technician-status');
-
+        Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('users', [UserController::class, 'store'])->name('users.store');
+        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::post('users/{id}/technician-status', [UserController::class, 'updateTechnicianStatus'])->name('users.technician-status');
     });
-
 });
