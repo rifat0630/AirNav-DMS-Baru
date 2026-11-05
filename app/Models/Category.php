@@ -9,16 +9,10 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-    ];
-
+    protected $guarded = ['id'];
 
     public function documents()
     {
-        return $this->hasMany(
-            Document::class,
-            'category_id'
-        );
+        return $this->hasMany(Document::class);
     }
 }
