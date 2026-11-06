@@ -50,7 +50,7 @@ class FacilityLogbookController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | STORE (TANGGAL & WAKTU OTOMATIS OLEH SISTEM)
+    | STORE
     |--------------------------------------------------------------------------
     */
     public function store(Request $request)
@@ -62,10 +62,10 @@ class FacilityLogbookController extends Controller
 
         $technician = Technician::findOrFail($request->technician_id);
 
-        // Buat token QR
+        // Generate QR Token
         $token = (string) Str::uuid();
 
-        // Simpan QR SVG
+        // Save QR SVG
         $fileName = $token . '.svg';
         $path = public_path('qrcodes/' . $fileName);
 
@@ -92,17 +92,17 @@ class FacilityLogbookController extends Controller
             'signature_file'        => $fileName,
             'qr_token'              => $token,
             'signature_status'      => 'belum',
-            'status'                => 'Belum Diverifikasi',
+            'status'                => 'Unverified',
         ]);
 
         return redirect()
             ->route('logbook.index')
-            ->with('success', 'Logbook berhasil dibuat');
+            ->with('success', 'Logbook entry created successfully');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | HALAMAN SCAN / SIGN (UNIVERSAL BERDASARKAN ID ATAU QR TOKEN)
+    | SIGN / SCAN PAGE
     |--------------------------------------------------------------------------
     */
     public function sign($token)
@@ -116,7 +116,7 @@ class FacilityLogbookController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | STORE SIGN (AJAX FETCH FORMDATA DARI MODAL CANVAS)
+    | STORE SIGN VIA AJAX
     |--------------------------------------------------------------------------
     */
     public function storeSign(Request $request, $id)
@@ -127,7 +127,7 @@ class FacilityLogbookController extends Controller
         if (empty($parafData)) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'Goresan tanda tangan tidak boleh kosong!'
+                'message' => 'Signature canvas cannot be empty!'
             ], 422);
         }
 
@@ -136,24 +136,24 @@ class FacilityLogbookController extends Controller
             ->firstOrFail();
 
         $userName = Auth::user()->name ?? 'User';
-        $now = now(); // Ambil waktu & tanggal saat ini
+        $now = now();
 
         if ($actionType === 'teknisi') {
             $logbook->paraf_teknisi = $parafData;
             $logbook->paraf_teknisi_name = $userName;
-            $logbook->paraf_teknisi_at = $now; // Simpan waktu paraf teknisi
+            $logbook->paraf_teknisi_at = $now;
         } else if ($actionType === 'mantek') {
             $logbook->paraf_mantek = $parafData;
             $logbook->paraf_mantek_name = $userName;
-            $logbook->paraf_mantek_at = $now; // Simpan waktu paraf mantek
+            $logbook->paraf_mantek_at = $now;
         }
 
-        // Cek status verifikasi logbook
+        // Check verification status
         if (!empty($logbook->paraf_teknisi) && !empty($logbook->paraf_mantek)) {
-            $logbook->status = 'Telah Diverifikasi';
+            $logbook->status = 'Verified';
             $logbook->signature_status = 'terverifikasi';
         } else {
-            $logbook->status = 'Diverifikasi Sebagian';
+            $logbook->status = 'Partially Verified';
             $logbook->signature_status = 'sebagian';
         }
 
@@ -163,13 +163,13 @@ class FacilityLogbookController extends Controller
 
         return response()->json([
             'status'  => 'success',
-            'message' => 'Paraf berhasil disimpan!'
+            'message' => 'Initial saved successfully!'
         ]);
     }
 
     /*
     |--------------------------------------------------------------------------
-    | KONFIRMASI TEKNISI MANUAL
+    | MANUAL CONFIRMATION
     |--------------------------------------------------------------------------
     */
     public function signConfirm($token)
@@ -181,24 +181,24 @@ class FacilityLogbookController extends Controller
         $user = Auth::user();
 
         if ($user->role != 'teknisi') {
-            return back()->with('error', 'Akun bukan teknisi');
+            return back()->with('error', 'Account is not a technician');
         }
 
         $logbook->update([
             'signature_status' => 'terverifikasi',
-            'status'           => 'Telah Diverifikasi',
+            'status'           => 'Verified',
             'signed_at'        => now(),
             'signed_by'        => $user->id
         ]);
 
         return redirect()
             ->route('logbook.sign', $token)
-            ->with('success', 'Logbook berhasil diverifikasi');
+            ->with('success', 'Logbook verified successfully');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | SCAN DARI ADMIN
+    | SCAN FROM ADMIN
     |--------------------------------------------------------------------------
     */
     public function scan($id)
@@ -250,7 +250,7 @@ class FacilityLogbookController extends Controller
 
         return redirect()
             ->route('logbook.index')
-            ->with('success', 'Logbook diperbarui');
+            ->with('success', 'Logbook updated successfully');
     }
 
     /*
@@ -271,6 +271,6 @@ class FacilityLogbookController extends Controller
 
         $logbook->delete();
 
-        return back()->with('success', 'Logbook dihapus');
+        return back()->with('success', 'Logbook deleted successfully');
     }
 }

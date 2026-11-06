@@ -21,57 +21,57 @@
 
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-success text-white fw-bold py-3">
-                    <h5 class="m-0"><i class="fas fa-check-circle me-2"></i>Verifikasi Logbook Facility</h5>
+                    <h5 class="m-0"><i class="fas fa-check-circle me-2"></i>Facility Logbook Verification</h5>
                 </div>
                 
                 <div class="card-body">
                     <div class="alert alert-info py-2">
-                        <i class="fas fa-user me-1"></i> Login sebagai: <strong>{{ Auth::user()->name ?? 'User' }}</strong>
+                        <i class="fas fa-user me-1"></i> Logged in as: <strong>{{ Auth::user()->name ?? 'User' }}</strong>
                     </div>
 
                     <table class="table table-bordered align-middle">
                         <tbody>
                             <tr>
-                                <th style="width: 30%;" class="bg-light">Teknisi</th>
+                                <th style="width: 30%;" class="bg-light">Technician</th>
                                 <td>{{ $logbook->technician->name ?? $logbook->technicians ?? '-' }}</td>
                             </tr>
                             <tr>
-                                <th class="bg-light">Tanggal Terjadi</th>
-                                <td>{{ $logbook->tanggal_kejadian ? \Carbon\Carbon::parse($logbook->tanggal_kejadian)->format('d/m/Y H:i') : '-' }}</td>
+                                <th class="bg-light">Date & Time</th>
+                                <td>{{ $logbook->log_datetime ? \Carbon\Carbon::parse($logbook->log_datetime)->format('d/m/Y H:i') : ($logbook->tanggal_kejadian ? \Carbon\Carbon::parse($logbook->tanggal_kejadian)->format('d/m/Y H:i') : '-') }}</td>
                             </tr>
                             <tr>
-                                <th class="bg-light">Kegiatan</th>
+                                <th class="bg-light">Activity Notes</th>
                                 <td>{{ $logbook->action_notes ?? '-' }}</td>
                             </tr>
                             
-                            <!-- Status Paraf Teknisi -->
+                            <!-- Technician Initial Status -->
                             <tr>
-                                <th class="bg-light">Paraf Teknisi</th>
+                                <th class="bg-light">Technician Initial</th>
                                 <td>
                                     @if(!empty($logbook->paraf_teknisi))
                                         <div class="d-flex flex-column align-items-start">
                                             <span class="badge bg-success py-2 px-3 fs-6">
-                                                <i class="fas fa-check-circle me-1"></i> Telah Diparaf
+                                                <i class="fas fa-check-circle me-1"></i> Initialed
                                             </span>
                                             <small class="text-muted mt-1">
-                                                <i class="fas fa-user me-1"></i>{{ $logbook->paraf_teknisi_name ?? 'Teknisi' }} 
+                                                <i class="fas fa-user me-1"></i>{{ $logbook->paraf_teknisi_name ?? 'Technician' }} 
                                                 <i class="fas fa-clock ms-2 me-1"></i>{{ $logbook->paraf_teknisi_at ? \Carbon\Carbon::parse($logbook->paraf_teknisi_at)->format('d/m/Y H:i:s') : ($logbook->signed_at ? \Carbon\Carbon::parse($logbook->signed_at)->format('d/m/Y H:i:s') : '-') }}
                                             </small>
                                         </div>
                                     @else
-                                        <span class="badge bg-secondary py-2 px-3 fs-6">Belum diparaf</span>
+                                        <span class="badge bg-secondary py-2 px-3 fs-6">Not Initialed</span>
                                     @endif
                                 </td>
                             </tr>
 
-                            <!-- Status Paraf Mantek -->
+                            <!-- Mantek Initial Status -->
                             <tr>
-                                <th class="bg-light">Paraf Mantek</th>
+                                <th class="bg-light">Mantek Initial</th>
                                 <td>
                                     @if(!empty($logbook->paraf_mantek))
                                         <div class="d-flex flex-column align-items-start">
                                             <span class="badge bg-success py-2 px-3 fs-6">
-                                                <i class="fas fa-check-circle me-1"></i> Telah Diparaf
+                                                <i class="fas fa-check-circle me-1"></i> Initialed
                                             </span>
                                             <small class="text-muted mt-1">
                                                 <i class="fas fa-user me-1"></i>{{ $logbook->paraf_mantek_name ?? 'Mantek' }} 
@@ -79,29 +79,29 @@
                                             </small>
                                         </div>
                                     @else
-                                        <span class="badge bg-secondary py-2 px-3 fs-6">Belum diparaf</span>
+                                        <span class="badge bg-secondary py-2 px-3 fs-6">Not Initialed</span>
                                     @endif
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <!-- Tombol Aksi Paraf -->
+                    <!-- Action Buttons -->
                     <div class="d-flex gap-2 mt-3">
                         @if(empty($logbook->paraf_teknisi))
                             <button type="button" class="btn btn-primary" onclick="bukaModalTtd('teknisi')">
-                                <i class="fas fa-signature me-1"></i>Paraf Sebagai Teknisi
+                                <i class="fas fa-signature me-1"></i>Sign as Technician
                             </button>
                         @endif
 
                         @if(empty($logbook->paraf_mantek))
                             <button type="button" class="btn btn-success" onclick="bukaModalTtd('mantek')">
-                                <i class="fas fa-signature me-1"></i>Paraf Sebagai Mantek
+                                <i class="fas fa-signature me-1"></i>Sign as Mantek
                             </button>
                         @endif
 
                         <a href="{{ route('logbook.index') }}" class="btn btn-outline-secondary ms-auto">
-                            Kembali ke Logbook
+                            Back to Logbook
                         </a>
                     </div>
 
@@ -112,17 +112,17 @@
     </div>
 </div>
 
-<!-- MODAL CANVAS TANDA TANGAN -->
+<!-- SIGNATURE CANVAS MODAL -->
 <div class="modal fade" id="modalTtd" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="modalTtdTitle">Area Tanda Tangan</h5>
+                <h5 class="modal-title" id="modalTtdTitle">Signature Area</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
             <div class="modal-body text-center">
-                <p class="text-muted small mb-2">Goreskan tanda tangan/paraf Anda pada kotak di bawah ini:</p>
+                <p class="text-muted small mb-2">Draw your signature/initials in the box below:</p>
                 
                 <div class="border rounded p-1 bg-light d-inline-block w-100">
                     <canvas id="canvasModal" width="400" height="180" style="border: 1px dashed #ccc; background: #fff; cursor: crosshair; width: 100%;"></canvas>
@@ -130,7 +130,7 @@
 
                 <div class="mt-2 text-start">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="clearModalCanvas">
-                        <i class="fas fa-eraser me-1"></i>Hapus Paraf
+                        <i class="fas fa-eraser me-1"></i>Clear Pad
                     </button>
                 </div>
 
@@ -138,9 +138,9 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-success" id="btnSimpan" onclick="simpanParafAjax()">
-                    <i class="fas fa-save me-1"></i>Simpan & Verifikasi
+                    <i class="fas fa-save me-1"></i>Save & Verify
                 </button>
             </div>
         </div>
@@ -169,9 +169,9 @@
         document.getElementById('actionTypeInput').value = role;
         
         if (role === 'teknisi') {
-            document.getElementById('modalTtdTitle').innerText = 'Tanda Tangan - Paraf Teknisi';
+            document.getElementById('modalTtdTitle').innerText = 'Signature - Technician Initial';
         } else {
-            document.getElementById('modalTtdTitle').innerText = 'Tanda Tangan - Paraf Mantek';
+            document.getElementById('modalTtdTitle').innerText = 'Signature - Mantek Initial';
         }
 
         signaturePadModal.clear();
@@ -189,13 +189,13 @@
 
     function simpanParafAjax() {
         if (signaturePadModal.isEmpty()) {
-            alert('Silakan goreskan tanda tangan pada area canvas terlebih dahulu!');
+            alert('Please draw your signature/initial in the canvas area first!');
             return;
         }
 
         const btn = document.getElementById('btnSimpan');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Saving...';
 
         const parafData = signaturePadModal.toDataURL('image/png');
         const actionType = document.getElementById('actionTypeInput').value;
