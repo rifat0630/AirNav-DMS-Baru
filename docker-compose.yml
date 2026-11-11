@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: 'mysql/mysql-server:8.0'
+    container_name: airnav_mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: 'airnav_dms'
+      MYSQL_USER: 'airnav_user'
+      MYSQL_PASSWORD: 'password123'
+    volumes:
+      - 'airnav_mysql_data:/var/lib/mysql'
+    networks:
+      - airnav_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p'root'"]
+      retries: 3
+      timeout: 5s
+
+  phpmyadmin:
+    image: 'phpmyadmin/phpmyadmin'
+    container_name: airnav_phpmyadmin
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: 'root'
+    networks:
+      - airnav_network
+    depends_on:
+      - mysql
+
+volumes:
+  airnav_mysql_data:
+    driver: local
+
+networks:
+  airnav_network:
+    driver: bridge

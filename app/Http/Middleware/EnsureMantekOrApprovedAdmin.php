@@ -5,53 +5,50 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\ManagerTeknikAccessRequest;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class EnsureMantekOrApprovedAdmin
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
-        // 1. Cek apakah user sudah terautentikasi
         if (!$user) {
             return redirect()->route('login');
         }
 
-        // 2. Role Mantek memiliki hak akses penuh langsung ke seluruh rute Mantek
-        if ($user->role === 'mantek') {
+        // 1. Jika role adalah Manager Teknik asli, izinkan masuk langsung
+        if (in_array($user->role, ['manager_teknik', 'mantek'])) {
             return $next($request);
         }
 
-        // 3. Pengecualian route: Izinkan Admin & Teknisi mengakses halaman dan submit pengajuan izin
-        if ($request->routeIs('mantek.access.request') || $request->routeIs('mantek.access.submit')) {
-            return $next($request);
-        }
+        // 2. Jika bukan Mantek, periksa apakah tabel izin ada dan memiliki izin aktif
+        $hasApprovedDelegation = false;
+        try {
+            if (Schema::hasTable('manager_teknik_assignments')) {
+                $cols = Schema::getColumnListing('manager_teknik_assignments');
+                $userCol = in_array('user_id', $cols) ? 'user_id' : (in_array('assigned_to', $cols) ? 'assigned_to' : null);
 
-        // 4. Role Admin dan Teknisi wajib memiliki persetujuan izin aktif dari Mantek
-        if (in_array($user->role, ['admin', 'teknisi'])) {
-            $hasApproval = ManagerTeknikAccessRequest::where('user_id', $user->id)
-                ->where('status', 'approved')
-                ->where(function ($query) {
-                    $query->whereNull('expires_at')
-                          ->orWhere('expires_at', '>', now());
-                })
-                ->exists();
-
-            if ($hasApproval) {
-                return $next($request);
+                if ($userCol) {
+                    $hasApprovedDelegation = DB::table('manager_teknik_assignments')
+                        ->where($userCol, $user->id)
+                        ->when(in_array('status', $cols), fn($q) => $q->where('status', 'approved'))
+                        ->exists();
+                }
             }
-
-            // Jika belum ada izin yang aktif/disetujui, arahkan ke form permohonan izin
-            return redirect()->route('mantek.access.request');
+        } catch (\Throwable $e) {
+            $hasApprovedDelegation = false;
         }
 
-        // 5. Role selain mantek, admin, dan teknisi ditolak
-        abort(403, 'Akses ditolak: Anda tidak memiliki wewenang untuk membuka menu ini.');
+        if ($hasApprovedDelegation) {
+            return $next($request);
+        }
+
+        // 3. Tolak jika bukan Mantek dan tidak ada izin resmi
+        abort(403, 'Akses Ditolak: Panel instruksi dan perintah kerja ini khusus untuk Manager Teknik atau pengguna dengan izin delegasi resmi.');
     }
 }
