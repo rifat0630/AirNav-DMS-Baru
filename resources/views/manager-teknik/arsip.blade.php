@@ -1,168 +1,167 @@
 @extends('layouts.app')
 
-@section('title', 'Arsip Dokumen CNS/A')
-
 @section('content')
-<div class="space-y-6">
-    <!-- Header Banner -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+<div class="p-6 space-y-6">
+    {{-- Header --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <div class="flex items-center gap-2 text-blue-600 font-semibold text-sm mb-1">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                </svg>
-                <span>Portal Monitoring & Perintah Operasional CNS/A Banjarmasin</span>
-            </div>
-            <h1 class="text-2xl font-bold text-gray-900">Arsip Dokumen Teknik Navigasi & Komunikasi</h1>
-            <p class="text-sm text-gray-500 mt-1">Kumpulan izin ISR, LOCA, SOP, Manual Alat, Kalibrasi, Wiring, Uji Riksa, dan RAB fasilitas CNS/A.</p>
+            <h1 class="text-xl font-bold text-gray-900">Arsip Dokumen Operasional CNS/A</h1>
+            <p class="text-sm text-gray-500 mt-1">
+                Manajemen sertifikat, lisensi teknisi, ISR, kalibrasi fasilitas, dan dokumen pendukung LASIMI.
+            </p>
         </div>
 
-        <div class="flex items-center gap-3">
-            <button type="button" onclick="document.getElementById('modalUnggah').classList.remove('hidden')" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                </svg>
-                Unggah Dokumen
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="{{ url('/notifications') }}"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 text-sm font-medium transition">
+                <span>🔔 Cek Reminder Kedaluwarsa</span>
+                @php
+                    $unreadNotif = class_exists(\App\Models\Notification::class)
+                        ? \App\Models\Notification::where('is_read', 0)->count()
+                        : 0;
+                @endphp
+                @if($unreadNotif > 0)
+                    <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-rose-600 text-white">
+                        {{ $unreadNotif }}
+                    </span>
+                @endif
+            </a>
+
+            <button type="button" onclick="document.getElementById('modalUnggah').classList.remove('hidden')"
+                class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg shadow-sm transition cursor-pointer">
+                + Unggah Dokumen
             </button>
         </div>
     </div>
 
-    <!-- Filter & Pencarian -->
-    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-        <form method="GET" action="{{ route('arsip.index') }}" class="flex flex-col md:flex-row gap-3">
-            <div class="w-full md:w-72">
-                <select name="category" onchange="this.form.submit()" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2.5 outline-none focus:border-blue-500">
-                    <option value="">Semua Dokumen (Semua Kategori)</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+    {{-- Alert Pesan --}}
+    @if(session('success'))
+        <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-lg text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if($errors->any())
+        <div class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-lg text-sm">
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            <div class="flex-1 flex gap-2">
-                <div class="relative flex-1">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari izin / dokumen..." class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg pl-3 pr-10 py-2.5 outline-none focus:border-blue-500">
-                </div>
-                <button type="submit" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium rounded-lg transition flex items-center justify-center">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+    {{-- Filter & Pencarian --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <form method="GET" action="{{ route('arsip.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <input type="text" name="search" value="{{ request('search') }}"
+                placeholder="Cari judul atau nomor dokumen..."
+                class="md:col-span-2 text-sm border border-gray-200 rounded-lg px-3.5 py-2.5 outline-none focus:border-blue-500">
+
+            <select name="category_id" class="text-sm border border-gray-200 rounded-lg px-3.5 py-2.5 outline-none focus:border-blue-500">
+                <option value="">-- Semua Kategori --</option>
+                @foreach(($categories ?? collect()) as $cat)
+                    <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
+                        {{ $cat->name ?? $cat->nama_kategori ?? 'Kategori' }}
+                    </option>
+                @endforeach
+            </select>
+
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition cursor-pointer">
+                    Filter
                 </button>
+                @if(request()->hasAny(['search', 'category_id']))
+                    <a href="{{ route('arsip.index') }}" class="px-3 py-2.5 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg">
+                        Reset
+                    </a>
+                @endif
             </div>
         </form>
     </div>
 
-    <!-- Tabel Daftar Dokumen -->
-    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Daftar Dokumen Tersimpan</h2>
-            <span class="text-xs text-gray-400">Total: {{ $documents->total() }} berkas</span>
-        </div>
-
+    {{-- Tabel Arsip Dokumen --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-gray-50/75 border-b border-gray-100 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        <th class="py-3.5 px-4">Nama / Identitas Dokumen</th>
-                        <th class="py-3.5 px-4 text-center">No. Izin / Dokumen</th>
-                        <th class="py-3.5 px-4 text-center">Kategori</th>
-                        <th class="py-3.5 px-4 text-center">Tanggal Dokumen</th>
-                        <th class="py-3.5 px-4 text-center">Aksi Dokumen</th>
+                    <tr class="bg-slate-50 border-b border-gray-100 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th class="py-3.5 px-4">Nomor &amp; Judul Dokumen</th>
+                        <th class="py-3.5 px-4">Kategori</th>
+                        <th class="py-3.5 px-4">Masa Berlaku</th>
+                        <th class="py-3.5 px-4">Status Kedaluwarsa</th>
+                        <th class="py-3.5 px-4 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-100 text-sm">
                     @forelse($documents as $doc)
                         @php
-                            $docTitle = $doc->title ?? $doc->nama_dokumen ?? $doc->nama ?? 'Dokumen ISR Fasilitas CNS/A';
-                            $noIzin = $doc->document_number ?? $doc->nomor_izin ?? $doc->no_izin ?? '-';
-                            $categoryName = $doc->category->name ?? ($doc->kategori ?? 'Izin Stasiun Radio (ISR)');
-                            $tanggalDok = $doc->tanggal_berlaku ?? $doc->created_at;
-                            $tanggalFormatted = $tanggalDok ? \Carbon\Carbon::parse($tanggalDok)->translatedFormat('d F Y') : '-';
-                            $fileUrl = $doc->file_path ? asset('storage/' . $doc->file_path) : '#';
+                            $badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                            $badgeLabel = 'Aktif';
+
+                            if (!empty($doc->tanggal_berlaku) && preg_match('/s\/d\s(.+)/', $doc->tanggal_berlaku, $m)) {
+                                try {
+                                    $exp = \Carbon\Carbon::parse(trim($m[1]));
+                                    $sisaHari = (int) now()->startOfDay()->diffInDays($exp->startOfDay(), false);
+
+                                    if ($sisaHari < 0) {
+                                        $badgeClass = 'bg-rose-100 text-rose-800 border-rose-200';
+                                        $badgeLabel = 'Kadaluarsa (' . abs($sisaHari) . ' hari lalu)';
+                                    } elseif ($sisaHari <= 7) {
+                                        $badgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
+                                        $badgeLabel = 'Kritis (H-' . $sisaHari . ')';
+                                    } elseif ($sisaHari <= 90) {
+                                        $badgeClass = 'bg-amber-50 text-amber-800 border-amber-200';
+                                        $badgeLabel = 'Segera Berakhir (H-' . $sisaHari . ')';
+                                    }
+                                } catch (\Exception $e) {}
+                            }
                         @endphp
 
-                        <tr class="border-b border-gray-100 hover:bg-slate-50/80 transition duration-150">
-                            <!-- NAMA / IDENTITAS DOKUMEN -->
-                            <td class="py-3.5 px-4">
-                                <div class="flex items-start gap-3">
-                                    <div class="mt-0.5 text-rose-500 flex-shrink-0">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <span class="block font-semibold text-gray-800 text-[13px] leading-snug">{{ $docTitle }}</span>
-                                        <span class="text-[11px] text-gray-400">Format: Dokumen Resmi Terverifikasi</span>
-                                    </div>
-                                </div>
+                        <tr class="hover:bg-slate-50/70 transition">
+                            <td class="py-4 px-4">
+                                <div class="font-bold text-gray-900">{{ $doc->title }}</div>
+                                <div class="text-xs text-gray-500 mt-0.5">{{ $doc->document_number }}</div>
                             </td>
-
-                            <!-- NO. IZIN / DOKUMEN -->
-                            <td class="py-3.5 px-4 text-center">
-                                <span class="inline-block px-2.5 py-1 rounded bg-slate-100 text-slate-700 text-xs font-mono font-medium">
-                                    {{ $noIzin }}
+                            <td class="py-4 px-4 text-xs text-gray-600">
+                                {{ $doc->category->name ?? $doc->category->nama_kategori ?? '-' }}
+                            </td>
+                            <td class="py-4 px-4 text-xs font-medium text-gray-700 whitespace-nowrap">
+                                {{ $doc->tanggal_berlaku ?? '-' }}
+                            </td>
+                            <td class="py-4 px-4 whitespace-nowrap">
+                                <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-full border {{ $badgeClass }}">
+                                    {{ $badgeLabel }}
                                 </span>
                             </td>
-
-                            <!-- KATEGORI -->
-                            <td class="py-3.5 px-4 text-center">
-                                <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[11px] font-semibold border border-blue-200/50">
-                                    {{ $categoryName }}
-                                </span>
-                            </td>
-
-                            <!-- TANGGAL DOKUMEN -->
-                            <td class="py-3.5 px-4 text-center text-xs text-gray-500 font-medium">
-                                {{ $tanggalFormatted }}
-                            </td>
-
-                            <!-- AKSI DOKUMEN -->
-                            <td class="py-3.5 px-4 text-center">
-                                <div class="flex items-center justify-center gap-1.5">
-                                    <a href="{{ $fileUrl }}" target="_blank"
-                                       class="px-2.5 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-[11px] transition flex items-center gap-1 shadow-sm"
-                                       title="Lihat di tab baru">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                        </svg>
-                                        Preview
+                            <td class="py-4 px-4 text-center whitespace-nowrap space-x-2">
+                                @if(Route::has('documents.show'))
+                                    <a href="{{ route('documents.show', $doc->id) }}"
+                                        class="inline-block text-xs font-medium text-blue-600 hover:text-blue-800 underline">
+                                        Detail
                                     </a>
+                                @endif
 
-                                    <a href="{{ $fileUrl }}" download
-                                       class="px-2.5 py-1 rounded bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold text-[11px] transition flex items-center gap-1 shadow-sm"
-                                       title="Download File">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                                        </svg>
-                                        Unduh
-                                    </a>
-
-                                    @if(Route::has('arsip.destroy'))
-                                    <form action="{{ route('arsip.destroy', $doc->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus dokumen ini?')">
+                                @if(Route::has('arsip.destroy'))
+                                    <form action="{{ route('arsip.destroy', $doc->id) }}" method="POST" class="inline"
+                                        onsubmit="return confirm('Hapus dokumen ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded transition" title="Hapus Dokumen">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
+                                        <button type="submit" class="text-xs font-medium text-rose-600 hover:text-rose-800 underline cursor-pointer">
+                                            Hapus
                                         </button>
                                     </form>
-                                    @endif
-                                </div>
+                                @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-12 text-center text-gray-500">
-                                <div class="flex flex-col items-center justify-center">
-                                    <svg class="w-10 h-10 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                    <span class="text-sm">Tidak ada dokumen yang ditemukan.</span>
-                                </div>
+                            <td colspan="5" class="py-12 text-center text-gray-400 text-sm">
+                                Belum ada dokumen operasional tersimpan. Klik <strong>+ Unggah Dokumen</strong> untuk menambahkan.
                             </td>
                         </tr>
                     @endforelse
@@ -183,9 +182,10 @@
     <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden border border-gray-100">
         <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50">
             <h3 class="font-bold text-gray-900 text-base">Unggah Dokumen Operasional CNS/A</h3>
-            <button type="button" onclick="document.getElementById('modalUnggah').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            <button type="button" onclick="document.getElementById('modalUnggah').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 text-xl font-bold cursor-pointer">&times;</button>
         </div>
-        <form action="{{ Route::has('arsip.store') ? route('arsip.store') : '#' }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+
+        <form id="formUnggahDokumen" action="{{ Route::has('arsip.store') ? route('arsip.store') : '#' }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
             @csrf
             <div>
                 <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Nama / Identitas Dokumen</label>
@@ -201,27 +201,83 @@
                 <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Kategori Dokumen</label>
                 <select name="category_id" required class="w-full text-sm border border-gray-200 rounded-lg p-2.5 outline-none focus:border-blue-500">
                     <option value="">-- Pilih Kategori --</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @foreach(($categories ?? collect()) as $cat)
+                        <option value="{{ $cat->id }}">{{ $cat->name ?? $cat->nama_kategori ?? 'Kategori' }}</option>
                     @endforeach
                 </select>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Tanggal Dokumen / Berlaku</label>
-                <input type="date" name="tanggal_berlaku" value="{{ date('Y-m-d') }}" class="w-full text-sm border border-gray-200 rounded-lg p-2.5 outline-none focus:border-blue-500">
+                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Masa Berlaku Dokumen (Dari &amp; Sampai Dengan)</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <span class="block text-[11px] text-gray-500 mb-1">Berlaku Dari Tanggal</span>
+                        <input type="date" id="tanggal_mulai" required
+                            onchange="gabungTanggalBerlaku()"
+                            class="w-full text-sm border border-gray-200 rounded-lg p-2.5 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <span class="block text-[11px] text-gray-500 mb-1">Sampai Dengan Tanggal</span>
+                        <input type="date" id="tanggal_akhir" required
+                            onchange="gabungTanggalBerlaku()"
+                            class="w-full text-sm border border-gray-200 rounded-lg p-2.5 outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <input type="hidden" name="tanggal_berlaku" id="tanggal_berlaku_gabungan" required>
+                <p id="preview_tanggal_berlaku" class="text-[11px] text-blue-600 font-medium mt-1.5"></p>
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">File Dokumen (PDF)</label>
-                <input type="file" name="file" accept=".pdf" required class="w-full text-sm border border-gray-200 rounded-lg p-2 outline-none focus:border-blue-500 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                <input type="file" name="file" accept=".pdf,.doc,.docx" required
+                    class="w-full text-sm text-gray-600 border border-gray-200 rounded-lg p-2 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
             </div>
 
-            <div class="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
-                <button type="button" onclick="document.getElementById('modalUnggah').classList.add('hidden')" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition font-medium">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium shadow-sm">Unggah Sekarang</button>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" onclick="document.getElementById('modalUnggah').classList.add('hidden')"
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer">
+                    Batal
+                </button>
+                <button type="submit"
+                    class="px-5 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm cursor-pointer">
+                    Unggah Sekarang
+                </button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    function gabungTanggalBerlaku() {
+        const mulai = document.getElementById('tanggal_mulai').value;
+        const akhir = document.getElementById('tanggal_akhir').value;
+        const inputHidden = document.getElementById('tanggal_berlaku_gabungan');
+        const preview = document.getElementById('preview_tanggal_berlaku');
+
+        if (mulai && akhir) {
+            inputHidden.value = `${mulai} s/d ${akhir}`;
+            preview.textContent = `Format tersimpan: ${mulai} s/d ${akhir}`;
+        } else {
+            inputHidden.value = '';
+            preview.textContent = '';
+        }
+    }
+
+    document.getElementById('formUnggahDokumen').addEventListener('submit', function (e) {
+        gabungTanggalBerlaku();
+        const mulai = document.getElementById('tanggal_mulai').value;
+        const akhir = document.getElementById('tanggal_akhir').value;
+
+        if (!mulai || !akhir) {
+            e.preventDefault();
+            alert('Silakan pilih tanggal mulai berlaku dan tanggal berakhir dokumen.');
+            return;
+        }
+        if (akhir < mulai) {
+            e.preventDefault();
+            alert('Tanggal berakhir tidak boleh lebih awal dari tanggal mulai berlaku!');
+            return;
+        }
+    });
+</script>
 @endsection

@@ -227,6 +227,7 @@ class DocumentController extends Controller
 
         ]);
 
+        \Illuminate\Support\Facades\Artisan::call('system:check-notifications');
 
 
 
@@ -387,8 +388,7 @@ class DocumentController extends Controller
 
         ]);
 
-
-
+        \Illuminate\Support\Facades\Artisan::call('system:check-notifications');
 
 
         return redirect()
