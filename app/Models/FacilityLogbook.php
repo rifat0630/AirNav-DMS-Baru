@@ -9,39 +9,40 @@ class FacilityLogbook extends Model
 {
     use HasFactory;
 
-    protected $table = 'facility_logbooks';
+    protected $table = 'logbooks';
 
     protected $fillable = [
-        'technician_id',
-        'technicians',
-        'log_datetime',
-        'tanggal_kejadian',
-        'tanggal_dibuat',
-        'tanggal_waktu_selesai',
-        'action_notes',
         'user_id',
-        'signature_type',
-        'signature_file',
-        'qr_token',
-        'signature_status',
-        'status',
+        'fasilitas_alat',
+        'shift',
+        'uraian_pekerjaan',
+        'tanggal_terjadi',
+        'tanggal_dibuat',
+        'waktu_selesai',
         'paraf_teknisi',
-        'paraf_teknisi_name',
         'paraf_teknisi_at',
+        'mantek_id',
+        'catatan_mantek',
         'paraf_mantek',
-        'paraf_mantek_name',
         'paraf_mantek_at',
-        'signed_at',
-        'signed_by',
+        'status',
     ];
 
-    public function technician()
-    {
-        return $this->belongsTo(Technician::class, 'technician_id');
-    }
+    protected $casts = [
+        'tanggal_terjadi'  => 'date',
+        'tanggal_dibuat'   => 'date',
+        'waktu_selesai'    => 'datetime',
+        'paraf_teknisi_at' => 'datetime',
+        'paraf_mantek_at'  => 'datetime',
+    ];
 
-    public function user()
+    public function teknisi()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function mantek()
+    {
+        return $this->belongsTo(User::class, 'mantek_id');
     }
 }

@@ -3,274 +3,91 @@
 namespace App\Http\Controllers;
 
 use App\Models\FacilityLogbook;
-use App\Models\Technician;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class FacilityLogbookController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | INDEX
-    |--------------------------------------------------------------------------
-    */
-    public function index(Request $request)
+    public function index()
     {
-        $query = FacilityLogbook::with([
-            'technician',
-            'user'
-        ]);
+        $logbooks = FacilityLogbook::with(['teknisi', 'mantek'])
+            ->orderByDesc('tanggal_terjadi')
+            ->orderByDesc('created_at')
+            ->get();
 
-        if ($request->search) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('action_notes', 'like', "%$search%")
-                  ->orWhere('technicians', 'like', "%$search%");
-            });
-        }
+        $menungguParafCount = $logbooks->where('status', 'Menunggu Paraf Mantek')->count();
+        $technicians = User::orderBy('name')->get();
 
-        $logbooks = $query->latest()->get();
-        $technicians = Technician::where('status', 'aktif')->orderBy('name')->get();
-
-        return view('logbook.index', compact('logbooks', 'technicians'));
+        return view('logbook.index', compact('logbooks', 'menungguParafCount', 'technicians'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | CREATE
-    |--------------------------------------------------------------------------
-    */
-    public function create()
-    {
-        $technicians = Technician::where('status', 'aktif')->orderBy('name')->get();
-        return view('logbook.create', compact('technicians'));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | STORE
-    |--------------------------------------------------------------------------
-    */
     public function store(Request $request)
     {
-        $request->validate([
-            'technician_id' => 'required|exists:technicians,id',
-            'action_notes'  => 'required'
+        $validated = $request->validate([
+            'fasilitas_alat'   => 'required|string|max:255',
+            'shift'            => 'required|in:Pagi,Siang,Malam',
+            'uraian_pekerjaan' => 'required|string',
+            'tanggal_terjadi'  => 'required|date',
+            'tanggal_dibuat'   => 'required|date',
+            'waktu_selesai'    => 'nullable|date',
+            'paraf_teknisi'    => 'required|string',
+        ], [
+            'paraf_teknisi.required' => 'Silakan coret Live Paraf Teknisi terlebih dahulu sebelum menyimpan.',
         ]);
-
-        $technician = Technician::findOrFail($request->technician_id);
-
-        // Generate QR Token
-        $token = (string) Str::uuid();
-
-        // Save QR SVG
-        $fileName = $token . '.svg';
-        $path = public_path('qrcodes/' . $fileName);
-
-        if (!file_exists(public_path('qrcodes'))) {
-            mkdir(public_path('qrcodes'), 0777, true);
-        }
-
-        QrCode::format('svg')
-            ->size(300)
-            ->generate(route('logbook.sign', $token), $path);
-
-        $nowTime = now();
 
         FacilityLogbook::create([
-            'technician_id'         => $technician->id,
-            'technicians'           => $technician->name,
-            'log_datetime'          => $nowTime,
-            'tanggal_kejadian'      => $nowTime->format('Y-m-d'),
-            'tanggal_dibuat'        => $nowTime->format('Y-m-d'),
-            'tanggal_waktu_selesai' => $nowTime->format('Y-m-d H:i:s'),
-            'action_notes'          => $request->action_notes,
-            'user_id'               => Auth::id(),
-            'signature_type'        => 'qr',
-            'signature_file'        => $fileName,
-            'qr_token'              => $token,
-            'signature_status'      => 'belum',
-            'status'                => 'Unverified',
+            'user_id'          => $request->input('user_id', Auth::id()),
+            'fasilitas_alat'   => $validated['fasilitas_alat'],
+            'shift'            => $validated['shift'],
+            'uraian_pekerjaan' => $validated['uraian_pekerjaan'],
+            'tanggal_terjadi'  => $validated['tanggal_terjadi'],
+            'tanggal_dibuat'   => $validated['tanggal_dibuat'],
+            'waktu_selesai'    => $validated['waktu_selesai'],
+            'paraf_teknisi'    => $validated['paraf_teknisi'],
+            'paraf_teknisi_at' => now(),
+            'status'           => 'Menunggu Paraf Mantek',
         ]);
 
-        return redirect()
-            ->route('logbook.index')
-            ->with('success', 'Logbook entry created successfully');
+        return redirect()->route('logbook.index')
+            ->with('success', 'E-Logbook berhasil dicatat beserta Live Paraf Teknisi.');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | SIGN / SCAN PAGE
-    |--------------------------------------------------------------------------
-    */
-    public function sign($token)
+    public function reviewMantek(Request $request, $id)
     {
-        $logbook = FacilityLogbook::where('qr_token', $token)
-            ->orWhere('id', $token)
-            ->firstOrFail();
-
-        return view('logbook.sign', compact('logbook'));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | STORE SIGN VIA AJAX
-    |--------------------------------------------------------------------------
-    */
-    public function storeSign(Request $request, $id)
-    {
-        $parafData  = $request->input('paraf_data') ?? $request->input('signature');
-        $actionType = strtolower(trim($request->input('action_type') ?? $request->input('role') ?? ''));
-
-        if (empty($parafData)) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Signature canvas cannot be empty!'
-            ], 422);
-        }
-
-        $logbook = FacilityLogbook::where('id', $id)
-            ->orWhere('qr_token', $id)
-            ->firstOrFail();
-
-        $userName = Auth::user()->name ?? 'User';
-        $now = now();
-
-        if ($actionType === 'teknisi') {
-            $logbook->paraf_teknisi = $parafData;
-            $logbook->paraf_teknisi_name = $userName;
-            $logbook->paraf_teknisi_at = $now;
-        } else if ($actionType === 'mantek') {
-            $logbook->paraf_mantek = $parafData;
-            $logbook->paraf_mantek_name = $userName;
-            $logbook->paraf_mantek_at = $now;
-        }
-
-        // Check verification status
-        if (!empty($logbook->paraf_teknisi) && !empty($logbook->paraf_mantek)) {
-            $logbook->status = 'Verified';
-            $logbook->signature_status = 'terverifikasi';
-        } else {
-            $logbook->status = 'Partially Verified';
-            $logbook->signature_status = 'sebagian';
-        }
-
-        $logbook->signed_at = $now;
-        $logbook->signed_by = Auth::id();
-        $logbook->save();
-
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Initial saved successfully!'
-        ]);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | MANUAL CONFIRMATION
-    |--------------------------------------------------------------------------
-    */
-    public function signConfirm($token)
-    {
-        $logbook = FacilityLogbook::where('qr_token', $token)
-            ->orWhere('id', $token)
-            ->firstOrFail();
-
         $user = Auth::user();
+        $role = strtolower($user->role ?? '');
 
-        if ($user->role != 'teknisi') {
-            return back()->with('error', 'Account is not a technician');
+        if (!in_array($role, ['manager teknik', 'manager_teknik', 'mantek', 'admin'])) {
+            abort(403, 'Hanya Manager Teknik yang berwenang memberikan catatan dan paraf.');
         }
 
-        $logbook->update([
-            'signature_status' => 'terverifikasi',
-            'status'           => 'Verified',
-            'signed_at'        => now(),
-            'signed_by'        => $user->id
+        $validated = $request->validate([
+            'catatan_mantek' => 'nullable|string',
+            'paraf_mantek'   => 'required|string',
+        ], [
+            'paraf_mantek.required' => 'Silakan coret Live Paraf Manager Teknik pada kotak tanda tangan.',
         ]);
 
-        return redirect()
-            ->route('logbook.sign', $token)
-            ->with('success', 'Logbook verified successfully');
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | SCAN FROM ADMIN
-    |--------------------------------------------------------------------------
-    */
-    public function scan($id)
-    {
-        $logbook = FacilityLogbook::where('id', $id)
-            ->orWhere('qr_token', $id)
-            ->firstOrFail();
-
-        return redirect()->route('logbook.sign', $logbook->qr_token ?? $logbook->id);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | EDIT
-    |--------------------------------------------------------------------------
-    */
-    public function edit($id)
-    {
-        $logbook = FacilityLogbook::findOrFail($id);
-        $technicians = Technician::where('status', 'aktif')->get();
-
-        return view('logbook.edit', compact('logbook', 'technicians'));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE
-    |--------------------------------------------------------------------------
-    */
-    public function update(Request $request, $id)
-    {
         $logbook = FacilityLogbook::findOrFail($id);
 
-        $request->validate([
-            'technician_id' => 'required',
-            'action_notes'  => 'required'
-        ]);
-
-        $technician = Technician::find($request->technician_id);
-
         $logbook->update([
-            'technician_id'         => $technician->id,
-            'technicians'           => $technician->name,
-            'tanggal_kejadian'      => $request->tanggal_kejadian ?? $logbook->tanggal_kejadian,
-            'tanggal_dibuat'        => $request->tanggal_dibuat ?? $logbook->tanggal_dibuat,
-            'tanggal_waktu_selesai' => $request->tanggal_waktu_selesai ?? $logbook->tanggal_waktu_selesai,
-            'action_notes'          => $request->action_notes
+            'mantek_id'       => $user->id,
+            'catatan_mantek'  => $validated['catatan_mantek'],
+            'paraf_mantek'    => $validated['paraf_mantek'],
+            'paraf_mantek_at' => now(),
+            'status'          => 'Terverifikasi',
         ]);
 
-        return redirect()
-            ->route('logbook.index')
-            ->with('success', 'Logbook updated successfully');
+        return redirect()->route('logbook.index')
+            ->with('success', 'Catatan dan Live Paraf Manager Teknik berhasil disimpan.');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE
-    |--------------------------------------------------------------------------
-    */
     public function destroy($id)
     {
-        $logbook = FacilityLogbook::findOrFail($id);
+        FacilityLogbook::findOrFail($id)->delete();
 
-        if ($logbook->signature_file) {
-            $file = public_path('qrcodes/' . $logbook->signature_file);
-            if (file_exists($file)) {
-                unlink($file);
-            }
-        }
-
-        $logbook->delete();
-
-        return back()->with('success', 'Logbook deleted successfully');
+        return redirect()->route('logbook.index')
+            ->with('success', 'Catatan E-Logbook berhasil dihapus.');
     }
 }

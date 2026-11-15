@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ManagerTeknikDashboardController;
 use App\Http\Middleware\EnsureMantekOrApprovedAdmin;
+use App\Http\Controllers\FacilityLogbookController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -21,8 +22,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/arsip-dokumen/preview/{id}', [ManagerTeknikDashboardController::class, 'previewDocument'])->name('arsip.preview');
 
     // 3. Modul Logbook Harian (Semua Role)
-    Route::get('/logbook-harian', [ManagerTeknikDashboardController::class, 'logbookHarian'])->name('logbook.index');
-    Route::post('/logbook-harian', [ManagerTeknikDashboardController::class, 'storeLogbook'])->name('logbook.store');
+    Route::get('/logbook-harian', [FacilityLogbookController::class, 'index'])->name('logbook.index');
+Route::post('/logbook-harian', [FacilityLogbookController::class, 'store'])->name('logbook.store');
+Route::patch('/logbook-harian/{id}/review-mantek', [FacilityLogbookController::class, 'reviewMantek'])->name('logbook.review-mantek');
+Route::delete('/logbook-harian/{id}', [FacilityLogbookController::class, 'destroy'])->name('logbook.destroy');
 
     // 4. Modul Monitoring Inventory & Fasilitas (Semua Role)
     Route::get('/monitoring-fasilitas', [ManagerTeknikDashboardController::class, 'monitoringFasilitas'])->name('monitoring.index');
