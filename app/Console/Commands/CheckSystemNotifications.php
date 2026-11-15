@@ -62,6 +62,19 @@ class CheckSystemNotifications extends Command
                 );
 
 
+                // Tentukan threshold berdasarkan aturan jenis/nama dokumen
+                $docInfo = strtolower(($document->jenis ?? '') . ' ' . ($document->title ?? ''));
+                $threshold = 30; // Default 1 bulan
+
+                if (str_contains($docInfo, 'uji riksa')) {
+                    $threshold = 90; // 3 bulan sebelum kadaluarsa
+                } elseif (str_contains($docInfo, 'lisensi')) {
+                    $threshold = 60; // 2 bulan sebelum kadaluarsa
+                } elseif (str_contains($docInfo, 'isr') || str_contains($docInfo, 'kalibrasi')) {
+                    $threshold = 30; // 1 bulan sebelum kadaluarsa
+                }
+
+
                 /*
                 |--------------------------------------------------------------------------
                 | DOKUMEN SUDAH EXPIRED
@@ -152,11 +165,11 @@ class CheckSystemNotifications extends Command
 
                 /*
                 |--------------------------------------------------------------------------
-                | DOKUMEN H-30
+                | DOKUMEN WARNING (Sesuai Aturan: ISR/Kalibrasi 30 hari, Lisensi 60 hari, Uji Riksa 90 hari)
                 |--------------------------------------------------------------------------
                 */
 
-                elseif ($days <= 30) {
+                elseif ($days <= $threshold) {
 
                     Notification::firstOrCreate(
 
