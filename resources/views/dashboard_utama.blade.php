@@ -65,9 +65,11 @@
             </h2>
             <div class="divide-y divide-gray-100 text-xs">
                 @forelse($latestDocs as $doc)
-                <div class="py-2.5 flex justify-between items-center">
-                    <span class="font-medium text-gray-800">{{ $doc->nama ?? $doc->judul ?? 'Dokumen' }}</span>
-                    <span class="text-gray-400">{{ isset($doc->created_at) ? $doc->created_at->format('d/m/Y') : '-' }}</span>
+                <div class="py-2.5 flex justify-between items-center gap-3">
+                    <a href="{{ route('arsip.index') }}" class="font-medium text-gray-800 hover:text-blue-600 transition truncate">
+                        {{ $doc->nama_dokumen ?? $doc->title ?? $doc->nama ?? $doc->judul ?? $doc->perihal ?? 'Dokumen' }}
+                    </a>
+                    <span class="text-gray-400 whitespace-nowrap">{{ isset($doc->created_at) ? $doc->created_at->format('d/m/Y') : '-' }}</span>
                 </div>
                 @empty
                 <p class="text-gray-400 py-3 text-center">Belum ada dokumen.</p>
