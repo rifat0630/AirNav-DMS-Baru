@@ -85,7 +85,17 @@ class FacilityLogbookController extends Controller
 
     public function destroy($id)
     {
-        FacilityLogbook::findOrFail($id)->delete();
+        $logbook = FacilityLogbook::findOrFail($id);
+        $user = Auth::user();
+        $role = strtolower($user->role ?? '');
+        $isAdminOrMantek = in_array($role, ['manager teknik', 'manager_teknik', 'mantek', 'admin']);
+
+        // Hanya pemilik catatan atau Admin/Mantek yang boleh menghapus
+        if ((int) $logbook->user_id !== (int) $user->id && !$isAdminOrMantek) {
+            abort(403, 'Anda tidak berhak menghapus catatan E-Logbook milik teknisi lain.');
+        }
+
+        $logbook->delete();
 
         return redirect()->route('logbook.index')
             ->with('success', 'Catatan E-Logbook berhasil dihapus.');

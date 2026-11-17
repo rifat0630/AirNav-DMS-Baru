@@ -76,6 +76,9 @@
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-sm">
                     @forelse($logbooks as $item)
+                        @php
+                            $canDelete = ((int) auth()->id() === (int) $item->user_id) || $isMantek;
+                        @endphp
                         <tr class="hover:bg-slate-50/80 transition align-top">
                             {{-- Tanggal & Shift --}}
                             <td class="py-4 px-4 whitespace-nowrap">
@@ -156,14 +159,18 @@
                                     </button>
                                 @endif
 
-                                <form action="{{ route('logbook.destroy', $item->id) }}" method="POST"
-                                      onsubmit="return confirm('Hapus catatan logbook ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-xs text-rose-500 hover:text-rose-700 underline cursor-pointer">
-                                        Hapus
-                                    </button>
-                                </form>
+                                @if($canDelete)
+                                    <form action="{{ route('logbook.destroy', $item->id) }}" method="POST"
+                                          onsubmit="return confirm('Hapus catatan logbook ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-rose-500 hover:text-rose-700 underline cursor-pointer">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                @elseif(!$isMantek)
+                                    <span class="text-xs text-slate-400">-</span>
+                                @endif
                             </td>
                         </tr>
                     @empty
