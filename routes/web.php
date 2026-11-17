@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ManagerTeknikDashboardController;
 use App\Http\Middleware\EnsureMantekOrApprovedAdmin;
 use App\Http\Controllers\FacilityLogbookController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -13,6 +14,19 @@ Route::middleware(['auth'])->group(function () {
     
     // 1. Dashboard Utama (Bisa Diakses Semua Role Termasuk Manager Teknik)
     Route::get('/dashboard', [ManagerTeknikDashboardController::class, 'dashboardUtama'])->name('dashboard');
+
+    // 2. Modul Notifikasi & Reminder
+Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])
+    ->name('notifications.index');
+
+Route::get('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'read'])
+    ->name('notifications.read');
+
+Route::get('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'readAll'])
+    ->name('notifications.read.all');
+
+Route::get('/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'unreadCount'])
+    ->name('notifications.unread.count');
 
     // 2. Modul Arsip Dokumen CNS/A (Semua Role)
     Route::get('/arsip-dokumen', [ManagerTeknikDashboardController::class, 'arsipDokumen'])->name('arsip.index');
@@ -63,6 +77,7 @@ Route::delete('/logbook-harian/{id}', [FacilityLogbookController::class, 'destro
         return redirect()->route('manager-teknik.dashboard');
     })->name('mantek.dashboard');
 
+ 
 });
 
 require __DIR__.'/auth.php';

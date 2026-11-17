@@ -10,70 +10,75 @@ use App\Models\Notification;
 
 use Carbon\Carbon;
 
-
 class CheckSystemNotifications extends Command
 {
     protected $signature = 'system:check-notifications';
 
     protected $description = 'Check document and inventory notifications';
 
-
     public function handle()
     {
-
         /*
         |--------------------------------------------------------------------------
         | CHECK DOCUMENT
         |--------------------------------------------------------------------------
         */
 
-        $documents = Document::all();
-
+        $documents = Document::with('category')->get();
 
         foreach ($documents as $document) {
 
-            if (empty($document->tanggal_berlaku)) {
+            /*
+            |--------------------------------------------------------------------------
+            | Gunakan expired_at sebagai tanggal kadaluarsa
+            |--------------------------------------------------------------------------
+            */
+
+            if (empty($document->expired_at)) {
                 continue;
             }
 
-
             try {
 
-                preg_match(
-                    '/s\/d\s(.+)/',
-                    $document->tanggal_berlaku,
-                    $matches
-                );
+                $expiredDate = Carbon::parse($document->expired_at);
 
-
-                if (!isset($matches[1])) {
-                    continue;
-                }
-
-
-                $expiredDate = Carbon::parse(
-                    trim($matches[1])
-                );
-
-
-                $days = now()->diffInDays(
-                    $expiredDate,
+                $days = now()->startOfDay()->diffInDays(
+                    $expiredDate->startOfDay(),
                     false
                 );
 
+                /*
+                |--------------------------------------------------------------------------
+                | Tentukan threshold berdasarkan kategori
+                |--------------------------------------------------------------------------
+                |
+                | Uji Riksa  : H-90
+                | ISR        : H-30
+                | Kalibrasi  : H-30
+                | Lainnya    : H-30
+                |
+                */
 
-                // Tentukan threshold berdasarkan aturan jenis/nama dokumen
-                $docInfo = strtolower(($document->jenis ?? '') . ' ' . ($document->title ?? ''));
-                $threshold = 30; // Default 1 bulan
+                $categoryName = strtolower(
+                    $document->category->name ?? ''
+                );
 
-                if (str_contains($docInfo, 'uji riksa')) {
-                    $threshold = 90; // 3 bulan sebelum kadaluarsa
-                } elseif (str_contains($docInfo, 'lisensi')) {
-                    $threshold = 60; // 2 bulan sebelum kadaluarsa
-                } elseif (str_contains($docInfo, 'isr') || str_contains($docInfo, 'kalibrasi')) {
-                    $threshold = 30; // 1 bulan sebelum kadaluarsa
+                $threshold = 30;
+
+                // Laporan Uji Riksa & Sertifikasi
+                if (str_contains($categoryName, 'uji riksa')) {
+                    $threshold = 90;
                 }
 
+                // Izin Stasiun Radio (ISR)
+                elseif (str_contains($categoryName, 'izin stasiun radio')) {
+                    $threshold = 30;
+                }
+
+                // Laporan Kalibrasi Fasilitas CNS
+                elseif (str_contains($categoryName, 'kalibrasi')) {
+                    $threshold = 30;
+                }
 
                 /*
                 |--------------------------------------------------------------------------
@@ -84,15 +89,16 @@ class CheckSystemNotifications extends Command
                 if ($days < 0) {
 
                     Notification::firstOrCreate(
-
                         [
                             'reference' =>
                                 'document_' .
                                 $document->id .
                                 '_expired'
                         ],
-
                         [
+                            'user_id' =>
+                                null,
+
                             'title' =>
                                 'Dokumen Kadaluarsa',
 
@@ -100,23 +106,18 @@ class CheckSystemNotifications extends Command
                                 $document->title .
                                 ' sudah melewati masa berlaku',
 
-                            'type' =>
-                                'danger',
-
                             'url' =>
                                 route(
-                                    'documents.show',
-                                    $document->id
+                                    'arsip.preview',
+                                    $document->id,
+                                    false
                                 ),
 
                             'is_read' =>
                                 0
                         ]
-
                     );
-
                 }
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -127,15 +128,16 @@ class CheckSystemNotifications extends Command
                 elseif ($days <= 7) {
 
                     Notification::firstOrCreate(
-
                         [
                             'reference' =>
                                 'document_' .
                                 $document->id .
                                 '_critical'
                         ],
-
                         [
+                            'user_id' =>
+                                null,
+
                             'title' =>
                                 'Dokumen Segera Berakhir',
 
@@ -145,42 +147,38 @@ class CheckSystemNotifications extends Command
                                 $days .
                                 ' hari',
 
-                            'type' =>
-                                'danger',
-
                             'url' =>
                                 route(
-                                    'documents.show',
-                                    $document->id
+                                    'arsip.preview',
+                                    $document->id,
+                                    false
                                 ),
 
                             'is_read' =>
                                 0
                         ]
-
                     );
-
                 }
-
 
                 /*
                 |--------------------------------------------------------------------------
-                | DOKUMEN WARNING (Sesuai Aturan: ISR/Kalibrasi 30 hari, Lisensi 60 hari, Uji Riksa 90 hari)
+                | DOKUMEN WARNING
                 |--------------------------------------------------------------------------
                 */
 
                 elseif ($days <= $threshold) {
 
                     Notification::firstOrCreate(
-
                         [
                             'reference' =>
                                 'document_' .
                                 $document->id .
                                 '_warning'
                         ],
-
                         [
+                            'user_id' =>
+                                null,
+
                             'title' =>
                                 'Dokumen Akan Berakhir',
 
@@ -190,34 +188,24 @@ class CheckSystemNotifications extends Command
                                 $days .
                                 ' hari',
 
-                            'type' =>
-                                'warning',
-
                             'url' =>
                                 route(
-                                    'documents.show',
-                                    $document->id
+                                    'arsip.preview',
+                                    $document->id,
+                                    false
                                 ),
 
                             'is_read' =>
                                 0
                         ]
-
                     );
-
                 }
 
-            }
-
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
 
                 continue;
-
             }
-
         }
-
-
 
         /*
         |--------------------------------------------------------------------------
@@ -230,19 +218,19 @@ class CheckSystemNotifications extends Command
             'rusak'
         )->get();
 
-
         foreach ($damagedItems as $item) {
 
             Notification::firstOrCreate(
-
                 [
                     'reference' =>
                         'inventory_' .
                         $item->id .
                         '_damage'
                 ],
-
                 [
+                    'user_id' =>
+                        null,
+
                     'title' =>
                         'Barang Rusak',
 
@@ -250,24 +238,18 @@ class CheckSystemNotifications extends Command
                         $item->name .
                         ' belum diperbaiki',
 
-                    'type' =>
-                        'danger',
-
                     'url' =>
                         route(
-                            'inventory.show',
-                            $item->id
+                            'monitoring.index',
+                            [],
+                            false
                         ),
 
                     'is_read' =>
                         0
                 ]
-
             );
-
         }
-
-
 
         /*
         |--------------------------------------------------------------------------
@@ -281,19 +263,19 @@ class CheckSystemNotifications extends Command
             0
         )->get();
 
-
         foreach ($emptyStocks as $item) {
 
             Notification::firstOrCreate(
-
                 [
                     'reference' =>
                         'inventory_' .
                         $item->id .
                         '_empty'
                 ],
-
                 [
+                    'user_id' =>
+                        null,
+
                     'title' =>
                         'Stok Habis',
 
@@ -301,24 +283,18 @@ class CheckSystemNotifications extends Command
                         $item->name .
                         ' stok sudah habis',
 
-                    'type' =>
-                        'danger',
-
                     'url' =>
                         route(
-                            'inventory.show',
-                            $item->id
+                            'monitoring.index',
+                            [],
+                            false
                         ),
 
                     'is_read' =>
                         0
                 ]
-
             );
-
         }
-
-
 
         /*
         |--------------------------------------------------------------------------
@@ -334,19 +310,19 @@ class CheckSystemNotifications extends Command
             ]
         )->get();
 
-
         foreach ($lowStocks as $item) {
 
             Notification::firstOrCreate(
-
                 [
                     'reference' =>
                         'inventory_' .
                         $item->id .
                         '_low_stock'
                 ],
-
                 [
+                    'user_id' =>
+                        null,
+
                     'title' =>
                         'Stok Menipis',
 
@@ -356,32 +332,29 @@ class CheckSystemNotifications extends Command
                         $item->stock .
                         ' unit',
 
-                    'type' =>
-                        'warning',
-
                     'url' =>
                         route(
-                            'inventory.show',
-                            $item->id
+                            'monitoring.index',
+                            [],
+                            false
                         ),
 
                     'is_read' =>
                         0
                 ]
-
             );
-
         }
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | SELESAI
+        |--------------------------------------------------------------------------
+        */
 
         $this->info(
             'Notification checking completed.'
         );
 
-
         return Command::SUCCESS;
-
     }
-
 }
